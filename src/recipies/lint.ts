@@ -1,5 +1,5 @@
 import { Toolbox } from 'gluegun/build/types/domain/toolbox'
-import { confirm, spinner } from '@clack/prompts'
+import { confirm } from '@clack/prompts'
 
 const COMMAND = 'lint'
 
@@ -7,11 +7,13 @@ const execute = () => async (toolbox: Toolbox) => {
   const packageJSON = toolbox.filesystem.read('package.json', 'json')
 
   if (!packageJSON?.devDependencies?.eslint) {
-    const s = spinner()
+    const spinner = toolbox.print.spin('Installing ESLint...')
 
-    s.start('Installing ESLint...')
     await toolbox.packageManager.add('eslint', { dev: true })
-    s.stop('Installed ESLint.')
+
+    spinner.stop()
+
+    toolbox.print.info('Installed ESLint.')
   }
 
   await toolbox.patching.update('package.json', (config) => {
