@@ -29,7 +29,9 @@
   "license": "MIT",
   "author": "Maciej Stosio <maciekstosio@users.noreply.github.com>",
   "dependencies": {
-    "gluegun": "latest"
+    "@clack/prompts": "^0.7.0",
+    "gluegun": "latest",
+    "is-git-dirty": "^2.0.2"
   },
   "devDependencies": {
     "@types/node": "^12.7.11",

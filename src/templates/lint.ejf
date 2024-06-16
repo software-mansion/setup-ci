@@ -1,0 +1,13 @@
+name: Check ESLint
+on: [pull_request]
+
+jobs:
+   test:
+      name: ESLint
+      runs-on: ubuntu-latest
+      steps:
+         - uses: actions/checkout@v2
+         - name: Install packages
+           run: yarn
+         - name: TypeScript
+           run: yarn lint
