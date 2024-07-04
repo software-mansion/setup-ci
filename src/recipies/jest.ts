@@ -1,19 +1,19 @@
-import { Toolbox } from 'gluegun/build/types/domain/toolbox'
 import { confirm } from '@clack/prompts'
+import { Toolbox } from 'gluegun/build/types/domain/toolbox'
 
-const COMMAND = 'lint'
+const COMMAND = 'jest'
 
 const execute = () => async (toolbox: Toolbox) => {
-  await toolbox.dependencies.add('eslint', '', true)
+  await toolbox.dependencies.add('jest', '', true)
 
-  await toolbox.scripts.add('lint', 'eslint "**/*.{js,jsx,ts,tsx}"')
+  await toolbox.scripts.add('test', 'jest')
 
   await toolbox.template.generate({
-    template: 'lint.ejf',
-    target: `.github/workflows/lint.yml`,
+    template: 'jest.ejf',
+    target: `.github/workflows/jest.yml`,
   })
 
-  toolbox.print.info('✔ Created ESLint workflow.')
+  toolbox.print.info('✔ Created Jest workflow.')
 
   return `--${COMMAND}`
 }
@@ -26,7 +26,7 @@ const run = async (
   }
 
   const proceed = await confirm({
-    message: 'Do you want to run ESLint on your project on every PR?',
+    message: 'Do you want to run Jest on your project on every PR?',
   })
 
   if (!proceed) {

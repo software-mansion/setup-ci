@@ -1,7 +1,8 @@
 import { GluegunCommand } from 'gluegun'
-import runLint from '../recipies/lint'
 import { intro, outro } from '@clack/prompts'
 import { SKIP_INTERACTIVE_COMMAND } from '../constants'
+import runLint from '../recipies/lint'
+import runJest from '../recipies/jest'
 
 const command: GluegunCommand = {
   name: 'react-native-ci-cli',
@@ -10,19 +11,18 @@ const command: GluegunCommand = {
 
     if (toolbox.isGitDirty() == null) {
       outro('This is not a git repository. Exiting.')
-
       return
     }
 
     if (toolbox.isGitDirty() == true) {
       outro('Please commit your changes before running this command. Exiting.')
-
       return
     }
 
     const lintExecutor = await runLint(toolbox)
+    const jestExecutor = await runJest(toolbox)
 
-    const executors = [lintExecutor].filter(Boolean)
+    const executors = [lintExecutor, jestExecutor].filter(Boolean)
 
     if (executors.length === 0) {
       outro('Nothing to do here. Cheers! 🎉')
@@ -31,13 +31,18 @@ const command: GluegunCommand = {
 
     outro("Let's roll")
 
-    const executorResults = await Promise.all(
-      executors.map((executor) => executor(toolbox))
+    const executorResults = await executors.reduce(
+      (executorsChain, executor) =>
+        executorsChain.then((executorResults) =>
+          executor(toolbox).then((result) => [...executorResults, result])
+        ),
+      Promise.resolve([])
     )
-    const usedFlags = (await executorResults).join(' --')
+
+    const usedFlags = executorResults.join(' ')
 
     toolbox.print.success(
-      `We're all set. Next time you can use silent command: npx create-react-native-ci-cli --${SKIP_INTERACTIVE_COMMAND} ${usedFlags}`
+      `We're all set 🎉.\nNext time you can use silent command: npx create-react-native-ci-cli --${SKIP_INTERACTIVE_COMMAND} ${usedFlags}.`
     )
   },
 }
