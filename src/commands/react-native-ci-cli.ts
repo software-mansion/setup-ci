@@ -1,5 +1,4 @@
 import { GluegunCommand } from 'gluegun'
-import { intro, outro } from '@clack/prompts'
 import { SKIP_INTERACTIVE_COMMAND } from '../constants'
 import runLint from '../recipies/lint'
 import runJest from '../recipies/jest'
@@ -7,6 +6,9 @@ import runJest from '../recipies/jest'
 const command: GluegunCommand = {
   name: 'react-native-ci-cli',
   run: async (toolbox) => {
+    const { intro, outro } = await import('@clack/prompts')
+    const pMap = await import('p-map')
+
     intro('Welcome to React Native CI CLI')
 
     if (toolbox.isGitDirty() == null) {
@@ -31,12 +33,10 @@ const command: GluegunCommand = {
 
     outro("Let's roll")
 
-    const executorResults = await executors.reduce(
-      (executorsChain, executor) =>
-        executorsChain.then((executorResults) =>
-          executor(toolbox).then((result) => [...executorResults, result])
-        ),
-      Promise.resolve([])
+    const executorResults = await pMap.default(
+      executors,
+      (executor) => executor(toolbox),
+      { concurrency: 1 }
     )
 
     const usedFlags = executorResults.join(' ')

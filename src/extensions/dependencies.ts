@@ -6,8 +6,8 @@ module.exports = (toolbox: GluegunToolbox) => {
   const exists = (name: string, dev: boolean) => {
     const packageJSON = filesystem.read('package.json', 'json')
     return (
-      (!dev && packageJSON?.dependencies[name]) ||
-      (dev && packageJSON?.devDependencies[name])
+      (!dev && packageJSON?.dependencies?.[name]) ||
+      (dev && packageJSON?.devDependencies?.[name])
     )
   }
 

@@ -1,5 +1,4 @@
 import { Toolbox } from 'gluegun/build/types/domain/toolbox'
-import { confirm } from '@clack/prompts'
 
 const COMMAND = 'lint'
 
@@ -21,6 +20,8 @@ const execute = () => async (toolbox: Toolbox) => {
 const run = async (
   toolbox: Toolbox
 ): Promise<(toolbox: Toolbox) => Promise<string> | null> => {
+  const { confirm } = await import('@clack/prompts')
+
   if (toolbox.skipInteractiveForCommand(COMMAND)) {
     return execute()
   }
