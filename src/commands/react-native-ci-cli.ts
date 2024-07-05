@@ -1,7 +1,10 @@
 import { GluegunCommand } from 'gluegun'
 import runLint from '../recipies/lint'
+import runDetox from '../recipies/detox'
 import { intro, outro } from '@clack/prompts'
 import { SKIP_INTERACTIVE_COMMAND } from '../constants'
+
+const SKIP_GIT_CHECK = 'skip-git-check'
 
 const command: GluegunCommand = {
   name: 'react-native-ci-cli',
@@ -14,15 +17,19 @@ const command: GluegunCommand = {
       return
     }
 
-    if (toolbox.isGitDirty() == true) {
+    if (
+      !toolbox.parameters.options[SKIP_GIT_CHECK] &&
+      toolbox.isGitDirty() == true
+    ) {
       outro('Please commit your changes before running this command. Exiting.')
 
       return
     }
 
     const lintExecutor = await runLint(toolbox)
+    const detoxExecutor = await runDetox(toolbox)
 
-    const executors = [lintExecutor].filter(Boolean)
+    const executors = [lintExecutor, detoxExecutor].filter(Boolean)
 
     if (executors.length === 0) {
       outro('Nothing to do here. Cheers! 🎉')
