@@ -2132,7 +2132,7 @@ globby@^11.0.3:
     merge2 "^1.4.1"
     slash "^3.0.0"
 
-gluegun@latest:
+gluegun@5.1.6:
   version "5.1.6"
   resolved "https://registry.yarnpkg.com/gluegun/-/gluegun-5.1.6.tgz#74ec13193913dc610f5c1a4039972c70c96a7bad"
   integrity sha512-9zbi4EQWIVvSOftJWquWzr9gLX2kaDgPkNR5dYWbM53eVvCI3iKuxLlnKoHC0v4uPoq+Kr/+F569tjoFbA4DSA==

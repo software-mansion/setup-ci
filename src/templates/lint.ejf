@@ -6,8 +6,8 @@ jobs:
       name: ESLint
       runs-on: ubuntu-latest
       steps:
-         - uses: actions/checkout@v2
-         - name: Install packages
+         - uses: actions/checkout@v4
+         - name: 📦 Install packages
            run: yarn
-         - name: TypeScript
+         - name: 🎭 Run ESLint
            run: yarn lint
