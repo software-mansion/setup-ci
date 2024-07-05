@@ -30,7 +30,7 @@
   "author": "Maciej Stosio <maciekstosio@users.noreply.github.com>",
   "dependencies": {
     "@clack/prompts": "^0.7.0",
-    "gluegun": "latest",
+    "gluegun": "5.1.6",
     "is-git-dirty": "^2.0.2"
   },
   "devDependencies": {
