@@ -1,7 +1,7 @@
 import { GluegunCommand } from 'gluegun'
 import { SKIP_INTERACTIVE_COMMAND } from '../constants'
-import runLint from '../recipies/lint'
-import runJest from '../recipies/jest'
+import runLint from '../recipes/lint'
+import runJest from '../recipes/jest'
 import isGitDirty from 'is-git-dirty'
 import sequentialPromiseMap from '../utils/sequentialPromiseMap'
 
