@@ -11,8 +11,10 @@ module.exports = (toolbox: GluegunToolbox) => {
 
       config.scripts[name] = command
 
-      print.info(`✔ Added script "${name}": "${command}" to package.json.`)
+      return config
     })
+
+    print.info(`✔ Added script "${name}": "${command}" to package.json.`)
   }
 
   toolbox.scripts = { add }
