@@ -15,7 +15,7 @@ module.exports = (toolbox: GluegunToolbox) => {
   }
 
   const outro = (message: string) => {
-    return clackOutro(message)
+    clackOutro(message)
   }
 
   toolbox.interactive = { confirm, intro, outro }

@@ -3,7 +3,7 @@ import { Toolbox } from 'gluegun/build/types/domain/toolbox'
 const COMMAND = 'lint'
 
 const execute = () => async (toolbox: Toolbox) => {
-  await toolbox.dependencies.add('eslint', '', true)
+  await toolbox.dependencies.add('eslint', true)
 
   await toolbox.scripts.add('lint', 'eslint "**/*.{js,jsx,ts,tsx}"')
 

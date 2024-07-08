@@ -11,7 +11,7 @@ module.exports = (toolbox: GluegunToolbox) => {
     )
   }
 
-  const add = async (name: string, dev: boolean) => {
+  const add = async (name: string, dev = false) => {
     if (exists(name, dev)) {
       print.info(`${name} already installed, skipping adding dependency.`)
       return

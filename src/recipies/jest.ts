@@ -3,7 +3,7 @@ import { Toolbox } from 'gluegun/build/types/domain/toolbox'
 const COMMAND = 'jest'
 
 const execute = () => async (toolbox: Toolbox) => {
-  await toolbox.dependencies.add('jest', '', true)
+  await toolbox.dependencies.add('jest', true)
 
   await toolbox.scripts.add('test', 'jest')
 
