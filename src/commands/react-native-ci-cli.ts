@@ -3,6 +3,7 @@ import { SKIP_INTERACTIVE_COMMAND } from '../constants'
 import runLint from '../recipies/lint'
 import runJest from '../recipies/jest'
 import isGitDirty from 'is-git-dirty'
+import sequentialPromiseMap from '../utils/sequentialPromiseMap'
 
 const command: GluegunCommand = {
   name: 'react-native-ci-cli',
@@ -39,12 +40,8 @@ const command: GluegunCommand = {
 
     toolbox.interactive.outro("Let's roll")
 
-    const executorResults = await executors.reduce(
-      (executorsChain, executor) =>
-        executorsChain.then((executorResults) =>
-          executor(toolbox).then((result) => [...executorResults, result])
-        ),
-      Promise.resolve([])
+    const executorResults = await sequentialPromiseMap(executors, (executor) =>
+      executor(toolbox)
     )
 
     const usedFlags = executorResults.join(' ')
