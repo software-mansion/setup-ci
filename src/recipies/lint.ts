@@ -20,15 +20,13 @@ const execute = () => async (toolbox: Toolbox) => {
 const run = async (
   toolbox: Toolbox
 ): Promise<(toolbox: Toolbox) => Promise<string> | null> => {
-  const { confirm } = await import('@clack/prompts')
-
   if (toolbox.skipInteractiveForCommand(COMMAND)) {
     return execute()
   }
 
-  const proceed = await confirm({
-    message: 'Do you want to run ESLint on your project on every PR?',
-  })
+  const proceed = await toolbox.interactive.confirm(
+    'Do you want to run ESLint on your project on every PR?'
+  )
 
   if (!proceed) {
     return

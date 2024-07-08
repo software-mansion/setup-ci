@@ -7,23 +7,20 @@ import isGitDirty from 'is-git-dirty'
 const command: GluegunCommand = {
   name: 'react-native-ci-cli',
   run: async (toolbox) => {
-    const { intro, confirm, outro } = await import('@clack/prompts')
-    const pMap = await import('p-map')
-
-    intro('Welcome to React Native CI CLI')
+    toolbox.interactive.intro('Welcome to React Native CI CLI')
 
     if (isGitDirty() == null) {
-      outro('This is not a git repository. Exiting.')
+      toolbox.interactive.outro('This is not a git repository. Exiting.')
       return
     }
 
     if (isGitDirty() == true) {
-      const proceed = await confirm({
-        message: 'You have uncommitted changes. Do you want to proceed?',
-      })
+      const proceed = await toolbox.interactive.confirm(
+        'You have uncommitted changes. Do you want to proceed?'
+      )
 
       if (!proceed) {
-        outro(
+        toolbox.interactive.outro(
           'Please commit your changes before running this command. Exiting.'
         )
         return
@@ -36,16 +33,18 @@ const command: GluegunCommand = {
     const executors = [lintExecutor, jestExecutor].filter(Boolean)
 
     if (executors.length === 0) {
-      outro('Nothing to do here. Cheers! 🎉')
+      toolbox.interactive.outro('Nothing to do here. Cheers! 🎉')
       return
     }
 
-    outro("Let's roll")
+    toolbox.interactive.outro("Let's roll")
 
-    const executorResults = await pMap.default(
-      executors,
-      (executor) => executor(toolbox),
-      { concurrency: 1 }
+    const executorResults = await executors.reduce(
+      (executorsChain, executor) =>
+        executorsChain.then((executorResults) =>
+          executor(toolbox).then((result) => [...executorResults, result])
+        ),
+      Promise.resolve([])
     )
 
     const usedFlags = executorResults.join(' ')
