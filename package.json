@@ -2,7 +2,6 @@
   "name": "react-native-ci-cli",
   "version": "0.0.1",
   "description": "react-native-ci-cli CLI",
-  "private": true,
   "types": "build/types/types.d.ts",
   "bin": {
     "react-native-ci-cli": "bin/react-native-ci-cli"
