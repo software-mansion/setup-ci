@@ -6,7 +6,9 @@ jobs:
       name: Jest
       runs-on: ubuntu-latest
       steps:
-         - uses: actions/checkout@v4
+         - name: 🏗 Setup repo
+           uses: actions/checkout@v4
+
          - name: 📦 Install dependencies
            run: yarn
 

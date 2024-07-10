@@ -7,8 +7,10 @@ const execute = () => async (toolbox: Toolbox) => {
 
   await toolbox.scripts.add('lint', 'eslint "**/*.{js,jsx,ts,tsx}"')
 
+  const manager = toolbox.dependencies.manager()
+
   await toolbox.template.generate({
-    template: 'lint.ejf',
+    template: `${manager}/lint.ejf`,
     target: `.github/workflows/lint.yml`,
   })
 

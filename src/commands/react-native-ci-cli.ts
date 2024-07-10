@@ -40,6 +40,17 @@ const command: GluegunCommand = {
 
     toolbox.interactive.outro("Let's roll")
 
+    const manager = toolbox.dependencies.manager()
+
+    if (!manager) {
+      toolbox.print.error(
+        '❗ No lock file found in current directory. Are you sure this is a React Native project?'
+      )
+      return
+    }
+
+    toolbox.print.info(`Detected ${manager} as your package manager.`)
+
     const executorResults = await sequentialPromiseMap(executors, (executor) =>
       executor(toolbox)
     )

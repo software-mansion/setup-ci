@@ -7,8 +7,10 @@ const execute = () => async (toolbox: Toolbox) => {
 
   await toolbox.scripts.add('test', 'jest')
 
+  const manager = toolbox.dependencies.manager()
+
   await toolbox.template.generate({
-    template: 'jest.ejf',
+    template: `${manager}/jest.ejf`,
     target: `.github/workflows/jest.yml`,
   })
 
