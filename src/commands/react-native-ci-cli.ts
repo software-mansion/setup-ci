@@ -9,64 +9,60 @@ import { ProjectContext } from '../types'
 const command: GluegunCommand = {
   name: 'react-native-ci-cli',
   run: async (toolbox) => {
-    toolbox.interactive.intro('Welcome to React Native CI CLI')
+    try {
+      toolbox.interactive.intro('Welcome to React Native CI CLI')
 
-    if (isGitDirty() == null) {
-      toolbox.interactive.outro('This is not a git repository. Exiting.')
-      return
-    }
+      if (isGitDirty() == null) {
+        throw Error('❗ This is not a git repository.')
+      }
 
-    if (isGitDirty() == true) {
-      const proceed = await toolbox.interactive.confirm(
-        'You have uncommitted changes. Do you want to proceed?'
-      )
-
-      if (!proceed) {
-        toolbox.interactive.outro(
-          'Please commit your changes before running this command. Exiting.'
+      if (isGitDirty() == true) {
+        const proceed = await toolbox.interactive.confirm(
+          'You have uncommitted changes. Do you want to proceed?'
         )
+
+        if (!proceed) {
+          throw Error(
+            '❗ Please commit your changes before running this command.'
+          )
+        }
+      }
+
+      const lintExecutor = await runLint(toolbox)
+      const jestExecutor = await runJest(toolbox)
+
+      const executors = [lintExecutor, jestExecutor].filter(Boolean)
+
+      if (executors.length === 0) {
+        toolbox.interactive.outro('Nothing to do here. Cheers! 🎉')
         return
       }
-    }
 
-    const lintExecutor = await runLint(toolbox)
-    const jestExecutor = await runJest(toolbox)
+      toolbox.interactive.outro("Let's roll")
 
-    const executors = [lintExecutor, jestExecutor].filter(Boolean)
+      const context: ProjectContext = toolbox.projectContext.obtain()
 
-    if (executors.length === 0) {
-      toolbox.interactive.outro('Nothing to do here. Cheers! 🎉')
-      return
-    }
+      toolbox.print.info(
+        `✔ Detected ${context.packageManager} as your package manager.`
+      )
 
-    toolbox.interactive.outro("Let's roll")
+      const executorResults = await sequentialPromiseMap(
+        executors,
+        (executor) => executor(toolbox, context)
+      )
 
-    let context: ProjectContext
+      const usedFlags = executorResults.join(' ')
 
-    try {
-      context = toolbox.projectContext.obtain()
+      toolbox.print.success(
+        `We're all set 🎉.\nNext time you can use silent command: npx create-react-native-ci-cli --${SKIP_INTERACTIVE_COMMAND} ${usedFlags}.`
+      )
     } catch (error) {
       toolbox.print.error(
-        `❗ Failed to obtain project context with following error:\n${error.message}`
+        `❗ Failed to execute react-native-ci-cli with following error:\n${error.message}`
       )
-      return
+    } finally {
+      process.exit()
     }
-
-    toolbox.print.info(
-      `✔ Detected ${context.packageManager} as your package manager.`
-    )
-
-    const executorResults = await sequentialPromiseMap(executors, (executor) =>
-      executor(toolbox, context)
-    )
-
-    const usedFlags = executorResults.join(' ')
-
-    toolbox.print.success(
-      `We're all set 🎉.\nNext time you can use silent command: npx create-react-native-ci-cli --${SKIP_INTERACTIVE_COMMAND} ${usedFlags}.`
-    )
-
-    process.exit()
   },
 }
 
