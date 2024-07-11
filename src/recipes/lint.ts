@@ -1,17 +1,17 @@
 import { Toolbox } from 'gluegun/build/types/domain/toolbox'
+import { ProjectContext } from '../types'
 
 const COMMAND = 'lint'
 
-const execute = () => async (toolbox: Toolbox) => {
+const execute = () => async (toolbox: Toolbox, context: ProjectContext) => {
   await toolbox.dependencies.add('eslint', true)
 
   await toolbox.scripts.add('lint', 'eslint "**/*.{js,jsx,ts,tsx}"')
 
-  const manager = toolbox.dependencies.manager()
-
   await toolbox.template.generate({
-    template: `${manager}/lint.ejf`,
+    template: 'lint.ejf',
     target: `.github/workflows/lint.yml`,
+    props: { ...context },
   })
 
   toolbox.print.info('✔ Created ESLint workflow.')
@@ -21,7 +21,9 @@ const execute = () => async (toolbox: Toolbox) => {
 
 const run = async (
   toolbox: Toolbox
-): Promise<(toolbox: Toolbox) => Promise<string> | null> => {
+): Promise<
+  (toolbox: Toolbox, context: ProjectContext) => Promise<string> | null
+> => {
   if (toolbox.skipInteractiveForCommand(COMMAND)) {
     return execute()
   }

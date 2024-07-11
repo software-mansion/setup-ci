@@ -4,6 +4,7 @@ import runLint from '../recipes/lint'
 import runJest from '../recipes/jest'
 import isGitDirty from 'is-git-dirty'
 import sequentialPromiseMap from '../utils/sequentialPromiseMap'
+import { ProjectContext } from '../types'
 
 const command: GluegunCommand = {
   name: 'react-native-ci-cli',
@@ -40,19 +41,23 @@ const command: GluegunCommand = {
 
     toolbox.interactive.outro("Let's roll")
 
-    const manager = toolbox.dependencies.manager()
+    let context: ProjectContext
 
-    if (!manager) {
+    try {
+      context = toolbox.projectContext.obtain()
+    } catch (error) {
       toolbox.print.error(
-        '❗ No lock file found in current directory. Are you sure this is a React Native project?'
+        `❗ Failed to obtain project context with following error:\n${error.message}`
       )
       return
     }
 
-    toolbox.print.info(`Detected ${manager} as your package manager.`)
+    toolbox.print.info(
+      `✔ Detected ${context.packageManager} as your package manager.`
+    )
 
     const executorResults = await sequentialPromiseMap(executors, (executor) =>
-      executor(toolbox)
+      executor(toolbox, context)
     )
 
     const usedFlags = executorResults.join(' ')

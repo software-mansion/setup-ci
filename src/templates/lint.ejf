@@ -1,4 +1,14 @@
-name: Check ESLint
+<%
+const install = {
+  yarn: "yarn",
+  npm: "npm install"
+}
+
+const run = {
+  yarn: "yarn",
+  npm: "npm run"
+}
+%>name: Check ESLint
 on: [pull_request]
 
 jobs:
@@ -10,7 +20,7 @@ jobs:
            uses: actions/checkout@v4
 
          - name: 📦 Install dependencies
-           run: yarn
+           run: <%= install[props.packageManager] %>
 
          - name: 🤓 Run ESLint
-           run: yarn lint
+           run: <%= run[props.packageManager] %> lint
