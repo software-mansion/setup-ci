@@ -1,5 +1,6 @@
 import { Toolbox } from 'gluegun/build/types/domain/toolbox'
 import { ProjectContext } from '../types'
+import { parse, stringify } from 'yaml'
 
 const COMMAND = 'lint'
 
@@ -8,11 +9,14 @@ const execute = () => async (toolbox: Toolbox, context: ProjectContext) => {
 
   await toolbox.scripts.add('lint', 'eslint "**/*.{js,jsx,ts,tsx}"')
 
-  await toolbox.template.generate({
-    template: 'lint.ejf',
-    target: `.github/workflows/lint.yml`,
-    props: { ...context },
-  })
+  const workflowYml = parse(
+    await toolbox.template.generate({
+      template: 'lint.ejf',
+      props: { ...context },
+    })
+  )
+
+  toolbox.filesystem.write('.github/workflows/lint.yml', stringify(workflowYml))
 
   toolbox.print.info('✔ Created ESLint workflow.')
 

@@ -8,7 +8,9 @@ const run = {
   yarn: "yarn",
   npm: "npm run"
 }
-%>name: Run Jest tests
+%>
+
+name: Run Jest tests
 on: [pull_request]
 
 jobs:
