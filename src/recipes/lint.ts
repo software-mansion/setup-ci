@@ -24,6 +24,10 @@ const run = async (
     return execute()
   }
 
+  if (toolbox.skipInteractive()) {
+    return null
+  }
+
   const proceed = await toolbox.interactive.confirm(
     'Do you want to run ESLint on your project on every PR?'
   )

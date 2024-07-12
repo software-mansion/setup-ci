@@ -9,37 +9,15 @@ const executeExpoWorkflow = async (
   toolbox: Toolbox,
   expoConfigJSON: Record<string, any>
 ) => {
-  const packageJSON = toolbox.filesystem.read('package.json', 'json')
+  // TODO: Check if expo exists
 
-  if (!packageJSON?.devDependencies?.detox) {
-    const spinner = toolbox.print.spin('Installing Detox...')
+  await toolbox.dependencies.add('detox', true)
+  await toolbox.dependencies.add('jest', true) // TODO: Check if JEST version @29 https://wix.github.io/Detox/docs/introduction/project-setup
+  await toolbox.dependencies.add('ts-jest', true)
+  await toolbox.dependencies.add('@types/jest', true)
+  await toolbox.dependencies.add(DETOX_EXPO_PLUGIN, true)
 
-    await toolbox.packageManager.add('detox', { dev: true })
-
-    spinner.stop()
-
-    toolbox.print.info('Installed Detox.')
-  }
-
-  if (!packageJSON?.devDependencies?.jest) {
-    const spinner = toolbox.print.spin('Installing Jest...')
-
-    await toolbox.packageManager.add('jest', { dev: true })
-
-    spinner.stop()
-
-    toolbox.print.info('Installed Jest.')
-  }
-
-  if (!packageJSON?.devDependencies?.[DETOX_EXPO_PLUGIN]) {
-    const spinner = toolbox.print.spin('Installing Expo Plugin for Detox...')
-
-    await toolbox.packageManager.add(DETOX_EXPO_PLUGIN, { dev: true })
-
-    spinner.stop()
-
-    toolbox.print.info('Installed Detox Expo Plugin.')
-  }
+  // TODO: ADD package name for android and ios
 
   const availableExpoPlugins = expoConfigJSON.expo.plugins
 
@@ -50,22 +28,52 @@ const executeExpoWorkflow = async (
       return config
     })
 
-    toolbox.print.info('Added Detox Expo Plugin to app.json')
+    toolbox.print.info('✔ Added Detox Expo Plugin to app.json')
   }
+
+  await toolbox.scripts.add(
+    'detox:setup:android',
+    'npx expo prebuild && yarn detox build --configuration android.emu.release'
+  )
+
+  await toolbox.scripts.add(
+    'detox:setup:ios',
+    'npx expo prebuild && yarn detox build --configuration ios.sim.release'
+  )
+
+  await toolbox.scripts.add(
+    'detox:test:android',
+    'yarn detox test --configuration android.emu.release'
+  )
+
+  await toolbox.scripts.add(
+    'detox:test:ios',
+    'yarn detox test --configuration ios.sim.release'
+  )
+
+  await toolbox.scripts.add('detox:clean', 'rm -rf ios/ android/')
 
   const iOSAppName = expoConfigJSON?.expo?.name.replaceAll('-', '')
 
-  // console.log("iOSAppName", iOSAppName)
-
   await toolbox.template.generate({
-    template: '.detoxrc.js.ejs',
+    template: 'detox/.detoxrc.js.ejs',
     target: `.detoxrc.js`,
     props: {
       iOSAppName: iOSAppName,
     },
   })
 
-  toolbox.print.info('Created Detox workflow for Expo.')
+  await toolbox.template.generate({
+    template: 'detox/jest.config.js.ejs',
+    target: `e2e/jest.config.js`,
+  })
+
+  await toolbox.template.generate({
+    template: 'detox/starter.test.ts.ejs',
+    target: `e2e/starter.test.ts`,
+  })
+
+  toolbox.print.info('✔ Created Detox workflow for Expo.')
 }
 
 const execute = () => async (toolbox: Toolbox) => {
@@ -112,6 +120,10 @@ const run = async (
 ): Promise<(toolbox: Toolbox) => Promise<string> | null> => {
   if (toolbox.skipInteractiveForCommand(COMMAND)) {
     return execute()
+  }
+
+  if (toolbox.skipInteractive()) {
+    return null
   }
 
   const proceed = await confirm({
