@@ -1,51 +1,62 @@
 import { GluegunCommand } from 'gluegun'
-import runLint from '../recipies/lint'
-import runDetox from '../recipies/detox'
-import { intro, outro } from '@clack/prompts'
 import { SKIP_INTERACTIVE_COMMAND } from '../constants'
+import runLint from '../recipes/lint'
+import runJest from '../recipes/jest'
+import runDetox from '../recipes/detox'
+import isGitDirty from 'is-git-dirty'
+import sequentialPromiseMap from '../utils/sequentialPromiseMap'
 
 const SKIP_GIT_CHECK = 'skip-git-check'
 
 const command: GluegunCommand = {
   name: 'react-native-ci-cli',
   run: async (toolbox) => {
-    intro('Welcome to React Native CI CLI')
+    toolbox.interactive.intro('Welcome to React Native CI CLI')
 
-    if (toolbox.isGitDirty() == null) {
-      outro('This is not a git repository. Exiting.')
-
+    if (isGitDirty() == null) {
+      toolbox.interactive.outro('This is not a git repository. Exiting.')
       return
     }
 
-    if (
-      !toolbox.parameters.options[SKIP_GIT_CHECK] &&
-      toolbox.isGitDirty() == true
-    ) {
-      outro('Please commit your changes before running this command. Exiting.')
+    if (!toolbox.parameters.options[SKIP_GIT_CHECK] && isGitDirty() == true) {
+      const proceed = await toolbox.interactive.confirm(
+        'You have uncommitted changes. Do you want to proceed?'
+      )
 
-      return
+      if (!proceed) {
+        toolbox.interactive.outro(
+          'Please commit your changes before running this command. Exiting.'
+        )
+        return
+      }
     }
 
     const lintExecutor = await runLint(toolbox)
+    const jestExecutor = await runJest(toolbox)
     const detoxExecutor = await runDetox(toolbox)
 
-    const executors = [lintExecutor, detoxExecutor].filter(Boolean)
+    const executors = [lintExecutor, jestExecutor, detoxExecutor].filter(
+      Boolean
+    )
 
     if (executors.length === 0) {
-      outro('Nothing to do here. Cheers! 🎉')
+      toolbox.interactive.outro('Nothing to do here. Cheers! 🎉')
       return
     }
 
-    outro("Let's roll")
+    toolbox.interactive.outro("Let's roll")
 
-    const executorResults = await Promise.all(
-      executors.map((executor) => executor(toolbox))
+    const executorResults = await sequentialPromiseMap(executors, (executor) =>
+      executor(toolbox)
     )
-    const usedFlags = (await executorResults).join(' --')
+
+    const usedFlags = executorResults.join(' ')
 
     toolbox.print.success(
-      `We're all set. Next time you can use silent command: npx create-react-native-ci-cli --${SKIP_INTERACTIVE_COMMAND} ${usedFlags}`
+      `We're all set 🎉.\nNext time you can use silent command: npx create-react-native-ci-cli --${SKIP_INTERACTIVE_COMMAND} ${usedFlags}.`
     )
+
+    process.exit()
   },
 }
 
