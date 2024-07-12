@@ -5,8 +5,8 @@ const install = {
 }
 
 const run = {
-  yarn: "yarn",
-  npm: "npm run"
+  yarn: `yarn --cwd ${props.pathRelativeToRoot} test`,
+  npm: `npm run test --prefix ${props.pathRelativeToRoot}`
 }
 %>
 
@@ -25,4 +25,4 @@ jobs:
            run: <%= install[props.packageManager] %>
 
          - name: 🎭 Run Jest
-           run: <%= run[props.packageManager] %> test
+           run: <%= run[props.packageManager] %>

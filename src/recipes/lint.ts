@@ -5,18 +5,29 @@ import { parse, stringify } from 'yaml'
 const COMMAND = 'lint'
 
 const execute = () => async (toolbox: Toolbox, context: ProjectContext) => {
-  await toolbox.dependencies.add('eslint', true)
+  await toolbox.dependencies.add('eslint', context.packageManager, true)
 
   await toolbox.scripts.add('lint', 'eslint "**/*.{js,jsx,ts,tsx}"')
+
+  const pathRelativeToRoot =
+    '.' + context.packageRoot.slice(context.monorepoRoot?.length ?? 0)
 
   const workflowYml = parse(
     await toolbox.template.generate({
       template: 'lint.ejf',
-      props: { ...context },
+      props: { ...context, pathRelativeToRoot },
     })
   )
 
-  toolbox.filesystem.write('.github/workflows/lint.yml', stringify(workflowYml))
+  toolbox.filesystem.write(
+    toolbox.filesystem.path(
+      context.monorepoRoot ?? context.packageRoot,
+      '.github',
+      'workflows',
+      'lint.yml'
+    ),
+    stringify(workflowYml)
+  )
 
   toolbox.print.info('✔ Created ESLint workflow.')
 

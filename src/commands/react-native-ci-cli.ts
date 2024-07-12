@@ -46,6 +46,12 @@ const command: GluegunCommand = {
         `✔ Detected ${context.packageManager} as your package manager.`
       )
 
+      if (context.monorepoRoot === context.packageRoot) {
+        throw Error(
+          '❗ You are in a monorepo root directory. Please run the script again from your choosen package root directory.'
+        )
+      }
+
       const executorResults = await sequentialPromiseMap(
         executors,
         (executor) => executor(toolbox, context)

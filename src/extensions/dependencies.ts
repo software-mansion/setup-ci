@@ -1,4 +1,5 @@
 import { GluegunToolbox } from 'gluegun'
+import { PackageManager } from '../types'
 
 module.exports = (toolbox: GluegunToolbox) => {
   const { filesystem, packageManager, print } = toolbox
@@ -13,7 +14,7 @@ module.exports = (toolbox: GluegunToolbox) => {
     return !!packageJSON?.devDependencies?.[name]
   }
 
-  const add = async (name: string, dev = false) => {
+  const add = async (name: string, manager: PackageManager, dev = false) => {
     if ((dev && existsDev(name)) || (!dev && exists(name))) {
       print.info(`✔ Package ${name} already used, skipping adding dependency.`)
       return
@@ -41,7 +42,7 @@ module.exports = (toolbox: GluegunToolbox) => {
     const spinner = print.spin(
       `📦 Installing ${name} as ${dev ? 'devDependency' : 'dependency'}...`
     )
-    await packageManager.add(name, { dev })
+    await packageManager.add(name, { dev, force: manager })
     spinner.stop()
 
     print.info(`✔ Installed ${name}.`)

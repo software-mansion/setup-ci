@@ -5,18 +5,29 @@ import { parse, stringify } from 'yaml'
 const COMMAND = 'jest'
 
 const execute = () => async (toolbox: Toolbox, context: ProjectContext) => {
-  await toolbox.dependencies.add('jest', true)
+  await toolbox.dependencies.add('jest', context.packageManager, true)
 
   await toolbox.scripts.add('test', 'jest')
+
+  const pathRelativeToRoot =
+    '.' + context.packageRoot.slice(context.monorepoRoot?.length ?? 0)
 
   const workflowYml = parse(
     await toolbox.template.generate({
       template: 'jest.ejf',
-      props: { ...context },
+      props: { ...context, pathRelativeToRoot },
     })
   )
 
-  toolbox.filesystem.write('.github/workflows/jest.yml', stringify(workflowYml))
+  toolbox.filesystem.write(
+    toolbox.filesystem.path(
+      context.monorepoRoot ?? context.packageRoot,
+      '.github',
+      'workflows',
+      'jest.yml'
+    ),
+    stringify(workflowYml)
+  )
 
   toolbox.print.info('✔ Created Jest workflow.')
 
