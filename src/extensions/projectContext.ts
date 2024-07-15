@@ -9,9 +9,9 @@ module.exports = (toolbox: GluegunToolbox) => {
   const getPackageManager = (root: string): PackageManager => {
     const lockFiles = filesystem
       .list(root)
-      .filter((fileName) => LOCK_FILE_TO_MANAGER.has(fileName))
+        .filter((fileName) => LOCK_FILE_TO_MANAGER.has(fileName))
 
-    if (lockFiles.length == 0) {
+          lockFiles.length == 0) {
       throw Error(
         '❗ No lock file found in root directory. Are you sure this is a React Native project?'
       )
