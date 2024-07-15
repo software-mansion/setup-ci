@@ -6,53 +6,59 @@ import { lookItUpSync } from 'look-it-up'
 module.exports = (toolbox: GluegunToolbox) => {
   const { filesystem } = toolbox
 
-  const getPackageManager = (root: string): PackageManager => {
+  const getPackageManager = (repoRoot: string): PackageManager => {
     const lockFiles = filesystem
-      .list(root)
-        .filter((fileName) => LOCK_FILE_TO_MANAGER.has(fileName))
+      .list(repoRoot)
+      .filter((fileName) => LOCK_FILE_TO_MANAGER.has(fileName))
 
-          lockFiles.length == 0) {
+    if (lockFiles.length == 0) {
       throw Error(
-        '❗ No lock file found in root directory. Are you sure this is a React Native project?'
+        '❗ No lock file found in repository root directory. Are you sure this is a React Native project?'
       )
     }
+
+    const detectedLockFile = LOCK_FILE_TO_MANAGER.get(lockFiles[0])
 
     if (lockFiles.length > 1) {
       toolbox.print.warning(
-        `Detected more than one lock file in root directory.`
+        `Detected more than one lock file in repository root directory. Proceeding with ${detectedLockFile}.`
       )
     }
 
-    return LOCK_FILE_TO_MANAGER.get(lockFiles[0])
+    return detectedLockFile
   }
 
-  const getMonorepoRoot = (): string | null => {
-    return lookItUpSync((dir) => {
-      const packageJson = filesystem.read(
-        filesystem.path(dir, 'package.json'),
-        'json'
-      )
-
-      return packageJson?.workspaces ? dir : null
-    })
+  const getRepoRoot = (): string => {
+    return lookItUpSync((dir) =>
+      filesystem.exists(filesystem.path(dir, '.git')) ? dir : null
+    )
   }
 
   const getPackageRoot = (): string => {
-    if (!toolbox.filesystem.exists('package.json')) {
+    if (!filesystem.exists('package.json')) {
       throw Error(
         '❗ No package.json found in current directory. Are you sure this is a React Native project?'
       )
     }
+
+    const packageJson = filesystem.read('package.json', 'json')
+
+    if (packageJson?.workspaces) {
+      throw Error(
+        '❗ The current directory is workspace root directory. Please run the script again from selected package root directory.'
+      )
+    }
+
     return process.cwd()
   }
 
   const obtain = (): ProjectContext => {
-    const monorepoRoot = getMonorepoRoot()
+    const repoRoot = getRepoRoot()
     const packageRoot = getPackageRoot()
 
     return {
-      packageManager: getPackageManager(monorepoRoot ?? packageRoot),
-      monorepoRoot,
+      packageManager: getPackageManager(repoRoot),
+      repoRoot,
       packageRoot,
     }
   }

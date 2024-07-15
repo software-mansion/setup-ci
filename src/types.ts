@@ -2,6 +2,6 @@ export type PackageManager = 'yarn' | 'npm'
 
 export interface ProjectContext {
   packageManager: PackageManager
-  monorepoRoot: string | null
+  repoRoot: string
   packageRoot: string
 }
