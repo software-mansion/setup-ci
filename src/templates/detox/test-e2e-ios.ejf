@@ -1,0 +1,19 @@
+name: Test E2E iOS
+
+on: [pull_request]
+
+jobs:
+  build-debug-ios:
+     uses: ./.github/workflows/build-debug-ios.yml
+  test-e2e-ios:
+    runs-on: macos-latest
+    needs: [build-debug-ios]
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: ios-debug.app
+          path: artifacts
+      - name: Display structure of downloaded files
+        run: ls -R artifacts
+      - name: Run Detox
+        run: yarn start & yarn detox:test:ios

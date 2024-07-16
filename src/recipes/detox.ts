@@ -1,6 +1,8 @@
 import { Toolbox } from 'gluegun/build/types/domain/toolbox'
 import { confirm } from '@clack/prompts'
 
+import { executeExpoWorkflow as executeExpoBuildWorkflow } from './buildDebug' // TODO: Temporary solution
+
 const COMMAND = 'detox'
 
 const DETOX_EXPO_PLUGIN = '@config-plugins/detox'
@@ -9,21 +11,23 @@ const executeExpoWorkflow = async (
   toolbox: Toolbox,
   expoConfigJSON: Record<string, any>
 ) => {
-  // TODO: Check if expo exists
+  toolbox.print.info('⚙️  Setting up app build for Detox.')
+
+  await executeExpoBuildWorkflow(toolbox, expoConfigJSON)
 
   await toolbox.dependencies.add('detox', true)
-  await toolbox.dependencies.add('jest', true) // TODO: Check if JEST version @29 https://wix.github.io/Detox/docs/introduction/project-setup
+  await toolbox.dependencies.add('jest@^29', true) // @^29 because of https://wix.github.io/Detox/docs/introduction/project-setup#step-1-bootstrap
   await toolbox.dependencies.add('ts-jest', true)
   await toolbox.dependencies.add('@types/jest', true)
   await toolbox.dependencies.add(DETOX_EXPO_PLUGIN, true)
-
-  // TODO: ADD package name for android and ios
 
   const availableExpoPlugins = expoConfigJSON.expo.plugins
 
   if (!availableExpoPlugins.includes('detox')) {
     await toolbox.patching.update('app.json', (config) => {
-      config.expo.plugins.push(DETOX_EXPO_PLUGIN)
+      if (!(config?.expo?.plugins ?? []).includes(DETOX_EXPO_PLUGIN)) {
+        config.expo.plugins.push(DETOX_EXPO_PLUGIN)
+      }
 
       return config
     })
@@ -33,25 +37,25 @@ const executeExpoWorkflow = async (
 
   await toolbox.scripts.add(
     'detox:setup:android',
-    'npx expo prebuild && yarn detox build --configuration android.emu.release'
+    'npx expo prebuild && yarn detox build --configuration android.emu.debug'
   )
 
   await toolbox.scripts.add(
     'detox:setup:ios',
-    'npx expo prebuild && yarn detox build --configuration ios.sim.release'
+    'npx expo prebuild && (cd ios/ && pod install) && yarn detox build --configuration ios.sim.debug'
   )
 
   await toolbox.scripts.add(
     'detox:test:android',
-    'yarn detox test --configuration android.emu.release'
+    'yarn detox test --configuration android.emu.debug'
   )
 
   await toolbox.scripts.add(
     'detox:test:ios',
-    'yarn detox test --configuration ios.sim.release'
+    'yarn detox test --configuration ios.sim.debug'
   )
 
-  await toolbox.scripts.add('detox:clean', 'rm -rf ios/ android/')
+  await toolbox.scripts.add('prebuild:clean', 'rm -rf ios/ android/')
 
   const iOSAppName = expoConfigJSON?.expo?.name.replaceAll('-', '')
 
@@ -72,6 +76,20 @@ const executeExpoWorkflow = async (
     template: 'detox/starter.test.ts.ejs',
     target: `e2e/starter.test.ts`,
   })
+
+  await toolbox.template.generate({
+    template: 'detox/test-e2e-android.ejf',
+    target: `.github/workflows/test-e2e-android.yml`,
+  })
+
+  await toolbox.template.generate({
+    template: 'detox/test-e2e-ios.ejf',
+    target: `.github/workflows/test-e2e-ios.yml`,
+  })
+
+  toolbox.print.warning(
+    '⚠️  Remember to edit example test in e2e/starter.test.ts to match your app.'
+  )
 
   toolbox.print.info('✔ Created Detox workflow for Expo.')
 }
