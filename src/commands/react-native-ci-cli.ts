@@ -18,7 +18,18 @@ const command: GluegunCommand = {
       return
     }
 
-    if (!toolbox.parameters.options[SKIP_GIT_CHECK] && isGitDirty() == true) {
+    if (
+      isGitDirty() == true &&
+      toolbox.skipInteractive() &&
+      !toolbox.parameters.options[SKIP_GIT_CHECK]
+    ) {
+      toolbox.interactive.outro(
+        'Please commit your changes before running this command. Exiting.'
+      )
+      return
+    }
+
+    if (!toolbox.skipInteractive() && isGitDirty() == true) {
       const proceed = await toolbox.interactive.confirm(
         'You have uncommitted changes. Do you want to proceed?'
       )
