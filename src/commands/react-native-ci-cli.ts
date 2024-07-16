@@ -10,7 +10,7 @@ const runReactNativeCiCli = async (toolbox: GluegunToolbox) => {
   toolbox.interactive.intro('Welcome to React Native CI CLI')
 
   if (isGitDirty() == null) {
-    throw Error('❗ This is not a git repository.')
+    throw Error('This is not a git repository.')
   }
 
   if (isGitDirty() == true) {
@@ -40,8 +40,8 @@ const runReactNativeCiCli = async (toolbox: GluegunToolbox) => {
 
   const context: ProjectContext = toolbox.projectContext.obtain()
 
-  toolbox.print.info(
-    `✔ Detected ${context.packageManager} as your package manager.`
+  toolbox.interactive.step(
+    `Detected ${context.packageManager} as your package manager.`
   )
 
   const executorResults = await sequentialPromiseMap(executors, (executor) =>
@@ -50,7 +50,7 @@ const runReactNativeCiCli = async (toolbox: GluegunToolbox) => {
 
   const usedFlags = executorResults.join(' ')
 
-  toolbox.print.success(
+  toolbox.interactive.success(
     `We're all set 🎉.\nNext time you can use silent command: npx create-react-native-ci-cli --${SKIP_INTERACTIVE_COMMAND} ${usedFlags}.`
   )
 }
@@ -61,8 +61,8 @@ const command: GluegunCommand = {
     try {
       await runReactNativeCiCli(toolbox)
     } catch (error) {
-      toolbox.print.error(
-        `❗ Failed to execute react-native-ci-cli with following error:\n${error.message}`
+      toolbox.interactive.error(
+        `Failed to execute react-native-ci-cli with following error:\n${error.message}`
       )
     } finally {
       process.exit()

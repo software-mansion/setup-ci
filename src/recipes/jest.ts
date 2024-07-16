@@ -18,7 +18,7 @@ const execute = () => async (toolbox: Toolbox, context: ProjectContext) => {
 
   toolbox.filesystem.write('.github/workflows/jest.yml', stringify(workflowYml))
 
-  toolbox.print.info('✔ Created Jest workflow.')
+  toolbox.interactive.step('Created Jest workflow.')
 
   return `--${COMMAND}`
 }

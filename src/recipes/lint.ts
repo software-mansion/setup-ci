@@ -18,7 +18,7 @@ const execute = () => async (toolbox: Toolbox, context: ProjectContext) => {
 
   toolbox.filesystem.write('.github/workflows/lint.yml', stringify(workflowYml))
 
-  toolbox.print.info('✔ Created ESLint workflow.')
+  toolbox.interactive.step('Created ESLint workflow.')
 
   return `--${COMMAND}`
 }

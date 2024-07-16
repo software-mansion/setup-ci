@@ -12,12 +12,12 @@ module.exports = (toolbox: GluegunToolbox) => {
 
     if (lockFiles.length == 0) {
       throw Error(
-        '❗ No lock file found in current directory. Are you sure this is a React Native project?'
+        'No lock file found in current directory. Are you sure this is a React Native project?'
       )
     }
 
     if (lockFiles.length > 1) {
-      toolbox.print.warning(
+      toolbox.interactive.warning(
         `Detected more than one lock file in current directory.`
       )
     }

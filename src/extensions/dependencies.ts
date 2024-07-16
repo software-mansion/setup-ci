@@ -1,7 +1,7 @@
 import { GluegunToolbox } from 'gluegun'
 
 module.exports = (toolbox: GluegunToolbox) => {
-  const { filesystem, packageManager, print } = toolbox
+  const { filesystem, packageManager } = toolbox
 
   const exists = (name: string): boolean => {
     const packageJSON = filesystem.read('package.json', 'json')
@@ -15,36 +15,38 @@ module.exports = (toolbox: GluegunToolbox) => {
 
   const add = async (name: string, dev = false) => {
     if ((dev && existsDev(name)) || (!dev && exists(name))) {
-      print.info(`✔ Package ${name} already used, skipping adding dependency.`)
+      toolbox.interactive.step(
+        `Package ${name} already used, skipping adding dependency.`
+      )
       return
     }
 
     if (dev && exists(name)) {
-      toolbox.print.warning(
+      toolbox.interactive.warning(
         `${name} is already in "dependencies", but shouldn't it be in "devDependencies"?`
       )
       return
     }
 
     if (!dev && existsDev(name)) {
-      toolbox.print.warning(
+      toolbox.interactive.warning(
         `Moving ${name} from "devDependencies" to "dependencies".`
       )
 
-      const spinner = print.spin(
+      const spinner = toolbox.interactive.spin(
         `🗑️ Removing ${name} from "devDependencies"...`
       )
       await packageManager.remove(name, { dev: true })
       spinner.stop()
     }
 
-    const spinner = print.spin(
+    const spinner = toolbox.interactive.spin(
       `📦 Installing ${name} as ${dev ? 'devDependency' : 'dependency'}...`
     )
     await packageManager.add(name, { dev })
     spinner.stop()
 
-    print.info(`✔ Installed ${name}.`)
+    toolbox.interactive.step(`Installed ${name}.`)
   }
 
   toolbox.dependencies = {
