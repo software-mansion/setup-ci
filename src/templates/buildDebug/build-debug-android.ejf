@@ -12,7 +12,7 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           path: android-debug-build/
-          key: android-debug
+          key: android-debug-build
           lookup-only: true
       - name: Checkout repository
         if: steps.android-debug-restore.outputs.cache-hit != 'true'  
@@ -44,4 +44,4 @@ jobs:
         uses: actions/cache/save@v4
         with:
           path: android-debug-build/
-          key: android-debug
+          key: android-debug-build
