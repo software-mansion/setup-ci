@@ -6,14 +6,16 @@ module.exports = (toolbox: GluegunToolbox) => {
   const generate = async (
     template: string,
     target: string,
-    context: ProjectContext
+    context: ProjectContext,
+    props: Record<string, string> = {}
   ) => {
     const workflowYml = parse(
       await toolbox.template.generate({
         template,
         props: {
-          ...context,
+          packageManager: context.packageManager,
           pathRelativeToRoot: context.getPathRelativeToRoot(),
+          ...props,
         },
       })
     )
