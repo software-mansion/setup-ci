@@ -7,6 +7,10 @@ import {
 
 import { GluegunToolbox } from 'gluegun'
 
+export interface Spinner {
+  stop: () => void
+}
+
 module.exports = (toolbox: GluegunToolbox) => {
   const { print } = toolbox
 
@@ -40,7 +44,7 @@ module.exports = (toolbox: GluegunToolbox) => {
     print.warning(`⚠ ${message} `)
   }
 
-  const spin = (message: string) => {
+  const spin = (message: string): Spinner => {
     return print.spin(message)
   }
 
