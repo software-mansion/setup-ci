@@ -20,7 +20,8 @@ module.exports = {
 		},
 		"android.debug": {
 			type: "android.apk",
-			binaryPath: "artifacts/android-debug.app",
+			binaryPath: "android-debug-build/android-debug.apk",
+			testBinaryPath: "android-debug-build/android-debug-test.apk",
 			reversePorts: [8081],
 		},
 		"android.release": {
@@ -44,7 +45,7 @@ module.exports = {
 		emulator: {
 			type: "android.emulator",
 			device: {
-				avdName: "Pixel_3a_API_34_extension_level_7_arm64-v8a",
+				avdName: "e2e_emulator",
 			},
 		},
 	},

@@ -1,31 +1,47 @@
 name: Build Android Debug App
 
 on: 
-   pull_request:
    workflow_call:
 
 jobs:
   build-debug-android:
-    concurrency:
-      group: build-android-debug-app-${{ github.workflow }}-${{ github.ref }}
-      cancel-in-progress: true
     runs-on: ubuntu-latest
     steps:
+      - name: Try to restore build
+        id: android-debug-restore
+        uses: actions/cache/restore@v4
+        with:
+          path: android-debug-build/
+          key: android-debug
+          lookup-only: true
       - name: Checkout repository
+        if: steps.android-debug-restore.outputs.cache-hit != 'true'  
         uses: actions/checkout@v4
       - name: Install dependencies
+        if: steps.android-debug-restore.outputs.cache-hit != 'true'  
         run: yarn install
       - name: Set up JDK 17
+        if: steps.android-debug-restore.outputs.cache-hit != 'true'  
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'zulu'
           cache: 'gradle'
       - name: Build
+        if: steps.android-debug-restore.outputs.cache-hit != 'true'  
         run: yarn build:debug:android
-      - name: Archive Debug App
-        uses: actions/upload-artifact@v4
+      - name: Create Cache folder 
+        run: mkdir android-debug-build
+      - name: Rename APK
+        if: steps.android-debug-restore.outputs.cache-hit != 'true'  
+        run: mv android/app/build/outputs/apk/debug/app-debug.apk android-debug-build/android-debug.apk
+      - name: Rename Test APK
+        if: steps.android-debug-restore.outputs.cache-hit != 'true'  
+        run: mv android/app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk android-debug-build/android-debug-test.apk
+      - name: Cache build
+        if: steps.android-debug-restore.outputs.cache-hit != 'true'  
+        id: android-debug-save
+        uses: actions/cache/save@v4
         with:
-          name: android-debug.apk
-          path: |
-            android/app/build/outputs/apk/debug/app-debug.apk
+          path: android-debug-build/
+          key: android-debug

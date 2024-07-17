@@ -3,16 +3,18 @@ name: Test E2E iOS
 on: [pull_request]
 
 jobs:
-  build-debug-ios:
-     uses: ./.github/workflows/build-debug-ios.yml
   test-e2e-ios:
     runs-on: macos-latest
-    needs: [build-debug-ios]
     steps:
-      - uses: actions/download-artifact@v4
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
         with:
-          name: ios-debug.app
+          name: debug-ios.app
           path: artifacts
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Display run_id
+        run: ${{ github.event.workflow_run.id }}
       - name: Display structure of downloaded files
         run: ls -R artifacts
       - name: Run Detox
