@@ -5,8 +5,8 @@ const install = {
 }
 
 const run = {
-  yarn: `yarn --cwd ${props.pathRelativeToRoot} compile`,
-  npm: `npm run compile --prefix ${props.pathRelativeToRoot}`
+  yarn: `yarn --cwd ${props.pathRelativeToRoot} ts:check`,
+  npm: `npm run ts:check --prefix ${props.pathRelativeToRoot}`
 }
 %>
 

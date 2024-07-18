@@ -1,16 +1,17 @@
 import { Toolbox } from 'gluegun/build/types/domain/toolbox'
 import { ProjectContext } from '../types'
 
-const COMMAND = 'typescript'
+const COMMAND = 'ts'
 
 const execute = () => async (toolbox: Toolbox, context: ProjectContext) => {
   await toolbox.dependencies.add('typescript', context.packageManager, true)
 
-  await toolbox.scripts.add('compile', 'tsc -p .')
+  await toolbox.scripts.add('ts:check', 'tsc -p . --noEmit')
 
   await toolbox.workflows.generate(
     'typescript.ejf',
-    context.path.absFromRepoRoot('.github', 'workflows', 'typescript.yml')
+    context.path.absFromRepoRoot('.github', 'workflows', 'typescript.yml'),
+    context
   )
 
   toolbox.print.info('✔ Created Typescript workflow.')
