@@ -2,6 +2,10 @@ export type PackageManager = 'yarn' | 'npm'
 
 export interface ProjectContext {
   packageManager: PackageManager
-  repoRoot: string
-  packageRoot: string
+  path: {
+    repoRoot: string
+    packageRoot: string
+    relFromRepoRoot: (p: string) => string
+    absFromRepoRoot: (...p: string[]) => string
+  }
 }

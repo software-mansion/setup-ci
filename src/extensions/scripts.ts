@@ -1,7 +1,7 @@
 import { GluegunToolbox } from 'gluegun'
 
 module.exports = (toolbox: GluegunToolbox) => {
-  const { patching, print } = toolbox
+  const { patching } = toolbox
 
   const add = async (name: string, command: string) => {
     await patching.update('package.json', (config) => {
@@ -11,7 +11,9 @@ module.exports = (toolbox: GluegunToolbox) => {
 
       config.scripts[name] = command
 
-      print.info(`✔ Added script "${name}": "${command}" to package.json.`)
+      toolbox.interactive.step(
+        `Added script "${name}": "${command}" to package.json.`
+      )
 
       return config
     })

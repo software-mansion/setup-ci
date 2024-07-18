@@ -1,7 +1,5 @@
 import { Toolbox } from 'gluegun/build/types/domain/toolbox'
 import { ProjectContext } from '../types'
-import { parse, stringify } from 'yaml'
-import { relative } from 'path'
 
 const COMMAND = 'jest'
 
@@ -10,28 +8,13 @@ const execute = () => async (toolbox: Toolbox, context: ProjectContext) => {
 
   await toolbox.scripts.add('test', 'jest')
 
-  const workflowYml = parse(
-    await toolbox.template.generate({
-      template: 'jest.ejf',
-      props: {
-        ...context,
-        pathRelativeToRoot:
-          relative(context.repoRoot, context.packageRoot) || '.',
-      },
-    })
+  await toolbox.workflows.generate(
+    'jest.ejf',
+    context.path.absFromRepoRoot('.github', 'workflows', 'jest.yml'),
+    context
   )
 
-  toolbox.filesystem.write(
-    toolbox.filesystem.path(
-      context.repoRoot,
-      '.github',
-      'workflows',
-      'jest.yml'
-    ),
-    stringify(workflowYml)
-  )
-
-  toolbox.print.info('✔ Created Jest workflow.')
+  toolbox.interactive.step('Created Jest workflow.')
 
   return `--${COMMAND}`
 }

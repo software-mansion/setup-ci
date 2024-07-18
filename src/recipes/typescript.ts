@@ -1,7 +1,5 @@
 import { Toolbox } from 'gluegun/build/types/domain/toolbox'
 import { ProjectContext } from '../types'
-import { parse, stringify } from 'yaml'
-import { relative } from 'path'
 
 const COMMAND = 'typescript'
 
@@ -10,25 +8,9 @@ const execute = () => async (toolbox: Toolbox, context: ProjectContext) => {
 
   await toolbox.scripts.add('compile', 'tsc -p .')
 
-  const workflowYml = parse(
-    await toolbox.template.generate({
-      template: 'typescript.ejf',
-      props: {
-        ...context,
-        pathRelativeToRoot:
-          relative(context.repoRoot, context.packageRoot) || '.',
-      },
-    })
-  )
-
-  toolbox.filesystem.write(
-    toolbox.filesystem.path(
-      context.repoRoot,
-      '.github',
-      'workflows',
-      'typescript.yml'
-    ),
-    stringify(workflowYml)
+  await toolbox.workflows.generate(
+    'typescript.ejf',
+    context.path.absFromRepoRoot('.github', 'workflows', 'typescript.yml')
   )
 
   toolbox.print.info('✔ Created Typescript workflow.')

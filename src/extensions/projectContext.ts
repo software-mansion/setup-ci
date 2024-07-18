@@ -2,6 +2,7 @@ import { GluegunToolbox } from 'gluegun/build/types/domain/toolbox'
 import { PackageManager, ProjectContext } from '../types'
 import { LOCK_FILE_TO_MANAGER } from '../constants'
 import { lookItUpSync } from 'look-it-up'
+import { join, relative } from 'path'
 
 module.exports = (toolbox: GluegunToolbox) => {
   const { filesystem } = toolbox
@@ -13,15 +14,15 @@ module.exports = (toolbox: GluegunToolbox) => {
 
     if (lockFiles.length == 0) {
       throw Error(
-        '❗ No lock file found in repository root directory. Are you sure this is a React Native project?'
+        'No lock file found in repository root directory. Are you sure you are in a project directory?'
       )
     }
 
     const detectedLockFile = LOCK_FILE_TO_MANAGER.get(lockFiles[0])
 
     if (lockFiles.length > 1) {
-      toolbox.print.warning(
-        `Detected more than one lock file in repository root directory. Proceeding with ${detectedLockFile}.`
+      toolbox.interactive.warning(
+        `Detected more than one lock file in repository root directory.Proceeding with ${detectedLockFile}.`
       )
     }
 
@@ -37,7 +38,7 @@ module.exports = (toolbox: GluegunToolbox) => {
   const getPackageRoot = (): string => {
     if (!filesystem.exists('package.json')) {
       throw Error(
-        '❗ No package.json found in current directory. Are you sure this is a React Native project?'
+        '❗ No package.json found in current directory. Are you sure you are in a project directory?'
       )
     }
 
@@ -56,10 +57,20 @@ module.exports = (toolbox: GluegunToolbox) => {
     const repoRoot = getRepoRoot()
     const packageRoot = getPackageRoot()
 
+    const relFromRepoRoot = (path: string): string =>
+      relative(repoRoot, path) || '.'
+
+    const absFromRepoRoot = (...paths: string[]): string =>
+      join(repoRoot, ...paths)
+
     return {
       packageManager: getPackageManager(repoRoot),
-      repoRoot,
-      packageRoot,
+      path: {
+        repoRoot,
+        packageRoot,
+        relFromRepoRoot,
+        absFromRepoRoot,
+      },
     }
   }
 
