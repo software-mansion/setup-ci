@@ -14,15 +14,15 @@ module.exports = (toolbox: GluegunToolbox) => {
 
     if (lockFiles.length == 0) {
       throw Error(
-        '❗ No lock file found in repository root directory. Are you sure you are in a project directory?'
+        'No lock file found in repository root directory. Are you sure you are in a project directory?'
       )
     }
 
     const detectedLockFile = LOCK_FILE_TO_MANAGER.get(lockFiles[0])
 
     if (lockFiles.length > 1) {
-      toolbox.print.warning(
-        `Detected more than one lock file in repository root directory. Proceeding with ${detectedLockFile}.`
+      toolbox.interactive.warning(
+        `Detected more than one lock file in repository root directory.Proceeding with ${detectedLockFile}.`
       )
     }
 

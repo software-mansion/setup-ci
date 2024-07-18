@@ -14,7 +14,7 @@ const execute = () => async (toolbox: Toolbox, context: ProjectContext) => {
     context
   )
 
-  toolbox.print.info('✔ Created ESLint workflow.')
+  toolbox.interactive.step('Created ESLint workflow.')
 
   return `--${COMMAND}`
 }

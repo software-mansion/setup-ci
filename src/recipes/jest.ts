@@ -14,7 +14,7 @@ const execute = () => async (toolbox: Toolbox, context: ProjectContext) => {
     context
   )
 
-  toolbox.print.info('✔ Created Jest workflow.')
+  toolbox.interactive.step('Created Jest workflow.')
 
   return `--${COMMAND}`
 }
