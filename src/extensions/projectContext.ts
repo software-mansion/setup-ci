@@ -2,7 +2,7 @@ import { GluegunToolbox } from 'gluegun/build/types/domain/toolbox'
 import { PackageManager, ProjectContext } from '../types'
 import { LOCK_FILE_TO_MANAGER } from '../constants'
 import { lookItUpSync } from 'look-it-up'
-import { relative } from 'path'
+import { join, relative } from 'path'
 
 module.exports = (toolbox: GluegunToolbox) => {
   const { filesystem } = toolbox
@@ -57,14 +57,20 @@ module.exports = (toolbox: GluegunToolbox) => {
     const repoRoot = getRepoRoot()
     const packageRoot = getPackageRoot()
 
-    const getPathRelativeToRoot = (): string =>
-      relative(repoRoot, packageRoot) || '.'
+    const relFromRepoRoot = (path: string): string =>
+      relative(repoRoot, path) || '.'
+
+    const absFromRepoRoot = (...paths: string[]): string =>
+      join(repoRoot, ...paths)
 
     return {
       packageManager: getPackageManager(repoRoot),
-      repoRoot,
-      packageRoot,
-      getPathRelativeToRoot,
+      path: {
+        repoRoot,
+        packageRoot,
+        relFromRepoRoot,
+        absFromRepoRoot,
+      },
     }
   }
 

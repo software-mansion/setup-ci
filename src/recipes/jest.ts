@@ -10,12 +10,7 @@ const execute = () => async (toolbox: Toolbox, context: ProjectContext) => {
 
   await toolbox.workflows.generate(
     'jest.ejf',
-    toolbox.filesystem.path(
-      context.repoRoot,
-      '.github',
-      'workflows',
-      'jest.yml'
-    ),
+    context.path.absFromRepoRoot('.github', 'workflows', 'jest.yml'),
     context
   )
 

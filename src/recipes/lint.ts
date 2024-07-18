@@ -10,12 +10,7 @@ const execute = () => async (toolbox: Toolbox, context: ProjectContext) => {
 
   await toolbox.workflows.generate(
     'lint.ejf',
-    toolbox.filesystem.path(
-      context.repoRoot,
-      '.github',
-      'workflows',
-      'lint.yml'
-    ),
+    context.path.absFromRepoRoot('.github', 'workflows', 'lint.yml'),
     context
   )
 

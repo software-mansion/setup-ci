@@ -14,7 +14,9 @@ module.exports = (toolbox: GluegunToolbox) => {
         template,
         props: {
           packageManager: context.packageManager,
-          pathRelativeToRoot: context.getPathRelativeToRoot(),
+          pathRelativeToRoot: context.path.relFromRepoRoot(
+            context.path.packageRoot
+          ),
           ...props,
         },
       })
