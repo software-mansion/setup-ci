@@ -19,10 +19,10 @@ module.exports = (toolbox: GluegunToolbox) => {
     }
 
     const detectedLockFile = LOCK_FILE_TO_MANAGER.get(lockFiles[0])
-        
-          lockFiles.length > 1) {
+
+    if (lockFiles.length > 1) {
       toolbox.interactive.warning(
-            `Detected more than one lock file in repository root directory. Proceeding with ${detectedLockFile}.`
+        `Detected more than one lock file in repository root directory.Proceeding with ${detectedLockFile}.`
       )
     }
 

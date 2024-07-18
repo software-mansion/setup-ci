@@ -7,7 +7,7 @@ import {
 
 import { GluegunToolbox } from 'gluegun'
 
-export interface Spinner {
+interface Spinner {
   stop: () => void
 }
 
