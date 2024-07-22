@@ -11,7 +11,7 @@ const executeExpoWorkflow = async (
   toolbox: Toolbox,
   expoConfigJSON: Record<string, any>
 ) => {
-  toolbox.print.info('⚙️  Setting up app build for Detox.')
+  toolbox.print.info('⚙️ Setting up app build for Detox.')
 
   await executeExpoBuildWorkflow(toolbox, expoConfigJSON)
 
@@ -78,8 +78,8 @@ const executeExpoWorkflow = async (
   })
 
   await toolbox.template.generate({
-    template: 'detox/test-e2e-android.ejf',
-    target: `.github/workflows/test-e2e-android.yml`,
+    template: 'detox/test-detox-android.ejf',
+    target: `.github/workflows/test-detox-android.yml`,
   })
 
   await toolbox.template.generate({
@@ -145,7 +145,7 @@ const run = async (
   }
 
   const proceed = await confirm({
-    message: 'Do you want to run Detox e2e test on every PR?',
+    message: 'Do you want to run Detox tests on every PR?',
   })
 
   if (!proceed) {

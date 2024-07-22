@@ -4,42 +4,47 @@ on:
    workflow_call:
 
 jobs:
-  build-debug-android:
+  lookup-cached-build:
     runs-on: ubuntu-latest
+    outputs:
+      build-exists: ${{ steps.android-debug-restore.outputs.cache-hit }}
     steps:
-      - name: Try to restore build
+      - name: 🐛 Try to restore build from cache
         id: android-debug-restore
         uses: actions/cache/restore@v4
         with:
           path: android-debug-build/
           key: android-debug-build
           lookup-only: true
-      - name: Checkout repository
-        if: steps.android-debug-restore.outputs.cache-hit != 'true'  
+
+  build-debug-android:
+    needs: lookup-cached-build 
+    if: needs.lookup-cached-build.outputs.build-exists != 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🏗 Checkout repository
         uses: actions/checkout@v4
-      - name: Install dependencies
-        if: steps.android-debug-restore.outputs.cache-hit != 'true'  
+
+      - name: 📦 Install dependencies
         run: yarn install
-      - name: Set up JDK 17
-        if: steps.android-debug-restore.outputs.cache-hit != 'true'  
+
+      - name: ☕ Set up JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'zulu'
           cache: 'gradle'
-      - name: Build
-        if: steps.android-debug-restore.outputs.cache-hit != 'true'  
+
+      - name: 🛠️ Build
         run: yarn build:debug:android
-      - name: Create Cache folder 
-        run: mkdir android-debug-build
-      - name: Rename APK
-        if: steps.android-debug-restore.outputs.cache-hit != 'true'  
-        run: mv android/app/build/outputs/apk/debug/app-debug.apk android-debug-build/android-debug.apk
-      - name: Rename Test APK
-        if: steps.android-debug-restore.outputs.cache-hit != 'true'  
-        run: mv android/app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk android-debug-build/android-debug-test.apk
-      - name: Cache build
-        if: steps.android-debug-restore.outputs.cache-hit != 'true'  
+
+      - name: 📁 Prepare cache folder 
+        run: |
+          mkdir android-debug-build
+          mv android/app/build/outputs/apk/debug/app-debug.apk android-debug-build/android-debug.apk
+          mv android/app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk android-debug-build/android-debug-test.apk
+
+      - name: 📡 Store built app in cache
         id: android-debug-save
         uses: actions/cache/save@v4
         with:

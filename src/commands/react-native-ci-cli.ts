@@ -2,7 +2,6 @@ import { GluegunCommand, GluegunToolbox } from 'gluegun'
 import { SKIP_GIT_CHECK_FLAG, SKIP_INTERACTIVE_COMMAND } from '../constants'
 import runLint from '../recipes/lint'
 import runJest from '../recipes/jest'
-import runBuildDebug from '../recipes/buildDebug'
 import runDetox from '../recipes/detox'
 import isGitDirty from 'is-git-dirty'
 import sequentialPromiseMap from '../utils/sequentialPromiseMap'
@@ -41,15 +40,9 @@ const runReactNativeCiCli = async (toolbox: GluegunToolbox) => {
 
   const lintExecutor = await runLint(toolbox)
   const jestExecutor = await runJest(toolbox)
-  const buildDebug = await runBuildDebug(toolbox)
   const detoxExecutor = await runDetox(toolbox)
 
-  const executors = [
-    lintExecutor,
-    jestExecutor,
-    buildDebug,
-    detoxExecutor,
-  ].filter(Boolean)
+  const executors = [lintExecutor, jestExecutor, detoxExecutor].filter(Boolean)
 
   if (executors.length === 0) {
     toolbox.interactive.outro('Nothing to do here. Cheers! 🎉')

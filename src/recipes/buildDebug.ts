@@ -1,7 +1,7 @@
 import { Toolbox } from 'gluegun/build/types/domain/toolbox'
 import { confirm } from '@clack/prompts'
 
-const COMMAND = 'buildDebug'
+const COMMAND = 'build-debug'
 
 export const executeExpoWorkflow = async (
   toolbox: Toolbox,
@@ -12,7 +12,7 @@ export const executeExpoWorkflow = async (
 
   // Using expo prebuild if android and iOS not generated yet
   if (!androidDir && !iosDir) {
-    toolbox.print.info('⚙️  Settings up expo prebuild.')
+    toolbox.print.info('⚙️ Setting up expo prebuild.')
     await toolbox.system.spawn('npx expo prebuild', { stdio: 'inherit' })
     const spinner = toolbox.print.spin('🧹  Cleaning up expo prebuild.')
     await toolbox.system.run('npx expo prebuild --clean')
