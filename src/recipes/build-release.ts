@@ -14,7 +14,7 @@ const createReleaseBuildWorkflowIOs = async (
   await toolbox.scripts.add(
     'build:release:ios',
     [
-      'npx expo prebuild &&',
+      `npx expo prebuild --${context.packageManager} &&`,
       'xcodebuild ONLY_ACTIVE_ARCH=YES',
       `-workspace ios/${context.iOsAppName}.xcworkspace`,
       '-UseNewBuildSystem=YES',
@@ -28,7 +28,11 @@ const createReleaseBuildWorkflowIOs = async (
 
   await toolbox.workflows.generate(
     join('build-release', 'build-release-ios.ejf'),
-    context.path.absFromRepoRoot('.github', 'workflows', 'jest.yml'),
+    context.path.absFromRepoRoot(
+      '.github',
+      'workflows',
+      'build-release-ios.yml'
+    ),
     context
   )
 
@@ -46,9 +50,14 @@ export const createReleaseBuildWorkflowsForExpo = async (
   // Using expo prebuild if android and iOS not generated yet
   if (!androidDir && !iosDir) {
     toolbox.print.info('⚙️ Setting up expo prebuild.')
-    await toolbox.system.spawn('npx expo prebuild', { stdio: 'inherit' })
+    await toolbox.system.spawn(
+      `npx expo prebuild --${context.packageManager}`,
+      { stdio: 'inherit' }
+    )
     const spinner = toolbox.print.spin('🧹  Cleaning up expo prebuild.')
-    await toolbox.system.run('npx expo prebuild --clean')
+    await toolbox.system.run(
+      `npx expo prebuild --${context.packageManager} --clean`
+    )
     spinner.stop()
   }
 

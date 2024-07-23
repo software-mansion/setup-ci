@@ -1,3 +1,15 @@
+<%
+const install = {
+  yarn: "yarn",
+  npm: "npm install"
+}
+
+const runTests = {
+  yarn: `yarn --cwd ${props.pathRelativeToRoot} detox:test:ios`,
+  npm: `npm run detox:test:ios --prefix ${props.pathRelativeToRoot}`
+}
+%>
+
 name: Test Detox iOS
 
 on: [pull_request]
@@ -15,7 +27,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: 📦 Install dependencies
-        run: yarn install
+        run: <%= install[props.packageManager] %>
 
       - name: 📦 Install macOS dependencies
         run: |
@@ -34,4 +46,4 @@ jobs:
 
       - name: 📋 Run Detox tests
         run: |
-          yarn detox:test:ios
+          <%= runTests[props.packageManager] %>

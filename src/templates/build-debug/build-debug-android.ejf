@@ -1,3 +1,15 @@
+<%
+const install = {
+  yarn: "yarn",
+  npm: "npm install"
+}
+
+const build = {
+  yarn: `yarn --cwd ${props.pathRelativeToRoot} build:debug:android`,
+  npm: `npm run build:debug:android --prefix ${props.pathRelativeToRoot}`
+}
+%>
+
 name: Build Android Debug App
 
 on: 
@@ -26,7 +38,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: 📦 Install dependencies
-        run: yarn install
+        run: <%= install[props.packageManager] %>
 
       - name: ☕ Set up JDK 17
         uses: actions/setup-java@v4
@@ -36,7 +48,7 @@ jobs:
           cache: 'gradle'
 
       - name: 🛠️ Build
-        run: yarn build:debug:android
+        run: <%= build[props.packageManager] %>
 
       - name: 📁 Prepare cache folder 
         run: |

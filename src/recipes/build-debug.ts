@@ -9,7 +9,7 @@ const createDebugBuildWorkflowAndroid = async (
   await toolbox.scripts.add(
     'build:debug:android',
     [
-      'npx expo prebuild &&',
+      `npx expo prebuild --${context.packageManager} &&`,
       'cd android &&',
       './gradlew assembleDebug assembleAndroidTest -DtestBuildType=debug',
     ].join(' ')
@@ -17,7 +17,11 @@ const createDebugBuildWorkflowAndroid = async (
 
   await toolbox.workflows.generate(
     join('build-debug', 'build-debug-android.ejf'),
-    context.path.absFromRepoRoot('.github', 'workflows', 'jest.yml'),
+    context.path.absFromRepoRoot(
+      '.github',
+      'workflows',
+      'build-debug-android.yml'
+    ),
     context
   )
 
@@ -31,7 +35,7 @@ const createDebugBuildWorkflowIOs = async (
   await toolbox.scripts.add(
     'build:debug:ios',
     [
-      'npx expo prebuild &&',
+      `npx expo prebuild --${context.packageManager} &&`,
       `xcodebuild -workspace ios/${context.iOsAppName}.xcworkspace`,
       `-scheme ${context.iOsAppName}`,
       '-configuration Debug',
@@ -42,7 +46,7 @@ const createDebugBuildWorkflowIOs = async (
 
   await toolbox.workflows.generate(
     join('build-debug', 'build-debug-ios.ejf'),
-    context.path.absFromRepoRoot('.github', 'workflows', 'jest.yml'),
+    context.path.absFromRepoRoot('.github', 'workflows', 'build-debug-ios.yml'),
     context
   )
 
@@ -60,9 +64,14 @@ export const createDebugBuildWorkflowsForExpo = async (
   // Using expo prebuild if android and iOS not generated yet
   if (!androidDir && !iosDir) {
     toolbox.print.info('⚙️ Setting up expo prebuild.')
-    await toolbox.system.spawn('npx expo prebuild', { stdio: 'inherit' })
+    await toolbox.system.spawn(
+      `npx expo prebuild --${context.packageManager}`,
+      { stdio: 'inherit' }
+    )
     const spinner = toolbox.print.spin('🧹  Cleaning up expo prebuild.')
-    await toolbox.system.run('npx expo prebuild --clean')
+    await toolbox.system.run(
+      `npx expo prebuild --${context.packageManager} --clean`
+    )
     spinner.stop()
   }
 

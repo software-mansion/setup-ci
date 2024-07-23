@@ -1,3 +1,20 @@
+<%
+const install = {
+  yarn: "yarn",
+  npm: "npm install"
+}
+
+const startBundler = {
+  yarn: `yarn --cwd ${props.pathRelativeToRoot} start`,
+  npm: `npm run start --prefix ${props.pathRelativeToRoot}`
+}
+
+const runTests = {
+  yarn: `yarn --cwd ${props.pathRelativeToRoot} detox:test:android`,
+  npm: `npm run detox:test:android --prefix ${props.pathRelativeToRoot}`
+}
+%>
+
 name: Test Detox Android
 
 on: [pull_request]
@@ -17,7 +34,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: 📦 Install dependencies
-        run: yarn install
+        run: <%= install[props.packageManager] %>
 
       - name: 📦 Install AVD dependencies
         run: |
@@ -63,4 +80,4 @@ jobs:
           avd-name: e2e_emulator
           arch: x86_64
           script: |
-            yarn start & yarn detox:test:android; x=$?; kill -9 $(pgrep -f "[n]ode_modules/.bin/expo.start") || true; exit $x
+            <%= startBundler[props.packageManager] %> & <%= runTests[props.packageManager] %>; x=$?; kill -9 $(pgrep -f "[n]ode_modules/.bin/expo.start") || true; exit $x
