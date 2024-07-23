@@ -1,7 +1,7 @@
 import { Toolbox } from 'gluegun/build/types/domain/toolbox'
 import { ProjectContext } from '../types'
 
-const COMMAND = 'lint'
+const FLAG = 'lint'
 
 const execute = () => async (toolbox: Toolbox, context: ProjectContext) => {
   await toolbox.dependencies.add('eslint', context.packageManager, true)
@@ -16,7 +16,7 @@ const execute = () => async (toolbox: Toolbox, context: ProjectContext) => {
 
   toolbox.interactive.step('Created ESLint workflow.')
 
-  return `--${COMMAND}`
+  return `--${FLAG}`
 }
 
 const run = async (
@@ -24,8 +24,12 @@ const run = async (
 ): Promise<
   (toolbox: Toolbox, context: ProjectContext) => Promise<string> | null
 > => {
-  if (toolbox.skipInteractiveForCommand(COMMAND)) {
+  if (toolbox.skipInteractiveForRecipe(FLAG)) {
     return execute()
+  }
+
+  if (toolbox.skipInteractive()) {
+    return null
   }
 
   const proceed = await toolbox.interactive.confirm(
