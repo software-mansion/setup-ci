@@ -1,10 +1,12 @@
 import { GluegunCommand, GluegunToolbox } from 'gluegun'
-import { SKIP_INTERACTIVE_FLAG, SKIP_GIT_CHECK_FLAG } from '../constants'
+import { SKIP_INTERACTIVE_FLAG } from '../constants'
 import runLint from '../recipes/lint'
 import runJest from '../recipes/jest'
 import isGitDirty from 'is-git-dirty'
 import sequentialPromiseMap from '../utils/sequentialPromiseMap'
 import { ProjectContext } from '../types'
+
+const SKIP_GIT_CHECK_FLAG = 'skip-git-check'
 
 const runReactNativeCiCli = async (toolbox: GluegunToolbox) => {
   toolbox.interactive.intro('Welcome to React Native CI CLI')
