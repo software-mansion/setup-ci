@@ -1,5 +1,5 @@
 import { GluegunCommand, GluegunToolbox } from 'gluegun'
-import { SKIP_INTERACTIVE_COMMAND } from '../constants'
+import { SKIP_INTERACTIVE_FLAG } from '../constants'
 import runLint from '../recipes/lint'
 import runJest from '../recipes/jest'
 import runDetox from '../recipes/detox'
@@ -13,21 +13,16 @@ const runReactNativeCiCli = async (toolbox: GluegunToolbox) => {
   toolbox.interactive.intro('Welcome to React Native CI CLI')
 
   if (isGitDirty() == null) {
-    throw Error('❗ This is not a git repository.')
+    throw Error('This is not a git repository.')
   }
 
-  if (
-    isGitDirty() == true &&
-    toolbox.skipInteractive() &&
-    !toolbox.parameters.options[SKIP_GIT_CHECK_FLAG]
-  ) {
-    toolbox.interactive.outro(
-      'Please commit your changes before running this command. Exiting.'
-    )
-    return
-  }
-
-  if (!toolbox.skipInteractive() && isGitDirty() == true) {
+  if (isGitDirty() && !toolbox.parameters.options[SKIP_GIT_CHECK_FLAG]) {
+    if (toolbox.skipInteractive()) {
+      throw Error(
+        `You have to commit your changes before running in silent mode or use --${SKIP_GIT_CHECK_FLAG}.`
+      )
+    }
+    
     const proceed = await toolbox.interactive.confirm(
       'You have uncommitted changes. Do you want to proceed?'
     )
@@ -39,6 +34,8 @@ const runReactNativeCiCli = async (toolbox: GluegunToolbox) => {
       return
     }
   }
+
+  const context: ProjectContext = toolbox.projectContext.obtain()
 
   const lintExecutor = await runLint(toolbox)
   const jestExecutor = await runJest(toolbox)
@@ -53,10 +50,8 @@ const runReactNativeCiCli = async (toolbox: GluegunToolbox) => {
 
   toolbox.interactive.outro("Let's roll")
 
-  const context: ProjectContext = toolbox.projectContext.obtain()
-
-  toolbox.print.info(
-    `✔ Detected ${context.packageManager} as your package manager.`
+  toolbox.interactive.step(
+    `Detected ${context.packageManager} as your package manager.`
   )
 
   const executorResults = await sequentialPromiseMap(executors, (executor) =>
@@ -65,8 +60,8 @@ const runReactNativeCiCli = async (toolbox: GluegunToolbox) => {
 
   const usedFlags = executorResults.join(' ')
 
-  toolbox.print.success(
-    `We're all set 🎉.\nNext time you can use silent command: npx create-react-native-ci-cli --${SKIP_INTERACTIVE_COMMAND} ${usedFlags}.`
+  toolbox.interactive.success(
+    `We're all set 🎉.\nNext time you can run the command in silent mode using npx create-react-native-ci-cli --${SKIP_INTERACTIVE_FLAG} ${usedFlags}.`
   )
 }
 
@@ -76,8 +71,8 @@ const command: GluegunCommand = {
     try {
       await runReactNativeCiCli(toolbox)
     } catch (error) {
-      toolbox.print.error(
-        `❗ Failed to execute react-native-ci-cli with following error:\n${error.message}`
+      toolbox.interactive.error(
+        `Failed to execute react-native-ci-cli with following error:\n${error.message}`
       )
     } finally {
       process.exit()
