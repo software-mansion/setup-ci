@@ -1,10 +1,12 @@
 import { GluegunCommand, GluegunToolbox } from 'gluegun'
-import { SKIP_INTERACTIVE_COMMAND } from '../constants'
+import { SKIP_INTERACTIVE_FLAG } from '../constants'
 import runLint from '../recipes/lint'
 import runJest from '../recipes/jest'
 import isGitDirty from 'is-git-dirty'
 import sequentialPromiseMap from '../utils/sequentialPromiseMap'
 import { ProjectContext } from '../types'
+
+const SKIP_GIT_CHECK_FLAG = 'skip-git-check'
 
 const runReactNativeCiCli = async (toolbox: GluegunToolbox) => {
   toolbox.interactive.intro('Welcome to React Native CI CLI')
@@ -13,7 +15,13 @@ const runReactNativeCiCli = async (toolbox: GluegunToolbox) => {
     throw Error('This is not a git repository.')
   }
 
-  if (isGitDirty() == true) {
+  if (isGitDirty() && !toolbox.parameters.options[SKIP_GIT_CHECK_FLAG]) {
+    if (toolbox.skipInteractive()) {
+      throw Error(
+        `You have to commit your changes before running in silent mode or use --${SKIP_GIT_CHECK_FLAG}.`
+      )
+    }
+
     const proceed = await toolbox.interactive.confirm(
       'You have uncommitted changes. Do you want to proceed?'
     )
@@ -25,6 +33,8 @@ const runReactNativeCiCli = async (toolbox: GluegunToolbox) => {
       return
     }
   }
+
+  const context: ProjectContext = toolbox.projectContext.obtain()
 
   const lintExecutor = await runLint(toolbox)
   const jestExecutor = await runJest(toolbox)
@@ -38,8 +48,6 @@ const runReactNativeCiCli = async (toolbox: GluegunToolbox) => {
 
   toolbox.interactive.outro("Let's roll")
 
-  const context: ProjectContext = toolbox.projectContext.obtain()
-
   toolbox.interactive.step(
     `Detected ${context.packageManager} as your package manager.`
   )
@@ -51,7 +59,7 @@ const runReactNativeCiCli = async (toolbox: GluegunToolbox) => {
   const usedFlags = executorResults.join(' ')
 
   toolbox.interactive.success(
-    `We're all set 🎉.\nNext time you can use silent command: npx create-react-native-ci-cli --${SKIP_INTERACTIVE_COMMAND} ${usedFlags}.`
+    `We're all set 🎉.\nNext time you can run the command in silent mode using npx create-react-native-ci-cli --${SKIP_INTERACTIVE_FLAG} ${usedFlags}.`
   )
 }
 
