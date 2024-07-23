@@ -1,0 +1,34 @@
+name: Build iOS Debug App
+
+on: 
+   workflow_call:
+
+jobs:
+  build-debug-ios:
+    runs-on: macos-latest
+    steps:
+      - name: 🏗 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 📦 Install dependencies
+        run: yarn install
+
+      - name: 🔨 Use latest stable Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - name: 🛠️ Build
+        run: yarn build:debug:ios
+
+      - name: 📁 Prepare cache folder 
+        run: |
+          mkdir ios-debug-build
+          mv ios/build/Build/Products/Debug-iphonesimulator/<%= props.iOSAppName %>.app ios-debug-build/ios-debug.app
+
+      - name: 📡 Store built app in cache
+        id: ios-debug-save
+        uses: actions/cache/save@v4
+        with:
+          path: ios-debug-build/
+          key: ios-debug-build

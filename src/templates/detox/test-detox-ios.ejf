@@ -1,0 +1,37 @@
+name: Test Detox iOS
+
+on: [pull_request]
+
+jobs:
+  build-release-ios:
+    uses: ./.github/workflows/build-release-ios.yml
+
+  test-detox-ios:
+    runs-on: macos-latest
+    needs: [build-release-ios]
+    timeout-minutes: 60
+    steps:
+      - name: 🏗 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 📦 Install dependencies
+        run: yarn install
+
+      - name: 📦 Install macOS dependencies
+        run: |
+          brew tap wix/brew
+          brew install applesimutils
+        env:
+          HOMEBREW_NO_AUTO_UPDATE: 1
+          HOMEBREW_NO_INSTALL_CLEANUP: 1
+
+      - name: 🐛 Try to restore build from cache
+        id: ios-release-restore
+        uses: actions/cache/restore@v4
+        with:
+          path: ios-release-build/
+          key: ios-release-build
+
+      - name: 📋 Run Detox tests
+        run: |
+          yarn detox:test:ios

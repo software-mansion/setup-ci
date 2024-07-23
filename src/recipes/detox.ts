@@ -1,11 +1,9 @@
 import { Toolbox } from 'gluegun/build/types/domain/toolbox'
 import { confirm } from '@clack/prompts'
-
-import { executeExpoWorkflow as executeExpoBuildWorkflow } from './buildDebug' // TODO: Temporary solution
-
-const COMMAND = 'detox'
+import { createBuildWorkflows } from './build'
 
 const DETOX_EXPO_PLUGIN = '@config-plugins/detox'
+const COMMAND = 'detox'
 
 const executeExpoWorkflow = async (
   toolbox: Toolbox,
@@ -13,10 +11,13 @@ const executeExpoWorkflow = async (
 ) => {
   toolbox.print.info('⚙️ Setting up app build for Detox.')
 
-  await executeExpoBuildWorkflow(toolbox, expoConfigJSON)
+  await createBuildWorkflows(toolbox, expoConfigJSON)
 
   await toolbox.dependencies.add('detox', true)
-  await toolbox.dependencies.add('jest@^29', true) // @^29 because of https://wix.github.io/Detox/docs/introduction/project-setup#step-1-bootstrap
+
+  // @^29 because of https://wix.github.io/Detox/docs/introduction/project-setup#step-1-bootstrap
+  await toolbox.dependencies.add('jest@^29', true)
+
   await toolbox.dependencies.add('ts-jest', true)
   await toolbox.dependencies.add('@types/jest', true)
   await toolbox.dependencies.add(DETOX_EXPO_PLUGIN, true)
@@ -36,23 +37,13 @@ const executeExpoWorkflow = async (
   }
 
   await toolbox.scripts.add(
-    'detox:setup:android',
-    'npx expo prebuild && yarn detox build --configuration android.emu.debug'
-  )
-
-  await toolbox.scripts.add(
-    'detox:setup:ios',
-    'npx expo prebuild && (cd ios/ && pod install) && yarn detox build --configuration ios.sim.debug'
-  )
-
-  await toolbox.scripts.add(
     'detox:test:android',
-    'yarn detox test --configuration android.emu.debug'
+    'detox test --configuration android.emu.debug'
   )
 
   await toolbox.scripts.add(
     'detox:test:ios',
-    'yarn detox test --configuration ios.sim.debug'
+    'detox test --configuration ios.sim.release --cleanup'
   )
 
   await toolbox.scripts.add('prebuild:clean', 'rm -rf ios/ android/')
@@ -83,8 +74,8 @@ const executeExpoWorkflow = async (
   })
 
   await toolbox.template.generate({
-    template: 'detox/test-e2e-ios.ejf',
-    target: `.github/workflows/test-e2e-ios.yml`,
+    template: 'detox/test-detox-ios.ejf',
+    target: `.github/workflows/test-detox-ios.yml`,
   })
 
   toolbox.print.warning(
@@ -95,34 +86,8 @@ const executeExpoWorkflow = async (
 }
 
 const execute = () => async (toolbox: Toolbox) => {
+  // TODO: Obtaining app.json should be moved to context. To do after merging to up to date changes.
   const expoConfigJSON = toolbox.filesystem.read('app.json', 'json')
-
-  // if (!packageJSON?.devDependencies?.eslint) {
-  //   const spinner = toolbox.print.spin('Installing ESLint...')
-
-  //   await toolbox.packageManager.add('eslint', { dev: true })
-
-  //   spinner.stop()
-
-  //   toolbox.print.info('Installed ESLint.')
-  // }
-
-  // await toolbox.patching.update('package.json', (config) => {
-  //   if (!config.scripts.lint) {
-  //     config.scripts.lint = 'eslint "**/*.{js,jsx,ts,tsx}"'
-
-  //     toolbox.print.info('Added ESLint script to package.json')
-  //   }
-
-  //   return config
-  // })
-
-  // await toolbox.template.generate({
-  //   template: 'lint.ejf',
-  //   target: `.github/workflows/lint.yml`,
-  // })
-
-  // toolbox.print.info('Created ESLint workflow.')
 
   if (expoConfigJSON) {
     await executeExpoWorkflow(toolbox, expoConfigJSON)
