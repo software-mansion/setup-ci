@@ -1,5 +1,14 @@
 export type PackageManager = 'yarn' | 'npm'
 
+export type Platform = 'android' | 'ios'
+
+export interface ExpoConfig {
+  expo?: {
+    name: string
+    plugins: string[]
+  }
+}
+
 export interface ProjectContext {
   packageManager: PackageManager
   path: {
@@ -8,4 +17,6 @@ export interface ProjectContext {
     relFromRepoRoot: (p: string) => string
     absFromRepoRoot: (...p: string[]) => string
   }
+  expoConfigJson?: ExpoConfig
+  iOsAppName?: string
 }

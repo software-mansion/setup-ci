@@ -63,6 +63,9 @@ module.exports = (toolbox: GluegunToolbox) => {
     const absFromRepoRoot = (...paths: string[]): string =>
       join(repoRoot, ...paths)
 
+    const expoConfigJson = toolbox.filesystem.read('app.json', 'json')
+    const iOsAppName = expoConfigJson?.expo?.name.replaceAll('-', '')
+
     return {
       packageManager: getPackageManager(repoRoot),
       path: {
@@ -71,6 +74,8 @@ module.exports = (toolbox: GluegunToolbox) => {
         relFromRepoRoot,
         absFromRepoRoot,
       },
+      expoConfigJson,
+      iOsAppName,
     }
   }
 

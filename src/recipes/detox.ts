@@ -1,39 +1,41 @@
 import { Toolbox } from 'gluegun/build/types/domain/toolbox'
 import { confirm } from '@clack/prompts'
-import { createBuildWorkflows } from './build'
+import { ProjectContext } from '../types'
+import { createDebugBuildWorkflowsForExpo } from './build-debug'
+import { createReleaseBuildWorkflowsForExpo } from './build-release'
+import { join } from 'path'
 
 const DETOX_EXPO_PLUGIN = '@config-plugins/detox'
-const COMMAND = 'detox'
+const FLAG = 'detox'
 
-const executeExpoWorkflow = async (
+const createDetoxWorkflowsForExpo = async (
   toolbox: Toolbox,
-  expoConfigJSON: Record<string, any>
+  context: ProjectContext
 ) => {
-  toolbox.print.info('⚙️ Setting up app build for Detox.')
+  toolbox.interactive.info('⚙️ Setting up app build for Detox.')
 
-  await createBuildWorkflows(toolbox, expoConfigJSON)
+  await createDebugBuildWorkflowsForExpo(toolbox, context, ['android'])
+  await createReleaseBuildWorkflowsForExpo(toolbox, context, ['ios'])
 
   await toolbox.dependencies.add('detox', true)
-
   // @^29 because of https://wix.github.io/Detox/docs/introduction/project-setup#step-1-bootstrap
   await toolbox.dependencies.add('jest@^29', true)
-
   await toolbox.dependencies.add('ts-jest', true)
   await toolbox.dependencies.add('@types/jest', true)
   await toolbox.dependencies.add(DETOX_EXPO_PLUGIN, true)
 
-  const availableExpoPlugins = expoConfigJSON.expo.plugins
+  const availableExpoPlugins = context.expoConfigJson.expo.plugins
 
   if (!availableExpoPlugins.includes('detox')) {
     await toolbox.patching.update('app.json', (config) => {
+      // TODO: These ? seem useless (next line they are ommited).
       if (!(config?.expo?.plugins ?? []).includes(DETOX_EXPO_PLUGIN)) {
         config.expo.plugins.push(DETOX_EXPO_PLUGIN)
       }
-
       return config
     })
 
-    toolbox.print.info('✔ Added Detox Expo Plugin to app.json')
+    toolbox.interactive.step('Added Detox Expo Plugin to app.json')
   }
 
   await toolbox.scripts.add(
@@ -48,60 +50,63 @@ const executeExpoWorkflow = async (
 
   await toolbox.scripts.add('prebuild:clean', 'rm -rf ios/ android/')
 
-  const iOSAppName = expoConfigJSON?.expo?.name.replaceAll('-', '')
-
   await toolbox.template.generate({
-    template: 'detox/.detoxrc.js.ejs',
+    template: join('detox', '.detoxrc.js.ejs'),
     target: `.detoxrc.js`,
     props: {
-      iOSAppName: iOSAppName,
+      iOSAppName: context.iOsAppName,
     },
   })
 
   await toolbox.template.generate({
-    template: 'detox/jest.config.js.ejs',
-    target: `e2e/jest.config.js`,
+    template: join('detox', 'jest.config.js.ejs'),
+    target: join('e2e', 'jest.config.js'),
   })
 
   await toolbox.template.generate({
-    template: 'detox/starter.test.ts.ejs',
-    target: `e2e/starter.test.ts`,
+    template: join('detox', 'starter.test.ts.ejs'),
+    target: join('e2e', 'starter.test.ts'),
   })
 
-  await toolbox.template.generate({
-    template: 'detox/test-detox-android.ejf',
-    target: `.github/workflows/test-detox-android.yml`,
-  })
-
-  await toolbox.template.generate({
-    template: 'detox/test-detox-ios.ejf',
-    target: `.github/workflows/test-detox-ios.yml`,
-  })
-
-  toolbox.print.warning(
-    '⚠️  Remember to edit example test in e2e/starter.test.ts to match your app.'
+  await toolbox.workflows.generate(
+    join('detox', 'test-detox-android.ejf'),
+    context.path.absFromRepoRoot(
+      '.github',
+      'workflows',
+      'test-detox-android.yml'
+    ),
+    context
   )
 
-  toolbox.print.info('✔ Created Detox workflow for Expo.')
+  await toolbox.workflows.generate(
+    join('detox', 'test-detox-ios.ejf'),
+    context.path.absFromRepoRoot('.github', 'workflows', 'test-detox-ios.yml'),
+    context
+  )
+
+  toolbox.interactive.warning(
+    'Remember to edit example test in e2e/starter.test.ts to match your app.'
+  )
+
+  toolbox.interactive.step('Created Detox workflow for Expo.')
 }
 
-const execute = () => async (toolbox: Toolbox) => {
-  // TODO: Obtaining app.json should be moved to context. To do after merging to up to date changes.
-  const expoConfigJSON = toolbox.filesystem.read('app.json', 'json')
-
-  if (expoConfigJSON) {
-    await executeExpoWorkflow(toolbox, expoConfigJSON)
+const execute = () => async (toolbox: Toolbox, context: ProjectContext) => {
+  if (context.expoConfigJson?.expo) {
+    await createDetoxWorkflowsForExpo(toolbox, context)
   } else {
-    // Detox for React Native
+    // TODO: Detox for React Native
   }
 
-  return `--${COMMAND}`
+  return `--${FLAG}`
 }
 
 const run = async (
   toolbox: Toolbox
-): Promise<(toolbox: Toolbox) => Promise<string> | null> => {
-  if (toolbox.skipInteractiveForCommand(COMMAND)) {
+): Promise<
+  (toolbox: Toolbox, context: ProjectContext) => Promise<string> | null
+> => {
+  if (toolbox.skipInteractiveForRecipe(FLAG)) {
     return execute()
   }
 

@@ -22,7 +22,7 @@ const runReactNativeCiCli = async (toolbox: GluegunToolbox) => {
         `You have to commit your changes before running in silent mode or use --${SKIP_GIT_CHECK_FLAG}.`
       )
     }
-    
+
     const proceed = await toolbox.interactive.confirm(
       'You have uncommitted changes. Do you want to proceed?'
     )
