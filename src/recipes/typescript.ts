@@ -20,6 +20,10 @@ const execute = () => async (toolbox: Toolbox, context: ProjectContext) => {
       template: join('typescript', 'tsconfig.json.ejs'),
       target: 'tsconfig.json',
     })
+
+    toolbox.interactive.step(
+      'Created tsconfig.json with default configuration.'
+    )
   }
 
   toolbox.interactive.step('Created Typescript check workflow.')
