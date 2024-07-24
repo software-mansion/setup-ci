@@ -26,9 +26,13 @@ const execute = () => async (toolbox: Toolbox, context: ProjectContext) => {
 
   if (!existsEslintConfigurationFile(toolbox)) {
     await toolbox.template.generate({
-      template: join('lint', '.eslintrc.ejs'),
-      target: '.eslintrc.js',
+      template: join('lint', '.eslintrc.json.ejs'),
+      target: '.eslintrc.json',
     })
+
+    toolbox.interactive.step(
+      'Created .eslintrc.json with default configuration.'
+    )
   }
 
   await toolbox.workflows.generate(
