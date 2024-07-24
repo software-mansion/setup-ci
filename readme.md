@@ -4,7 +4,8 @@
 
 ## 📖 Usage
 
-Simply go to your project root directory and run `npx react-native-ci-cli`.
+Simply go to your project root directory and run `npx react-native-ci-cli`. If your project has monorepo structure, run the script from the root
+directory of the app for which you want to setup workflows.
 
 ## 💡 Example
 
