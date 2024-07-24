@@ -14,14 +14,17 @@ Let's try to use `react-native-ci-cli` to do the heavy lifting and generate all 
 <p align="center">
   <img 
     style="width: 80%;"
-    src="https://github.com/user-attachments/assets/31fc066b-ada7-418b-ad05-90b06cfe549d"/>
+    src=".github/assets/example-usage.gif"/>
 </p>
 
 Alternatively, we can go fully automatic by passing flags `--silent --lint --jest` to avoid all interaction with the script. You can check the section below for more information about available flags!
 
 ## ⚙️ Features
 
-**Currently only GitHub actions are supported as your CI.**
+* **Currently only GitHub actions are supported as your CI.**
+* **npm** and **yarn** are supported as package managers and they will be detected automatically.
+* Monorepo structure is supported, but make sure you run the script from app directory, 
+  not the monorepo root.
 
 When using `react-native-ci-cli`, you can provide additional flags to modify its default behavior.
 
@@ -32,6 +35,12 @@ The following are **feature flags** that can use in silent mode (they are ignore
 
 - `--lint`: Generate ESLint workflow to run on every PR.
 - `--jest`: Generate Jest workflow to run on every PR.
+
+## 💬 Your feedback
+
+This tool is supposed to be helpful to as many developers as possible - and therefore we are open for your ideas and general feedback! If you want to share your opinion about `react-native-ci-cli` or
+have some thoughts about how it could be further developed, don't hesitate to create an issue or contact 
+the maintainers directly.
 
 ## 📋 License
 
