@@ -1,7 +1,8 @@
 import { Toolbox } from 'gluegun/build/types/domain/toolbox'
 import { ProjectContext } from '../types'
+import { join } from 'path'
 
-const COMMAND = 'ts'
+const FLAG = 'ts'
 
 const execute = () => async (toolbox: Toolbox, context: ProjectContext) => {
   await toolbox.dependencies.add('typescript', context.packageManager, true)
@@ -9,14 +10,21 @@ const execute = () => async (toolbox: Toolbox, context: ProjectContext) => {
   await toolbox.scripts.add('ts:check', 'tsc -p . --noEmit')
 
   await toolbox.workflows.generate(
-    'typescript.ejf',
+    join('typescript', 'typescript.ejf'),
     context.path.absFromRepoRoot('.github', 'workflows', 'typescript.yml'),
     context
   )
 
-  toolbox.print.info('✔ Created Typescript workflow.')
+  if (!toolbox.filesystem.exists('tsconfig.json')) {
+    await toolbox.template.generate({
+      template: join('typescript', 'tsconfig.json.ejs'),
+      target: 'tsconfig.json',
+    })
+  }
 
-  return `--${COMMAND}`
+  toolbox.interactive.step('Created Typescript check workflow.')
+
+  return `--${FLAG}`
 }
 
 const run = async (
@@ -24,8 +32,12 @@ const run = async (
 ): Promise<
   (toolbox: Toolbox, context: ProjectContext) => Promise<string> | null
 > => {
-  if (toolbox.skipInteractiveForCommand(COMMAND)) {
+  if (toolbox.skipInteractiveForRecipe(FLAG)) {
     return execute()
+  }
+
+  if (toolbox.skipInteractive()) {
+    return null
   }
 
   const proceed = await toolbox.interactive.confirm(
