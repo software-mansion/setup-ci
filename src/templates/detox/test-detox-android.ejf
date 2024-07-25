@@ -20,16 +20,19 @@ name: Test Detox Android
 on: [pull_request]
 
 jobs:
-  build-debug-android:
-    uses: ./.github/workflows/build-debug-android.yml
-
   test-detox-android:
     runs-on: ubuntu-latest
-    needs: [build-debug-android]
     timeout-minutes: 60
     env:
       API_LEVEL: 34
     steps:
+      - name: ⌛ Wait for build to finish
+        uses: poseidon/wait-for-status-checks@v0.5.0
+        with:
+          token: ${{ secrets.TOKEN }}
+          delay: 20s
+          match_pattern: build-debug-android
+
       - name: 🏗 Checkout repository
         uses: actions/checkout@v4
 

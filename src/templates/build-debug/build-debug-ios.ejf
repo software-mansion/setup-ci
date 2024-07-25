@@ -12,8 +12,7 @@ const build = {
 
 name: Build iOS Debug App
 
-on: 
-   workflow_call:
+on: [pull_request]
 
 jobs:
   build-debug-ios:
