@@ -36,6 +36,7 @@ The following are **feature flags** that can use in silent mode (they are ignore
 
 - `--lint`: Generate ESLint workflow to run on every PR.
 - `--jest`: Generate Jest workflow to run on every PR.
+- `--ts`: Generate Typescript check workflow to run on every PR.
 
 ## 💬 Your feedback
 
