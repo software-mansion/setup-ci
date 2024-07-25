@@ -1,4 +1,4 @@
-<center><h1>react-native-ci-cli</h1></center>
+<h1><center>react-native-ci-cli</center></h1>
 
 <p align="center">CLI to simplify CI setup in your React Native project.</p>
 
