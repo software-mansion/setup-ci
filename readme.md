@@ -15,7 +15,7 @@ Let's try to use `react-native-ci-cli` to do the heavy lifting and generate all 
 <p align="center">
   <img 
     style="width: 80%;"
-    src=".github/assets/example-usage.gif"/>
+    src="./docs/example-usage.gif"/>
 </p>
 
 Alternatively, we can go fully automatic by passing flags `--silent --lint --jest` to avoid all interaction with the script. You can check the section below for more information about available flags!
