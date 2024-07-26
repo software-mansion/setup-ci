@@ -17,7 +17,7 @@
     "noUnusedLocals": true,
     "sourceMap": true,
     "outDir": "build",
-    "strict": false,
+    "strict": true,
     "target": "es5",
     "declaration": true,
     "declarationDir": "build/types",

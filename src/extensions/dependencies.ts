@@ -1,7 +1,6 @@
-import { GluegunToolbox } from 'gluegun'
-import { PackageManager } from '../types'
+import { CycliToolbox, PackageManager } from '../types'
 
-module.exports = (toolbox: GluegunToolbox) => {
+module.exports = (toolbox: CycliToolbox) => {
   const { filesystem, packageManager } = toolbox
 
   const exists = (name: string): boolean => {
@@ -54,5 +53,13 @@ module.exports = (toolbox: GluegunToolbox) => {
     exists,
     existsDev,
     add,
+  }
+}
+
+export interface DependenciesExtension {
+  dependencies: {
+    exists: (name: string) => boolean
+    existsDev: (name: string) => boolean
+    add: (name: string, manager: PackageManager, dev?: boolean) => Promise<void>
   }
 }

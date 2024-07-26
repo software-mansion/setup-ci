@@ -1,8 +1,7 @@
-import { GluegunToolbox } from 'gluegun'
-import { ProjectContext } from '../types'
+import { CycliToolbox, ProjectContext } from '../types'
 import { parse, stringify } from 'yaml'
 
-module.exports = (toolbox: GluegunToolbox) => {
+module.exports = (toolbox: CycliToolbox) => {
   const generate = async (
     template: string,
     target: string,
@@ -26,4 +25,15 @@ module.exports = (toolbox: GluegunToolbox) => {
   }
 
   toolbox.workflows = { generate }
+}
+
+export interface WorkflowsExtension {
+  workflows: {
+    generate: (
+      template: string,
+      target: string,
+      context: ProjectContext,
+      props?: Record<string, string>
+    ) => Promise<void>
+  }
 }

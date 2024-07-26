@@ -1,35 +1,35 @@
-import { Toolbox } from 'gluegun/build/types/domain/toolbox'
-import { ProjectContext } from '../types'
+import { CycliToolbox, ProjectContext } from '../types'
 
 const FLAG = 'jest'
 
-const execute = () => async (toolbox: Toolbox, context: ProjectContext) => {
-  await toolbox.dependencies.add('jest', context.packageManager, true)
+const execute =
+  () => async (toolbox: CycliToolbox, context: ProjectContext) => {
+    await toolbox.dependencies.add('jest', context.packageManager, true)
 
-  await toolbox.scripts.add('test', 'jest')
+    await toolbox.scripts.add('test', 'jest')
 
-  await toolbox.workflows.generate(
-    'jest.ejf',
-    context.path.absFromRepoRoot('.github', 'workflows', 'jest.yml'),
-    context
-  )
+    await toolbox.workflows.generate(
+      'jest.ejf',
+      context.path.absFromRepoRoot('.github', 'workflows', 'jest.yml'),
+      context
+    )
 
-  toolbox.interactive.step('Created Jest workflow.')
+    toolbox.interactive.step('Created Jest workflow.')
 
-  return `--${FLAG}`
-}
+    return `--${FLAG}`
+  }
 
 const run = async (
-  toolbox: Toolbox
+  toolbox: CycliToolbox
 ): Promise<
-  (toolbox: Toolbox, context: ProjectContext) => Promise<string> | null
+  (toolbox: CycliToolbox, context: ProjectContext) => Promise<string> | null
 > => {
   if (toolbox.skipInteractiveForRecipe(FLAG)) {
     return execute()
   }
 
   if (toolbox.skipInteractive()) {
-    return null
+    return () => null
   }
 
   const proceed = await toolbox.interactive.confirm(
@@ -37,7 +37,7 @@ const run = async (
   )
 
   if (!proceed) {
-    return
+    return () => null
   }
 
   return execute()

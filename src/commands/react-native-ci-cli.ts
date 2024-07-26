@@ -5,11 +5,11 @@ import runJest from '../recipes/jest'
 import runTypescript from '../recipes/typescript'
 import isGitDirty from 'is-git-dirty'
 import sequentialPromiseMap from '../utils/sequentialPromiseMap'
-import { ProjectContext } from '../types'
+import { CycliToolbox, ProjectContext } from '../types'
 
 const SKIP_GIT_CHECK_FLAG = 'skip-git-check'
 
-const runReactNativeCiCli = async (toolbox: GluegunToolbox) => {
+const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
   toolbox.interactive.intro('Welcome to React Native CI CLI')
 
   if (isGitDirty() == null) {
@@ -23,7 +23,7 @@ const runReactNativeCiCli = async (toolbox: GluegunToolbox) => {
       )
     }
 
-    const proceed = await toolbox.interactive.confirm(
+    const proceed = toolbox.interactive.confirm(
       'You have uncommitted changes. Do you want to proceed?'
     )
 
@@ -71,11 +71,13 @@ const command: GluegunCommand = {
   name: 'react-native-ci-cli',
   run: async (toolbox: GluegunToolbox) => {
     try {
-      await runReactNativeCiCli(toolbox)
+      await runReactNativeCiCli(toolbox as CycliToolbox)
     } catch (error) {
-      toolbox.interactive.error(
-        `Failed to execute react-native-ci-cli with following error:\n${error.message}`
-      )
+      if (error instanceof Error) {
+        toolbox.interactive.error(
+          `Failed to execute react-native-ci-cli with following error:\n${error.message}`
+        )
+      }
     } finally {
       process.exit()
     }

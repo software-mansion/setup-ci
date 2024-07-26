@@ -16,7 +16,9 @@
     "test": "jest",
     "watch": "jest --watch",
     "snapupdate": "jest --updateSnapshot",
-    "coverage": "jest --coverage"
+    "coverage": "jest --coverage",
+    "ts:check": "tsc -p . --noEmit",
+    "lint": "eslint \"**/*.{js,jsx,ts,tsx}\""
   },
   "files": [
     "build",
