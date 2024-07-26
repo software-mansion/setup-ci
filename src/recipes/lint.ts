@@ -12,9 +12,11 @@ const ESLINT_CONFIGURATION_FILES = [
 ]
 
 const existsEslintConfigurationFile = (toolbox: CycliToolbox): boolean =>
-  !!toolbox.filesystem
-    .list()
-    ?.some((f) => ESLINT_CONFIGURATION_FILES.includes(f))
+  Boolean(
+    toolbox.filesystem
+      .list()
+      ?.some((f) => ESLINT_CONFIGURATION_FILES.includes(f))
+  )
 
 const execute =
   () => async (toolbox: CycliToolbox, context: ProjectContext) => {
@@ -49,14 +51,14 @@ const execute =
 const run = async (
   toolbox: CycliToolbox
 ): Promise<
-  (toolbox: CycliToolbox, context: ProjectContext) => Promise<string> | null
+  ((toolbox: CycliToolbox, context: ProjectContext) => Promise<string>) | null
 > => {
   if (toolbox.skipInteractiveForRecipe(FLAG)) {
     return execute()
   }
 
   if (toolbox.skipInteractive()) {
-    return () => null
+    return null
   }
 
   const proceed = await toolbox.interactive.confirm(
@@ -64,7 +66,7 @@ const run = async (
   )
 
   if (!proceed) {
-    return () => null
+    return null
   }
 
   return execute()

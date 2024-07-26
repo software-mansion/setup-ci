@@ -23,7 +23,7 @@ const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
       )
     }
 
-    const proceed = toolbox.interactive.confirm(
+    const proceed = await toolbox.interactive.confirm(
       'You have uncommitted changes. Do you want to proceed?'
     )
 
@@ -42,7 +42,7 @@ const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
   const typescriptExecutor = await runTypescript(toolbox)
 
   const executors = [lintExecutor, jestExecutor, typescriptExecutor].filter(
-    Boolean
+    (executor) => executor != null
   )
 
   if (executors.length === 0) {
