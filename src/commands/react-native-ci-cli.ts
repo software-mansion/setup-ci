@@ -2,6 +2,7 @@ import { GluegunCommand, GluegunToolbox } from 'gluegun'
 import { SKIP_INTERACTIVE_FLAG } from '../constants'
 import runLint from '../recipes/lint'
 import runJest from '../recipes/jest'
+import runTypescript from '../recipes/typescript'
 import runDetox from '../recipes/detox'
 import isGitDirty from 'is-git-dirty'
 import sequentialPromiseMap from '../utils/sequentialPromiseMap'
@@ -39,9 +40,15 @@ const runReactNativeCiCli = async (toolbox: GluegunToolbox) => {
 
   const lintExecutor = await runLint(toolbox)
   const jestExecutor = await runJest(toolbox)
+  const typescriptExecutor = await runTypescript(toolbox)
   const detoxExecutor = await runDetox(toolbox)
 
-  const executors = [lintExecutor, jestExecutor, detoxExecutor].filter(Boolean)
+  const executors = [
+    lintExecutor,
+    jestExecutor,
+    typescriptExecutor,
+    detoxExecutor,
+  ].filter(Boolean)
 
   if (executors.length === 0) {
     toolbox.interactive.outro('Nothing to do here. Cheers! 🎉')

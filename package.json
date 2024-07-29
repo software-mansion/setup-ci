@@ -1,6 +1,6 @@
 {
   "name": "react-native-ci-cli",
-  "version": "0.0.3",
+  "version": "0.0.10",
   "description": "react-native-ci-cli CLI",
   "types": "build/types/types.d.ts",
   "bin": {
@@ -9,7 +9,7 @@
   "scripts": {
     "clean-build": "rimraf -rf ./build",
     "compile": "tsc -p .",
-    "copy-templates": "copyfiles -u 2 ./src/templates/* ./build/templates",
+    "copy-templates": "cp -r ./src/templates/ ./build/templates",
     "build": "yarn clean-build && yarn compile && yarn copy-templates",
     "prepublishOnly": "yarn build",
     "format": "eslint \"**/*.{js,jsx,ts,tsx}\" --fix && prettier \"**/*.{js,jsx,ts,tsx,json}\" --write",
@@ -22,7 +22,6 @@
     "build",
     "LICENSE",
     "readme.md",
-    "docs",
     "bin"
   ],
   "license": "MIT",

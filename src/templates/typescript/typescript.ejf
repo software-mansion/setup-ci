@@ -1,0 +1,28 @@
+<%
+const install = {
+  yarn: "yarn",
+  npm: "npm install"
+}
+
+const run = {
+  yarn: `yarn --cwd ${props.pathRelativeToRoot} ts:check`,
+  npm: `npm run ts:check --prefix ${props.pathRelativeToRoot}`
+}
+%>
+
+name: Run Typescript
+on: [pull_request]
+
+jobs:
+   test:
+      name: Typescript
+      runs-on: ubuntu-latest
+      steps:
+         - name: 🏗 Setup repo
+           uses: actions/checkout@v4
+
+         - name: 📦 Install dependencies
+           run: <%= install[props.packageManager] %>
+
+         - name: 🔨 Run Typescript
+           run: <%= run[props.packageManager] %>
