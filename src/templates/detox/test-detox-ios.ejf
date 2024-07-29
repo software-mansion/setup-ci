@@ -45,7 +45,7 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           path: ios-release-build/
-          key: ios-release-build-${{ github.sha }}
+          key: ios-release-build-${{ github.event.pull_request.head.sha }}
 
       - name: 📋 Run Detox tests
         run: <%= runTests[props.packageManager] %>

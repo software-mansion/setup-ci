@@ -12,6 +12,7 @@ const createReleaseBuildWorkflowAndroid = async (
       `npx expo prebuild --${context.packageManager} &&`,
       'cd android &&',
       './gradlew assembleRelease assembleAndroidTest',
+      '-DtestBuildType=release',
     ].join(' ')
   )
 
