@@ -5,7 +5,10 @@ export type Platform = 'android' | 'ios'
 export interface ExpoConfig {
   expo?: {
     name: string
-    plugins: string[]
+    plugins?: string[]
+    android: {
+      package?: string
+    }
   }
 }
 

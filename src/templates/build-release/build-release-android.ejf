@@ -5,12 +5,12 @@ const install = {
 }
 
 const build = {
-  yarn: `yarn --cwd ${props.pathRelativeToRoot} build:debug:android`,
-  npm: `npm run build:debug:android --prefix ${props.pathRelativeToRoot}`
+  yarn: `yarn --cwd ${props.pathRelativeToRoot} build:release:android`,
+  npm: `npm run build:release:android --prefix ${props.pathRelativeToRoot}`
 }
 %>
 
-name: Build Android Debug App
+name: Build Android Release App
 
 on: [pull_request]
 
@@ -18,17 +18,16 @@ jobs:
   lookup-cached-build:
     runs-on: ubuntu-latest
     outputs:
-      build-exists: ${{ steps.android-debug-restore.outputs.cache-hit }}
+      build-exists: ${{ steps.android-release-restore.outputs.cache-hit }}
     steps:
       - name: 🐛 Try to restore build from cache
-        id: android-debug-restore
+        id: android-release-restore
         uses: actions/cache/restore@v4
         with:
-          path: android-debug-build/
-          key: android-debug-build
           lookup-only: true
+          key: android-release-build-${{ github.sha }}
 
-  build-debug-android:
+  build-release-android:
     needs: lookup-cached-build 
     if: needs.lookup-cached-build.outputs.build-exists != 'true'
     runs-on: ubuntu-latest
@@ -51,13 +50,13 @@ jobs:
 
       - name: 📁 Prepare cache folder 
         run: |
-          mkdir android-debug-build
-          mv android/app/build/outputs/apk/debug/app-debug.apk android-debug-build/android-debug.apk
-          mv android/app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk android-debug-build/android-debug-test.apk
+          mkdir android-release-build
+          mv android/app/build/outputs/apk/release/app-release.apk android-release-build/android-release.apk
+          mv android/app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk android-release-build/android-test.apk
 
       - name: 📡 Store built app in cache
-        id: android-debug-save
+        id: android-release-save
         uses: actions/cache/save@v4
         with:
-          path: android-debug-build/
-          key: android-debug-build
+          path: android-release-build/
+          key: android-release-build-${{ github.sha }}

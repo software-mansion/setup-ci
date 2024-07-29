@@ -24,9 +24,8 @@ jobs:
         id: ios-release-restore
         uses: actions/cache/restore@v4
         with:
-          path: ios-release-build/
-          key: ios-release-build
           lookup-only: true
+          key: ios-release-build-${{ github.sha }}
 
   build-release-ios:
     needs: lookup-cached-build 
@@ -50,11 +49,11 @@ jobs:
       - name: 📁 Prepare cache folder 
         run: |
           mkdir ios-release-build
-          mv ios/build/Build/Products/Release-iphonesimulator/clicitestapp.app ios-release-build/ios-release.app
+          mv ios/build/Build/Products/Release-iphonesimulator/<%= props.iOsAppName %>.app ios-release-build/ios-release.app
 
       - name: 📡 Store built app in cache
         id: ios-release-save
         uses: actions/cache/save@v4
         with:
           path: ios-release-build/
-          key: ios-release-build
+          key: ios-release-build-${{ github.sha }}

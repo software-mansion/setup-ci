@@ -4,11 +4,6 @@ const install = {
   npm: "npm install"
 }
 
-const startBundler = {
-  yarn: `yarn --cwd ${props.pathRelativeToRoot} start`,
-  npm: `npm run start --prefix ${props.pathRelativeToRoot}`
-}
-
 const runTests = {
   yarn: `yarn --cwd ${props.pathRelativeToRoot} detox:test:android`,
   npm: `npm run detox:test:android --prefix ${props.pathRelativeToRoot}`
@@ -29,9 +24,9 @@ jobs:
       - name: ⌛ Wait for build to finish
         uses: poseidon/wait-for-status-checks@v0.5.0
         with:
-          token: ${{ secrets.TOKEN }}
+          token: ${{ secrets.GH_TOKEN }}
           delay: 20s
-          match_pattern: build-debug-android
+          match_pattern: build-release-android
 
       - name: 🏗 Checkout repository
         uses: actions/checkout@v4
@@ -52,11 +47,11 @@ jobs:
           cache: 'gradle'
 
       - name: 🐛 Try to restore build from cache
-        id: android-debug-restore
+        id: android-release-restore
         uses: actions/cache/restore@v4
         with:
-          path: android-debug-build/
-          key: android-debug-build
+          path: android-release-build/
+          key: android-release-build-${{ github.sha }}
 
       - name: 🏎️ Enable KVM
         run: |
@@ -82,5 +77,4 @@ jobs:
           emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -camera-front none
           avd-name: e2e_emulator
           arch: x86_64
-          script: |
-            <%= startBundler[props.packageManager] %> & <%= runTests[props.packageManager] %>; x=$?; kill -9 $(pgrep -f "[n]ode_modules/.bin/expo.start") || true; exit $x
+          script: <%= runTests[props.packageManager] %>

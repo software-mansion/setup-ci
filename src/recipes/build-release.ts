@@ -2,8 +2,29 @@ import { Toolbox } from 'gluegun/build/types/domain/toolbox'
 import { Platform, ProjectContext } from '../types'
 import { join } from 'path'
 
-const createReleaseBuildWorkflowAndroid = async (toolbox: Toolbox) => {
-  // NOTE: Currently not needed.
+const createReleaseBuildWorkflowAndroid = async (
+  toolbox: Toolbox,
+  context: ProjectContext
+) => {
+  await toolbox.scripts.add(
+    'build:release:android',
+    [
+      `npx expo prebuild --${context.packageManager} &&`,
+      'cd android &&',
+      './gradlew assembleRelease assembleAndroidTest',
+    ].join(' ')
+  )
+
+  await toolbox.workflows.generate(
+    join('build-release', 'build-release-android.ejf'),
+    context.path.absFromRepoRoot(
+      '.github',
+      'workflows',
+      'build-release-android.yml'
+    ),
+    context
+  )
+
   toolbox.interactive.step('Created Android release build workflow for Expo.')
 }
 
@@ -33,7 +54,10 @@ const createReleaseBuildWorkflowIOs = async (
       'workflows',
       'build-release-ios.yml'
     ),
-    context
+    context,
+    {
+      iOsAppName: context.iOsAppName,
+    }
   )
 
   toolbox.interactive.step('Created iOS release build workflow for Expo.')
@@ -44,25 +68,25 @@ export const createReleaseBuildWorkflowsForExpo = async (
   context: ProjectContext,
   platforms: Platform[]
 ): Promise<void> => {
-  const androidDir = toolbox.filesystem.exists('android')
-  const iosDir = toolbox.filesystem.exists('ios')
+  const existsAndroidDir = toolbox.filesystem.exists('android')
+  const existsIOsDir = toolbox.filesystem.exists('ios')
 
-  // Using expo prebuild if android and iOS not generated yet
-  if (!androidDir && !iosDir) {
+  if (!context.expoConfigJson?.expo?.android.package) {
     toolbox.print.info('⚙️ Setting up expo prebuild.')
     await toolbox.system.spawn(
       `npx expo prebuild --${context.packageManager}`,
       { stdio: 'inherit' }
     )
-    const spinner = toolbox.print.spin('🧹  Cleaning up expo prebuild.')
-    await toolbox.system.run(
-      `npx expo prebuild --${context.packageManager} --clean`
-    )
+    const spinner = toolbox.print.spin('🧹 Cleaning up expo prebuild.')
+
+    if (!existsAndroidDir) toolbox.filesystem.remove('android')
+    if (!existsIOsDir) toolbox.filesystem.remove('ios')
+
     spinner.stop()
   }
 
   if (platforms.includes('android'))
-    await createReleaseBuildWorkflowAndroid(toolbox)
+    await createReleaseBuildWorkflowAndroid(toolbox, context)
 
   if (platforms.includes('ios'))
     await createReleaseBuildWorkflowIOs(toolbox, context)
