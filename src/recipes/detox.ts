@@ -102,6 +102,13 @@ const createDetoxWorkflowsForExpo = async (
   )
 
   toolbox.interactive.step('Created Detox workflow for Expo.')
+
+  toolbox.interactive.warning(
+    [
+      'Remember to create GH_TOKEN repository secret to make Detox workflow work.',
+      'For more information check the "GitHub token" section in README.',
+    ].join(' ')
+  )
 }
 
 const execute = () => async (toolbox: Toolbox, context: ProjectContext) => {
