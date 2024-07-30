@@ -1,4 +1,9 @@
-import { CycliToolbox, PackageManager, ProjectContext } from '../types'
+import {
+  CycliToolbox,
+  PackageJson,
+  PackageManager,
+  ProjectContext,
+} from '../types'
 import { LOCK_FILE_TO_MANAGER } from '../constants'
 import { lookItUpSync } from 'look-it-up'
 import { join, relative } from 'path'
@@ -10,7 +15,7 @@ module.exports = (toolbox: CycliToolbox) => {
     const lockFiles =
       filesystem
         .list(repoRoot)
-        ?.filter((fileName) =>
+        ?.filter((fileName: string) =>
           Object.keys(LOCK_FILE_TO_MANAGER).includes(fileName)
         ) || []
 
@@ -31,6 +36,16 @@ module.exports = (toolbox: CycliToolbox) => {
     return detectedLockFile
   }
 
+  const getPackageJson = (): PackageJson => {
+    if (!filesystem.exists('package.json')) {
+      throw Error(
+        '❗ No package.json found in current directory. Are you sure you are in a project directory?'
+      )
+    }
+
+    return filesystem.read('package.json', 'json')
+  }
+
   const getRepoRoot = (): string => {
     return (
       lookItUpSync((dir) =>
@@ -39,16 +54,8 @@ module.exports = (toolbox: CycliToolbox) => {
     )
   }
 
-  const getPackageRoot = (): string => {
-    if (!filesystem.exists('package.json')) {
-      throw Error(
-        '❗ No package.json found in current directory. Are you sure you are in a project directory?'
-      )
-    }
-
-    const packageJson = filesystem.read('package.json', 'json')
-
-    if (packageJson?.workspaces) {
+  const getPackageRoot = (packageJson: PackageJson): string => {
+    if (packageJson.workspaces) {
       throw Error(
         '❗ The current directory is workspace root directory. Please run the script again from selected package root directory.'
       )
@@ -58,8 +65,10 @@ module.exports = (toolbox: CycliToolbox) => {
   }
 
   const obtain = (): ProjectContext => {
+    const packageJson = getPackageJson()
+
     const repoRoot = getRepoRoot()
-    const packageRoot = getPackageRoot()
+    const packageRoot = getPackageRoot(packageJson)
 
     const relFromRepoRoot = (path: string): string =>
       relative(repoRoot, path) || '.'
@@ -75,6 +84,7 @@ module.exports = (toolbox: CycliToolbox) => {
         relFromRepoRoot,
         absFromRepoRoot,
       },
+      packageJson,
     }
   }
 

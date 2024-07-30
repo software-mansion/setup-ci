@@ -4,7 +4,7 @@ const FLAG = 'jest'
 
 const execute =
   () => async (toolbox: CycliToolbox, context: ProjectContext) => {
-    await toolbox.dependencies.add('jest', context.packageManager, true)
+    await toolbox.dependencies.addDev('jest', context)
 
     await toolbox.scripts.add('test', 'jest')
 

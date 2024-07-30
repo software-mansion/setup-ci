@@ -5,7 +5,7 @@ const FLAG = 'ts'
 
 const execute =
   () => async (toolbox: CycliToolbox, context: ProjectContext) => {
-    await toolbox.dependencies.add('typescript', context.packageManager, true)
+    await toolbox.dependencies.addDev('typescript', context)
 
     await toolbox.scripts.add('ts:check', 'tsc -p . --noEmit')
 

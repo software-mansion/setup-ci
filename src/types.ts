@@ -9,6 +9,16 @@ import { WorkflowsExtension } from './extensions/workflows'
 export type PackageManager = 'yarn' | 'npm'
 export type LockFile = 'yarn.lock' | 'package-lock.json'
 
+export interface PackageJson {
+  dependencies?: {
+    [key: string]: string
+  }
+  devDependencies?: {
+    [key: string]: string
+  }
+  workspaces?: string[]
+}
+
 export interface ProjectContext {
   packageManager: PackageManager
   path: {
@@ -17,6 +27,7 @@ export interface ProjectContext {
     relFromRepoRoot: (p: string) => string
     absFromRepoRoot: (...p: string[]) => string
   }
+  packageJson: PackageJson
 }
 
 export type CycliToolbox = {
