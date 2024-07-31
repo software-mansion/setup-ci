@@ -44,7 +44,11 @@ const execute =
 
     await toolbox.workflows.generate(
       join('lint', 'lint.ejf'),
-      context.path.absFromRepoRoot('.github', 'workflows', 'lint.yml'),
+      context.path.absFromRepoRoot(
+        '.github',
+        'workflows',
+        `${context.packageJson.name}-lint.yml`
+      ),
       context
     )
 

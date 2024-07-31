@@ -11,8 +11,10 @@ const run = {
 %>
 
 name: Check ESLint
-on: [pull_request]
-
+on:
+  pull_request:
+    paths:
+      - <%= ${props.pathRelativeToRoot} %>/**
 jobs:
    test:
       name: ESLint

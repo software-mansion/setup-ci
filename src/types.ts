@@ -10,6 +10,7 @@ export type PackageManager = 'yarn' | 'npm'
 export type LockFile = 'yarn.lock' | 'package-lock.json'
 
 export interface PackageJson {
+  name: string
   dependencies?: {
     [key: string]: string
   }
