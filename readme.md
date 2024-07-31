@@ -9,7 +9,7 @@ directory of the app for which you want to setup workflows.
 
 ## 💡 Example
 
-Say we want to setup GitHub actions that run ESLint check and Jest tests on our project every time we create or push to an existing Pull Request. 
+Say we want to setup GitHub actions that run ESLint check and Jest tests on our project every time we create or push to an existing Pull Request.
 Let's try to use `react-native-ci-cli` to do the heavy lifting and generate all the necessary configuration.
 
 <p align="center">
@@ -22,9 +22,9 @@ Alternatively, we can go fully automatic by passing flags `--silent --lint --jes
 
 ## ⚙️ Features
 
-* **Currently only GitHub actions are supported as your CI.**
-* **npm** and **yarn** are supported as package managers and they will be detected automatically.
-* Monorepo structure is supported, but make sure you run the script from app directory, 
+- **Currently only GitHub actions are supported as your CI.**
+- **npm** and **yarn** are supported as package managers and they will be detected automatically.
+- Monorepo structure is supported, but make sure you run the script from app directory,
   not the monorepo root.
 
 When using `react-native-ci-cli`, you can provide additional flags to modify its default behavior.
@@ -64,6 +64,10 @@ The following are **feature flags** that can be used in silent mode (they are ig
     <td style="vertical-align: middle;">Generate Typescript check workflow to run on every PR.</td>
   </tr>
   <tr>
+    <td style="vertical-align: middle;">--prettier</td>
+    <td style="vertical-align: middle;">Generate Prettier check workflow to run on every PR.</td>
+  </tr>
+  <tr>
     <td style="vertical-align: middle;">--eas-update</td>
     <td style="vertical-align: middle;">Generate EAS Update and preview workflow to run on every PR.</td>
   </tr>
@@ -88,7 +92,7 @@ as you will always be prompted to create secrets if necessary. The following tab
 ## 💬 Your feedback
 
 This tool is supposed to be helpful to as many developers as possible - and therefore we are open for your ideas and general feedback! If you want to share your opinion about `react-native-ci-cli` or
-have some thoughts about how it could be further developed, don't hesitate to create an issue or contact 
+have some thoughts about how it could be further developed, don't hesitate to create an issue or contact
 the maintainers directly.
 
 ## 📋 License

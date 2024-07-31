@@ -10,11 +10,11 @@ const run = {
 }
 %>
 
-name: Check ESLint
+name: ESLint
 on: [pull_request]
 
 jobs:
-   test:
+   eslint:
       name: ESLint
       runs-on: ubuntu-latest
       steps:

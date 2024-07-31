@@ -21,6 +21,16 @@ const execute = () => async (toolbox: Toolbox, context: ProjectContext) => {
   // eslint@9.x introduces new configuration format that is not supported by widely used plugins yet.
   // https://eslint.org/docs/latest/use/migrate-to-9.0.0
   await toolbox.dependencies.add('eslint@^8', context.packageManager, true)
+  await toolbox.dependencies.add(
+    'eslint-plugin-prettier',
+    context.packageManager,
+    true
+  )
+  await toolbox.dependencies.add(
+    'eslint-config-prettier',
+    context.packageManager,
+    true
+  )
 
   await toolbox.scripts.add('lint', 'eslint "**/*.{js,jsx,ts,tsx}"')
 
