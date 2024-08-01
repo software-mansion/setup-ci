@@ -10,7 +10,12 @@ const execute =
 
     await toolbox.scripts.add(
       'prettier:check',
-      'prettier --check "src/**/*.{ts,tsx,js,jsx,json,css,scss,md}"'
+      'prettier --check "**/*.{ts,tsx,js,jsx,json,css,scss,md}"'
+    )
+
+    await toolbox.scripts.add(
+      'prettier:write',
+      'prettier --write "**/*.{ts,tsx,js,jsx,json,css,scss,md}"'
     )
 
     await toolbox.workflows.generate(
