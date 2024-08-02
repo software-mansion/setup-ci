@@ -1,13 +1,13 @@
 import { GluegunCommand, GluegunToolbox } from 'gluegun'
 import { SKIP_INTERACTIVE_FLAG } from '../constants'
-import runLint from '../recipes/lint'
-import runJest from '../recipes/jest'
-import runTypescriptCheck from '../recipes/typescript'
-import runPrettierCheck from '../recipes/prettier'
-import runEasUpdate from '../recipes/eas-update'
+import lint from '../recipes/lint'
+import jest from '../recipes/jest'
+import typescriptCheck from '../recipes/typescript'
+import prettierCheck from '../recipes/prettier'
+import easUpdate from '../recipes/eas-update'
 import isGitDirty from 'is-git-dirty'
 import sequentialPromiseMap from '../utils/sequentialPromiseMap'
-import { ProjectContext } from '../types'
+import { Option, ProjectContext } from '../types'
 
 const SKIP_GIT_CHECK_FLAG = 'skip-git-check'
 
@@ -39,11 +39,11 @@ const runReactNativeCiCli = async (toolbox: GluegunToolbox) => {
 
   const context: ProjectContext = toolbox.projectContext.obtain()
 
-  const lintExecutor = await runLint(toolbox, context)
-  const jestExecutor = await runJest(toolbox, context)
-  const typescriptExecutor = await runTypescriptCheck(toolbox, context)
-  const prettierExecutor = await runPrettierCheck(toolbox, context)
-  const easUpdateExecutor = await runEasUpdate(toolbox, context)
+  const lintExecutor = await lint.run(toolbox, context)
+  const jestExecutor = await jest.run(toolbox, context)
+  const typescriptExecutor = await typescriptCheck.run(toolbox, context)
+  const prettierExecutor = await prettierCheck.run(toolbox, context)
+  const easUpdateExecutor = await easUpdate.run(toolbox, context)
 
   const executors = [
     lintExecutor,
@@ -70,13 +70,42 @@ const runReactNativeCiCli = async (toolbox: GluegunToolbox) => {
 
   const usedFlags = executorResults.join(' ')
 
-  toolbox.interactive.success(
-    `We're all set 🎉.\nNext time you can run the command in silent mode using npx create-react-native-ci-cli --${SKIP_INTERACTIVE_FLAG} ${usedFlags}.`
-  )
+  toolbox.interactive.success(`We're all set 🎉.`)
+
+  if (!toolbox.skipInteractive()) {
+    toolbox.interactive.success(
+      `Next time you can run the command in silent mode using npx create-react-native-ci-cli --${SKIP_INTERACTIVE_FLAG} ${usedFlags}.`
+    )
+  }
 }
 
-const command: GluegunCommand = {
+const getFeatureOptions = (): Option[] => {
+  return [
+    lint.option,
+    jest.option,
+    typescriptCheck.option,
+    prettierCheck.option,
+    easUpdate.option,
+  ]
+}
+
+const command: CycliCommand = {
   name: 'react-native-ci-cli',
+  description: 'Quickly setup CI workflows for your React Native app',
+  options: [
+    { flag: 'help', description: 'Print help message' },
+    { flag: 'version', description: 'Print version' },
+    {
+      flag: 'skip-git-check',
+      description: 'Skip check for dirty git repository',
+    },
+    {
+      flag: 'silent',
+      description:
+        'Run in silent mode. Combine with feature flags to specify generated workflows',
+    },
+  ],
+  featureOptions: [...getFeatureOptions()],
   run: async (toolbox: GluegunToolbox) => {
     try {
       await runReactNativeCiCli(toolbox)
@@ -91,3 +120,8 @@ const command: GluegunCommand = {
 }
 
 module.exports = command
+
+export type CycliCommand = GluegunCommand & {
+  options: Option[]
+  featureOptions: Option[]
+}
