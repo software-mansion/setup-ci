@@ -50,6 +50,9 @@ const execute =
       await toolbox.template.generate({
         template: join('lint', '.eslintrc.json.ejs'),
         target: '.eslintrc.json',
+        props: {
+          withPrettier,
+        },
       })
 
       toolbox.interactive.step(
@@ -60,10 +63,7 @@ const execute =
     await toolbox.workflows.generate(
       join('lint', 'lint.ejf'),
       context.path.absFromRepoRoot('.github', 'workflows', 'lint.yml'),
-      context,
-      {
-        withPrettier,
-      }
+      context
     )
 
     toolbox.interactive.step('Created ESLint workflow.')
