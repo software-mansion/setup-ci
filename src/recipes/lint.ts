@@ -1,6 +1,7 @@
 import { Toolbox } from 'gluegun/build/types/domain/toolbox'
 import { ProjectContext } from '../types'
 import { join } from 'path'
+import { FLAG as PRETTIER_FLAG } from './prettier'
 
 const FLAG = 'lint'
 
@@ -21,16 +22,25 @@ const execute = () => async (toolbox: Toolbox, context: ProjectContext) => {
   // eslint@9.x introduces new configuration format that is not supported by widely used plugins yet.
   // https://eslint.org/docs/latest/use/migrate-to-9.0.0
   await toolbox.dependencies.add('eslint@^8', context.packageManager, true)
-  await toolbox.dependencies.add(
-    'eslint-plugin-prettier',
-    context.packageManager,
-    true
-  )
-  await toolbox.dependencies.add(
-    'eslint-config-prettier',
-    context.packageManager,
-    true
-  )
+
+  const withPrettier =
+    context.selectedOptions.includes(PRETTIER_FLAG) ||
+    toolbox.dependencies.existsDev('prettier') ||
+    toolbox.dependencies.exists('prettier')
+
+  if (withPrettier) {
+    await toolbox.dependencies.add(
+      'eslint-plugin-prettier',
+      context.packageManager,
+      true
+    )
+
+    await toolbox.dependencies.add(
+      'eslint-config-prettier',
+      context.packageManager,
+      true
+    )
+  }
 
   await toolbox.scripts.add('lint', 'eslint "**/*.{js,jsx,ts,tsx}"')
 
@@ -38,6 +48,9 @@ const execute = () => async (toolbox: Toolbox, context: ProjectContext) => {
     await toolbox.template.generate({
       template: join('lint', '.eslintrc.json.ejs'),
       target: '.eslintrc.json',
+      props: {
+        withPrettier,
+      },
     })
 
     toolbox.interactive.step(
@@ -57,11 +70,13 @@ const execute = () => async (toolbox: Toolbox, context: ProjectContext) => {
 }
 
 const run = async (
-  toolbox: Toolbox
+  toolbox: Toolbox,
+  context: ProjectContext
 ): Promise<
   (toolbox: Toolbox, context: ProjectContext) => Promise<string> | null
 > => {
   if (toolbox.skipInteractiveForRecipe(FLAG)) {
+    context.selectedOptions.push(FLAG)
     return execute()
   }
 
@@ -77,6 +92,7 @@ const run = async (
     return
   }
 
+  context.selectedOptions.push(FLAG)
   return execute()
 }
 

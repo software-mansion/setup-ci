@@ -2,7 +2,7 @@ import { GluegunToolbox } from 'gluegun'
 import { ProjectContext } from '../types'
 import { join } from 'path'
 
-const FLAG = 'prettier'
+export const FLAG = 'prettier'
 
 const execute =
   () => async (toolbox: GluegunToolbox, context: ProjectContext) => {
@@ -50,11 +50,13 @@ const execute =
   }
 
 const run = async (
-  toolbox: GluegunToolbox
+  toolbox: GluegunToolbox,
+  context: ProjectContext
 ): Promise<
   ((toolbox: GluegunToolbox, context: ProjectContext) => Promise<string>) | null
 > => {
   if (toolbox.skipInteractiveForRecipe(FLAG)) {
+    context.selectedOptions.push(FLAG)
     return execute()
   }
 
@@ -70,6 +72,7 @@ const run = async (
     return null
   }
 
+  context.selectedOptions.push(FLAG)
   return execute()
 }
 

@@ -41,11 +41,13 @@ const execute =
   }
 
 const run = async (
-  toolbox: GluegunToolbox
+  toolbox: GluegunToolbox,
+  context: ProjectContext
 ): Promise<
   ((toolbox: GluegunToolbox, context: ProjectContext) => Promise<string>) | null
 > => {
   if (toolbox.skipInteractiveForRecipe(FLAG)) {
+    context.selectedOptions.push(FLAG)
     return execute()
   }
 
@@ -61,6 +63,7 @@ const run = async (
     return null
   }
 
+  context.selectedOptions.push(FLAG)
   return execute()
 }
 

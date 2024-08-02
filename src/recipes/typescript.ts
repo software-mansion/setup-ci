@@ -32,11 +32,13 @@ const execute = () => async (toolbox: Toolbox, context: ProjectContext) => {
 }
 
 const run = async (
-  toolbox: Toolbox
+  toolbox: Toolbox,
+  context: ProjectContext
 ): Promise<
   (toolbox: Toolbox, context: ProjectContext) => Promise<string> | null
 > => {
   if (toolbox.skipInteractiveForRecipe(FLAG)) {
+    context.selectedOptions.push(FLAG)
     return execute()
   }
 
@@ -52,6 +54,7 @@ const run = async (
     return
   }
 
+  context.selectedOptions.push(FLAG)
   return execute()
 }
 

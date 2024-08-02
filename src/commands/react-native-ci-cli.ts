@@ -39,11 +39,11 @@ const runReactNativeCiCli = async (toolbox: GluegunToolbox) => {
 
   const context: ProjectContext = toolbox.projectContext.obtain()
 
-  const lintExecutor = await runLint(toolbox)
-  const jestExecutor = await runJest(toolbox)
-  const typescriptExecutor = await runTypescriptCheck(toolbox)
-  const prettierExecutor = await runPrettierCheck(toolbox)
-  const easUpdateExecutor = await runEasUpdate(toolbox)
+  const lintExecutor = await runLint(toolbox, context)
+  const jestExecutor = await runJest(toolbox, context)
+  const typescriptExecutor = await runTypescriptCheck(toolbox, context)
+  const prettierExecutor = await runPrettierCheck(toolbox, context)
+  const easUpdateExecutor = await runEasUpdate(toolbox, context)
 
   const executors = [
     lintExecutor,
