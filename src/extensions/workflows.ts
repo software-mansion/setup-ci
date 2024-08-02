@@ -6,7 +6,7 @@ module.exports = (toolbox: CycliToolbox) => {
     template: string,
     target: string,
     context: ProjectContext,
-    props: Record<string, string> = {}
+    props: Record<string, string | boolean> = {}
   ) => {
     const workflowYml = parse(
       await toolbox.template.generate({
@@ -33,7 +33,7 @@ export interface WorkflowsExtension {
       template: string,
       target: string,
       context: ProjectContext,
-      props?: Record<string, string>
+      props?: Record<string, string | boolean>
     ) => Promise<void>
   }
 }

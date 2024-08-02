@@ -32,11 +32,13 @@ const execute =
   }
 
 const run = async (
-  toolbox: CycliToolbox
+  toolbox: CycliToolbox,
+  context: ProjectContext
 ): Promise<
   ((toolbox: CycliToolbox, context: ProjectContext) => Promise<string>) | null
 > => {
   if (toolbox.skipInteractiveForRecipe(FLAG)) {
+    context.selectedOptions.push(FLAG)
     return execute()
   }
 
@@ -52,6 +54,7 @@ const run = async (
     return null
   }
 
+  context.selectedOptions.push(FLAG)
   return execute()
 }
 

@@ -5,17 +5,17 @@ const install = {
 }
 
 const run = {
-  yarn: `yarn --cwd ${props.pathRelativeToRoot} ts:check`,
-  npm: `npm run ts:check --prefix ${props.pathRelativeToRoot}`
+  yarn: `yarn --cwd ${props.pathRelativeToRoot} prettier:check`,
+  npm: `npm run prettier:check --prefix ${props.pathRelativeToRoot}`
 }
 %>
 
-name: Typescript check
+name: Prettier check
 on: [pull_request]
 
 jobs:
-   typescript-check:
-      name: Typescript check
+   prettier-check:
+      name: Prettier check
       runs-on: ubuntu-latest
       steps:
          - name: 🏗 Setup repo
@@ -24,5 +24,5 @@ jobs:
          - name: 📦 Install dependencies
            run: <%= install[props.packageManager] %>
 
-         - name: 🔍 Run Typescript check
+         - name: ✨ Run Prettier check
            run: <%= run[props.packageManager] %>

@@ -2,7 +2,9 @@ import { GluegunCommand, GluegunToolbox } from 'gluegun'
 import { SKIP_INTERACTIVE_FLAG } from '../constants'
 import runLint from '../recipes/lint'
 import runJest from '../recipes/jest'
-import runTypescript from '../recipes/typescript'
+import runTypescriptCheck from '../recipes/typescript'
+import runPrettierCheck from '../recipes/prettier'
+import runEasUpdate from '../recipes/eas-update'
 import isGitDirty from 'is-git-dirty'
 import sequentialPromiseMap from '../utils/sequentialPromiseMap'
 import { CycliToolbox, ProjectContext } from '../types'
@@ -37,13 +39,19 @@ const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
 
   const context: ProjectContext = toolbox.projectContext.obtain()
 
-  const lintExecutor = await runLint(toolbox)
-  const jestExecutor = await runJest(toolbox)
-  const typescriptExecutor = await runTypescript(toolbox)
+  const lintExecutor = await runLint(toolbox, context)
+  const jestExecutor = await runJest(toolbox, context)
+  const typescriptExecutor = await runTypescriptCheck(toolbox, context)
+  const prettierExecutor = await runPrettierCheck(toolbox, context)
+  const easUpdateExecutor = await runEasUpdate(toolbox, context)
 
-  const executors = [lintExecutor, jestExecutor, typescriptExecutor].filter(
-    (executor) => executor != null
-  )
+  const executors = [
+    lintExecutor,
+    jestExecutor,
+    typescriptExecutor,
+    prettierExecutor,
+    easUpdateExecutor,
+  ].filter((executor) => executor != null)
 
   if (executors.length === 0) {
     toolbox.interactive.outro('Nothing to do here. Cheers! 🎉')
