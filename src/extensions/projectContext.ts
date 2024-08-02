@@ -71,6 +71,7 @@ module.exports = (toolbox: GluegunToolbox) => {
         relFromRepoRoot,
         absFromRepoRoot,
       },
+      selectedOptions: [],
     }
   }
 

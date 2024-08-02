@@ -8,4 +8,5 @@ export interface ProjectContext {
     relFromRepoRoot: (p: string) => string
     absFromRepoRoot: (...p: string[]) => string
   }
+  selectedOptions: string[]
 }
