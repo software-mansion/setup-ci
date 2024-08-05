@@ -1,5 +1,5 @@
 import { Toolbox } from 'gluegun/build/types/domain/toolbox'
-import { ProjectContext } from '../types'
+import { CycliRecipe, ProjectContext } from '../types'
 import { join } from 'path'
 import { FLAG as PRETTIER_FLAG } from './prettier'
 
@@ -96,4 +96,12 @@ const run = async (
   return execute()
 }
 
-export default run
+export const recipe: CycliRecipe = {
+  meta: {
+    flag: FLAG,
+    description: 'Generate ESLint workflow to run on every PR',
+  },
+  run,
+}
+
+export default recipe
