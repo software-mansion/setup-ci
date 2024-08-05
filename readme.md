@@ -31,15 +31,15 @@ When using `react-native-ci-cli`, you can provide additional flags to modify its
 
 <table>
   <tr>
-    <td style="text-align: center; vertical-align: middle; font-weight: bold">Flag</td>
-    <td style="text-align: center; vertical-align: middle; font-weight: bold">Description</td>
+    <th width="160px" style="text-align: center; vertical-align: middle;">Flag</th>
+    <th style="text-align: center; vertical-align: middle;">Description</th>
   </tr>
   <tr>
     <td style="vertical-align: middle;">--silent</td>
     <td style="vertical-align: middle;">Run the script in silent mode. Combine it with feature flags to specify what workflows you want to generate.</td>
   </tr>
   <tr>
-    <td style="vertical-align: middle;">--silent</td>
+    <td style="vertical-align: middle;">--skip-git-check</td>
     <td style="vertical-align: middle;">By default, the script will prompt the user if there are uncommited changes in working repository. Use this flag to proceed without asking.</td>
   </tr>
 </table>
@@ -48,8 +48,8 @@ The following are **feature flags** that can be used in silent mode (they are ig
 
 <table>
   <tr>
-    <td style="text-align: center; vertical-align: middle; font-weight: bold">Flag</td>
-    <td style="text-align: center; vertical-align: middle; font-weight: bold">Description</td>
+    <th style="text-align: center; vertical-align: middle;">Flag</th>
+    <th style="text-align: center; vertical-align: middle;">Description</th>
   </tr>
   <tr>
     <td style="vertical-align: middle;">--lint</td>
