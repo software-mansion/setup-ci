@@ -7,7 +7,7 @@ import prettierCheck from '../recipes/prettier'
 import easUpdate from '../recipes/eas-update'
 import isGitDirty from 'is-git-dirty'
 import sequentialPromiseMap from '../utils/sequentialPromiseMap'
-import { Option, ProjectContext } from '../types'
+import { ProjectContext } from '../types'
 
 const SKIP_GIT_CHECK_FLAG = 'skip-git-check'
 const COMMAND = 'react-native-ci-cli'
@@ -82,12 +82,15 @@ const runReactNativeCiCli = async (toolbox: GluegunToolbox) => {
 
 const getFeatureOptions = (): Option[] => {
   return [
-    lint.option,
-    jest.option,
-    typescriptCheck.option,
-    prettierCheck.option,
-    easUpdate.option,
-  ]
+    lint.meta,
+    jest.meta,
+    typescriptCheck.meta,
+    prettierCheck.meta,
+    easUpdate.meta,
+  ].map((meta) => ({
+    flag: meta.flag,
+    description: meta.description,
+  }))
 }
 
 const command: CycliCommand = {
@@ -121,6 +124,8 @@ const command: CycliCommand = {
 }
 
 module.exports = command
+
+type Option = { flag: string; description: string }
 
 export type CycliCommand = GluegunCommand & {
   options: Option[]

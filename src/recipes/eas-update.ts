@@ -68,7 +68,7 @@ const run = async (
 }
 
 export const recipe: CycliRecipe = {
-  option: {
+  meta: {
     flag: FLAG,
     description: 'Generate EAS Update and preview workflow to run on every PR',
   },

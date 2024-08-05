@@ -1,5 +1,4 @@
 import { GluegunCommand, GluegunToolbox } from 'gluegun'
-import { Option } from '../types'
 import { CycliCommand } from './react-native-ci-cli'
 
 module.exports = {
@@ -30,7 +29,7 @@ module.exports = {
 
     const maxFlagLength = Math.max(
       ...[...cycliCommand.options, ...cycliCommand.featureOptions].map(
-        (op: Option) => op.flag.length + 2
+        (op) => op.flag.length + 2
       )
     )
 

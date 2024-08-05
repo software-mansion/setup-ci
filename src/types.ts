@@ -2,13 +2,13 @@ import { Toolbox } from 'gluegun/build/types/domain/toolbox'
 
 export type PackageManager = 'yarn' | 'npm'
 
-export interface Option {
+export interface RecipeMeta {
   flag: string
   description: string
 }
 
 export interface CycliRecipe {
-  option: Option
+  meta: RecipeMeta
   run: (
     toolbox: Toolbox,
     context: ProjectContext
