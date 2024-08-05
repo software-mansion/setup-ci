@@ -39,7 +39,7 @@ When using `react-native-ci-cli`, you can provide additional flags to modify its
     <td style="vertical-align: middle;">Run the script in silent mode. Combine it with feature flags to specify what workflows you want to generate.</td>
   </tr>
   <tr>
-    <td style="vertical-align: middle;">--skip-git-check</td>
+    <td style="vertical-align: middle; min-width: 155px">--skip-git-check</td>
     <td style="vertical-align: middle;">By default, the script will prompt the user if there are uncommited changes in working repository. Use this flag to proceed without asking.</td>
   </tr>
 </table>
