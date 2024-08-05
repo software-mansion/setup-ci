@@ -10,6 +10,7 @@ import sequentialPromiseMap from '../utils/sequentialPromiseMap'
 import { Option, ProjectContext } from '../types'
 
 const SKIP_GIT_CHECK_FLAG = 'skip-git-check'
+const COMMAND = 'react-native-ci-cli'
 
 const runReactNativeCiCli = async (toolbox: GluegunToolbox) => {
   toolbox.interactive.intro('Welcome to React Native CI CLI')
@@ -74,7 +75,7 @@ const runReactNativeCiCli = async (toolbox: GluegunToolbox) => {
 
   if (!toolbox.skipInteractive()) {
     toolbox.interactive.success(
-      `Next time you can run the command in silent mode using npx create-react-native-ci-cli --${SKIP_INTERACTIVE_FLAG} ${usedFlags}.`
+      `Next time you can run the command in silent mode using npx ${COMMAND} --${SKIP_INTERACTIVE_FLAG} ${usedFlags}.`
     )
   }
 }
@@ -90,7 +91,7 @@ const getFeatureOptions = (): Option[] => {
 }
 
 const command: CycliCommand = {
-  name: 'react-native-ci-cli',
+  name: COMMAND,
   description: 'Quickly setup CI workflows for your React Native app',
   options: [
     { flag: 'help', description: 'Print help message' },

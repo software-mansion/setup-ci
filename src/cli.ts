@@ -9,7 +9,7 @@ async function run(argv: string | Options) {
       matching: 'react-native-ci-cli-*',
       hidden: true,
     })
-    .defaultCommand(require('./commands/api'))
+    .defaultCommand(require('./commands/index'))
     .version()
     .create()
 
