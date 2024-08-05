@@ -8,6 +8,7 @@ import runEasUpdate from '../recipes/eas-update'
 import isGitDirty from 'is-git-dirty'
 import sequentialPromiseMap from '../utils/sequentialPromiseMap'
 import { CycliToolbox, ProjectContext } from '../types'
+import messageFromError from '../utils/messageFromError'
 
 const SKIP_GIT_CHECK_FLAG = 'skip-git-check'
 
@@ -80,12 +81,11 @@ const command: GluegunCommand = {
   run: async (toolbox: GluegunToolbox) => {
     try {
       await runReactNativeCiCli(toolbox as CycliToolbox)
-    } catch (error) {
-      if (error instanceof Error) {
-        toolbox.interactive.error(
-          `Failed to execute react-native-ci-cli with following error:\n${error.message}`
-        )
-      }
+    } catch (error: unknown) {
+      const errMessage = messageFromError(error)
+      toolbox.interactive.error(
+        `Failed to execute react-native-ci-cli with following error:\n${errMessage}`
+      )
     } finally {
       process.exit()
     }
