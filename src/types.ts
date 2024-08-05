@@ -9,6 +9,21 @@ import { WorkflowsExtension } from './extensions/workflows'
 export type PackageManager = 'yarn' | 'npm'
 export type LockFile = 'yarn.lock' | 'package-lock.json'
 
+export interface RecipeMeta {
+  flag: string
+  description: string
+}
+
+export interface CycliRecipe {
+  meta: RecipeMeta
+  run: (
+    toolbox: CycliToolbox,
+    context: ProjectContext
+  ) => Promise<
+    ((toolbox: CycliToolbox, context: ProjectContext) => Promise<string>) | null
+  >
+}
+
 export interface ProjectContext {
   packageManager: PackageManager
   path: {

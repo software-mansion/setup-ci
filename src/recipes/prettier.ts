@@ -1,4 +1,4 @@
-import { CycliToolbox, ProjectContext } from '../types'
+import { CycliRecipe, CycliToolbox, ProjectContext } from '../types'
 import { join } from 'path'
 
 export const FLAG = 'prettier'
@@ -75,4 +75,12 @@ const run = async (
   return execute()
 }
 
-export default run
+export const recipe: CycliRecipe = {
+  meta: {
+    flag: FLAG,
+    description: 'Generate Prettier check workflow to run on every PR',
+  },
+  run,
+}
+
+export default recipe

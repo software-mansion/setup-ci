@@ -1,4 +1,4 @@
-import { CycliToolbox, ProjectContext } from '../types'
+import { CycliRecipe, CycliToolbox, ProjectContext } from '../types'
 
 const FLAG = 'jest'
 
@@ -46,4 +46,12 @@ const run = async (
   return execute()
 }
 
-export default run
+export const recipe: CycliRecipe = {
+  meta: {
+    flag: FLAG,
+    description: 'Generate Jest workflow to run on every PR',
+  },
+  run,
+}
+
+export default recipe

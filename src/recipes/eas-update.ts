@@ -1,4 +1,4 @@
-import { CycliToolbox, ProjectContext } from '../types'
+import { CycliRecipe, CycliToolbox, ProjectContext } from '../types'
 import { join } from 'path'
 
 const FLAG = 'eas-update'
@@ -66,4 +66,12 @@ const run = async (
   return execute()
 }
 
-export default run
+export const recipe: CycliRecipe = {
+  meta: {
+    flag: FLAG,
+    description: 'Generate EAS Update and preview workflow to run on every PR',
+  },
+  run,
+}
+
+export default recipe

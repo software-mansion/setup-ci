@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
+/* eslint-disable */
 
-/* tslint:disable */
 // check if we're running in dev mode
 var devMode = require('fs').existsSync(`${__dirname}/../src`)
 // or want to "force" running the compiled version with --compiled-build
@@ -17,5 +17,3 @@ if (wantsCompiled || !devMode) {
   // run the CLI with the current process arguments
   require(`${__dirname}/../src/cli`).run(process.argv)
 }
-
-
