@@ -13,7 +13,11 @@ const ESLINT_CONFIGURATION_FILES = [
 ]
 
 const existsEslintConfigurationFile = (toolbox: CycliToolbox): boolean =>
-  Boolean(toolbox.filesystem.list()?.some(ESLINT_CONFIGURATION_FILES.includes))
+  Boolean(
+    toolbox.filesystem
+      .list()
+      ?.some((f) => ESLINT_CONFIGURATION_FILES.includes(f))
+  )
 
 const execute =
   () => async (toolbox: CycliToolbox, context: ProjectContext) => {
