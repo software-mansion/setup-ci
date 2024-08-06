@@ -10,7 +10,7 @@ module.exports = (toolbox: CycliToolbox) => {
     const lockFiles =
       filesystem
         .list(repoRoot)
-        ?.filter((fileName) =>
+        ?.filter((fileName: string) =>
           Object.keys(LOCK_FILE_TO_MANAGER).includes(fileName)
         ) || []
 
@@ -40,15 +40,9 @@ module.exports = (toolbox: CycliToolbox) => {
   }
 
   const getPackageRoot = (): string => {
-    if (!filesystem.exists('package.json')) {
-      throw Error(
-        '❗ No package.json found in current directory. Are you sure you are in a project directory?'
-      )
-    }
+    const packageJson = toolbox.projectConfig.packageJson()
 
-    const packageJson = filesystem.read('package.json', 'json')
-
-    if (packageJson?.workspaces) {
+    if (packageJson.workspaces) {
       throw Error(
         '❗ The current directory is workspace root directory. Please run the script again from selected package root directory.'
       )

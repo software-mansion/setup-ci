@@ -5,7 +5,18 @@ import { ProjectContextExtension } from './extensions/projectContext'
 import { ScriptsExtension } from './extensions/scripts'
 import { SkipInteractiveExtension } from './extensions/skipInteractive'
 import { WorkflowsExtension } from './extensions/workflows'
+import { ProjectConfigExtension } from './extensions/projectConfig'
 import { LOCK_FILE_TO_MANAGER } from './constants'
+
+export interface PackageJson {
+  dependencies?: {
+    [key: string]: string
+  }
+  devDependencies?: {
+    [key: string]: string
+  }
+  workspaces?: string[]
+}
 
 export type LockFile = keyof typeof LOCK_FILE_TO_MANAGER
 
@@ -44,6 +55,7 @@ export type CycliToolbox = {
     : never]: GluegunToolbox[K]
 } & DependenciesExtension &
   InteractiveExtension &
+  ProjectConfigExtension &
   ProjectContextExtension &
   ScriptsExtension &
   SkipInteractiveExtension &

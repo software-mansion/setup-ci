@@ -5,7 +5,7 @@ export const FLAG = 'prettier'
 
 const execute =
   () => async (toolbox: CycliToolbox, context: ProjectContext) => {
-    await toolbox.dependencies.add('prettier', context.packageManager, true)
+    await toolbox.dependencies.addDev('prettier', context)
 
     await toolbox.scripts.add(
       'prettier:check',

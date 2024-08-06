@@ -13,13 +13,22 @@ const ESLINT_CONFIGURATION_FILES = [
 ]
 
 const existsEslintConfigurationFile = (toolbox: CycliToolbox): boolean =>
-  Boolean(toolbox.filesystem.list()?.some(ESLINT_CONFIGURATION_FILES.includes))
+  Boolean(
+    toolbox.filesystem
+      .list()
+      ?.some((f) => ESLINT_CONFIGURATION_FILES.includes(f))
+  )
 
 const execute =
   () => async (toolbox: CycliToolbox, context: ProjectContext) => {
-    // eslint@9.x introduces new configuration format that is not supported by widely used plugins yet.
-    // https://eslint.org/docs/latest/use/migrate-to-9.0.0
-    await toolbox.dependencies.add('eslint@^8', context.packageManager, true)
+    if (
+      !toolbox.dependencies.exists('eslint') &&
+      !toolbox.dependencies.existsDev('eslint')
+    ) {
+      // eslint@9 introduces new configuration format that is not supported by widely used plugins yet,
+      // so we stick to ^8 for now.
+      await toolbox.dependencies.addDev('eslint', context, '^8')
+    }
 
     const withPrettier =
       context.selectedOptions.includes(PRETTIER_FLAG) ||
@@ -27,17 +36,9 @@ const execute =
       toolbox.dependencies.exists('prettier')
 
     if (withPrettier) {
-      await toolbox.dependencies.add(
-        'eslint-plugin-prettier',
-        context.packageManager,
-        true
-      )
+      await toolbox.dependencies.addDev('eslint-plugin-prettier', context)
 
-      await toolbox.dependencies.add(
-        'eslint-config-prettier',
-        context.packageManager,
-        true
-      )
+      await toolbox.dependencies.addDev('eslint-config-prettier', context)
     }
 
     await toolbox.scripts.add('lint', 'eslint "**/*.{js,jsx,ts,tsx}"')
