@@ -5,6 +5,7 @@ import { ProjectContextExtension } from './extensions/projectContext'
 import { ScriptsExtension } from './extensions/scripts'
 import { SkipInteractiveExtension } from './extensions/skipInteractive'
 import { WorkflowsExtension } from './extensions/workflows'
+import { ProjectConfigExtension } from './extensions/projectConfig'
 
 export type PackageManager = 'yarn' | 'npm'
 export type LockFile = 'yarn.lock' | 'package-lock.json'
@@ -27,7 +28,6 @@ export interface ProjectContext {
     relFromRepoRoot: (p: string) => string
     absFromRepoRoot: (...p: string[]) => string
   }
-  packageJson: PackageJson
 }
 
 export type CycliToolbox = {
@@ -37,6 +37,7 @@ export type CycliToolbox = {
 } & DependenciesExtension &
   InteractiveExtension &
   ProjectContextExtension &
+  ProjectConfigExtension &
   ScriptsExtension &
   SkipInteractiveExtension &
   WorkflowsExtension
