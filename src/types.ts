@@ -5,9 +5,12 @@ import { ProjectContextExtension } from './extensions/projectContext'
 import { ScriptsExtension } from './extensions/scripts'
 import { SkipInteractiveExtension } from './extensions/skipInteractive'
 import { WorkflowsExtension } from './extensions/workflows'
+import { LOCK_FILE_TO_MANAGER } from './constants'
 
-export type PackageManager = 'yarn' | 'npm'
-export type LockFile = 'yarn.lock' | 'package-lock.json'
+export type LockFile = keyof typeof LOCK_FILE_TO_MANAGER
+
+export type PackageManager =
+  (typeof LOCK_FILE_TO_MANAGER)[keyof typeof LOCK_FILE_TO_MANAGER]
 
 export interface RecipeMeta {
   flag: string
