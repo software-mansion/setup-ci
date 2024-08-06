@@ -1,6 +1,16 @@
-import { Toolbox } from 'gluegun/build/types/domain/toolbox'
+import { GluegunToolbox } from 'gluegun/build/types/domain/toolbox'
+import { DependenciesExtension } from './extensions/dependencies'
+import { InteractiveExtension } from './extensions/interactive'
+import { ProjectContextExtension } from './extensions/projectContext'
+import { ScriptsExtension } from './extensions/scripts'
+import { SkipInteractiveExtension } from './extensions/skipInteractive'
+import { WorkflowsExtension } from './extensions/workflows'
+import { LOCK_FILE_TO_MANAGER } from './constants'
 
-export type PackageManager = 'yarn' | 'npm'
+export type LockFile = keyof typeof LOCK_FILE_TO_MANAGER
+
+export type PackageManager =
+  (typeof LOCK_FILE_TO_MANAGER)[keyof typeof LOCK_FILE_TO_MANAGER]
 
 export interface RecipeMeta {
   flag: string
@@ -10,10 +20,10 @@ export interface RecipeMeta {
 export interface CycliRecipe {
   meta: RecipeMeta
   run: (
-    toolbox: Toolbox,
+    toolbox: CycliToolbox,
     context: ProjectContext
   ) => Promise<
-    (toolbox: Toolbox, context: ProjectContext) => Promise<string> | null
+    ((toolbox: CycliToolbox, context: ProjectContext) => Promise<string>) | null
   >
 }
 
@@ -27,3 +37,14 @@ export interface ProjectContext {
   }
   selectedOptions: string[]
 }
+
+export type CycliToolbox = {
+  [K in keyof GluegunToolbox as K extends `${infer _}`
+    ? K
+    : never]: GluegunToolbox[K]
+} & DependenciesExtension &
+  InteractiveExtension &
+  ProjectContextExtension &
+  ScriptsExtension &
+  SkipInteractiveExtension &
+  WorkflowsExtension

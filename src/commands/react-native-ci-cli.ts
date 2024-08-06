@@ -7,12 +7,13 @@ import prettierCheck from '../recipes/prettier'
 import easUpdate from '../recipes/eas-update'
 import isGitDirty from 'is-git-dirty'
 import sequentialPromiseMap from '../utils/sequentialPromiseMap'
-import { ProjectContext } from '../types'
+import { CycliToolbox, ProjectContext } from '../types'
+import messageFromError from '../utils/messageFromError'
 
 const SKIP_GIT_CHECK_FLAG = 'skip-git-check'
 const COMMAND = 'react-native-ci-cli'
 
-const runReactNativeCiCli = async (toolbox: GluegunToolbox) => {
+const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
   toolbox.interactive.intro('Welcome to React Native CI CLI')
 
   if (isGitDirty() == null) {
@@ -112,10 +113,11 @@ const command: CycliCommand = {
   featureOptions: [...getFeatureOptions()],
   run: async (toolbox: GluegunToolbox) => {
     try {
-      await runReactNativeCiCli(toolbox)
-    } catch (error) {
+      await runReactNativeCiCli(toolbox as CycliToolbox)
+    } catch (error: unknown) {
+      const errMessage = messageFromError(error)
       toolbox.interactive.error(
-        `Failed to execute react-native-ci-cli with following error:\n${error.message}`
+        `Failed to execute react-native-ci-cli with following error:\n${errMessage}`
       )
     } finally {
       process.exit()
@@ -128,6 +130,7 @@ module.exports = command
 type Option = { flag: string; description: string }
 
 export type CycliCommand = GluegunCommand & {
+  description: string
   options: Option[]
   featureOptions: Option[]
 }

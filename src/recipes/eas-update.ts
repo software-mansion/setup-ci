@@ -1,11 +1,10 @@
-import { GluegunToolbox } from 'gluegun'
-import { CycliRecipe, ProjectContext } from '../types'
+import { CycliRecipe, CycliToolbox, ProjectContext } from '../types'
 import { join } from 'path'
 
 const FLAG = 'eas-update'
 
 const execute =
-  () => async (toolbox: GluegunToolbox, context: ProjectContext) => {
+  () => async (toolbox: CycliToolbox, context: ProjectContext) => {
     if (toolbox.filesystem.exists('eas.json')) {
       toolbox.interactive.step(
         'Detected eas.json, skipping EAS Build configuration.'
@@ -41,10 +40,10 @@ const execute =
   }
 
 const run = async (
-  toolbox: GluegunToolbox,
+  toolbox: CycliToolbox,
   context: ProjectContext
 ): Promise<
-  ((toolbox: GluegunToolbox, context: ProjectContext) => Promise<string>) | null
+  ((toolbox: CycliToolbox, context: ProjectContext) => Promise<string>) | null
 > => {
   if (toolbox.skipInteractiveForRecipe(FLAG)) {
     context.selectedOptions.push(FLAG)

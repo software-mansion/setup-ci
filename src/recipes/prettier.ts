@@ -1,11 +1,10 @@
-import { GluegunToolbox } from 'gluegun'
-import { CycliRecipe, ProjectContext } from '../types'
+import { CycliRecipe, CycliToolbox, ProjectContext } from '../types'
 import { join } from 'path'
 
 export const FLAG = 'prettier'
 
 const execute =
-  () => async (toolbox: GluegunToolbox, context: ProjectContext) => {
+  () => async (toolbox: CycliToolbox, context: ProjectContext) => {
     await toolbox.dependencies.add('prettier', context.packageManager, true)
 
     await toolbox.scripts.add(
@@ -50,10 +49,10 @@ const execute =
   }
 
 const run = async (
-  toolbox: GluegunToolbox,
+  toolbox: CycliToolbox,
   context: ProjectContext
 ): Promise<
-  ((toolbox: GluegunToolbox, context: ProjectContext) => Promise<string>) | null
+  ((toolbox: CycliToolbox, context: ProjectContext) => Promise<string>) | null
 > => {
   if (toolbox.skipInteractiveForRecipe(FLAG)) {
     context.selectedOptions.push(FLAG)

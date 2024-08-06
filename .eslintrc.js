@@ -3,7 +3,6 @@
  */
 module.exports = {
   parser: '@typescript-eslint/parser',
-
   parserOptions: {
     ecmaVersion: 2020,
     sourceType: 'module',
@@ -14,6 +13,12 @@ module.exports = {
     'plugin:prettier/recommended',
   ],
   rules: {
+    '@typescript-eslint/no-unused-vars': [
+      'error',
+      {
+        varsIgnorePattern: '^_',
+      },
+    ],
     '@typescript-eslint/no-var-requires': 'off',
   },
 }
