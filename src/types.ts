@@ -6,9 +6,7 @@ import { ScriptsExtension } from './extensions/scripts'
 import { SkipInteractiveExtension } from './extensions/skipInteractive'
 import { WorkflowsExtension } from './extensions/workflows'
 import { ProjectConfigExtension } from './extensions/projectConfig'
-
-export type PackageManager = 'yarn' | 'npm'
-export type LockFile = 'yarn.lock' | 'package-lock.json'
+import { LOCK_FILE_TO_MANAGER } from './constants'
 
 export interface PackageJson {
   dependencies?: {
@@ -20,6 +18,26 @@ export interface PackageJson {
   workspaces?: string[]
 }
 
+export type LockFile = keyof typeof LOCK_FILE_TO_MANAGER
+
+export type PackageManager =
+  (typeof LOCK_FILE_TO_MANAGER)[keyof typeof LOCK_FILE_TO_MANAGER]
+
+export interface RecipeMeta {
+  flag: string
+  description: string
+}
+
+export interface CycliRecipe {
+  meta: RecipeMeta
+  run: (
+    toolbox: CycliToolbox,
+    context: ProjectContext
+  ) => Promise<
+    ((toolbox: CycliToolbox, context: ProjectContext) => Promise<string>) | null
+  >
+}
+
 export interface ProjectContext {
   packageManager: PackageManager
   path: {
@@ -28,6 +46,7 @@ export interface ProjectContext {
     relFromRepoRoot: (p: string) => string
     absFromRepoRoot: (...p: string[]) => string
   }
+  selectedOptions: string[]
 }
 
 export type CycliToolbox = {
@@ -36,8 +55,8 @@ export type CycliToolbox = {
     : never]: GluegunToolbox[K]
 } & DependenciesExtension &
   InteractiveExtension &
-  ProjectContextExtension &
   ProjectConfigExtension &
+  ProjectContextExtension &
   ScriptsExtension &
   SkipInteractiveExtension &
   WorkflowsExtension

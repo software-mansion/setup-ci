@@ -10,11 +10,11 @@ const run = {
 }
 %>
 
-name: Run Jest tests
+name: Jest
 on: [pull_request]
 
 jobs:
-   test:
+   jest:
       name: Jest
       runs-on: ubuntu-latest
       steps:

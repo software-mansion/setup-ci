@@ -69,6 +69,7 @@ module.exports = (toolbox: CycliToolbox) => {
         relFromRepoRoot,
         absFromRepoRoot,
       },
+      selectedOptions: [],
     }
   }
 

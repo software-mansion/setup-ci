@@ -1,5 +1,6 @@
-import { CycliToolbox, ProjectContext } from '../types'
+import { CycliRecipe, CycliToolbox, ProjectContext } from '../types'
 import { join } from 'path'
+import { FLAG as PRETTIER_FLAG } from './prettier'
 
 const FLAG = 'lint'
 
@@ -12,21 +13,28 @@ const ESLINT_CONFIGURATION_FILES = [
 ]
 
 const existsEslintConfigurationFile = (toolbox: CycliToolbox): boolean =>
-  Boolean(
-    toolbox.filesystem
-      .list()
-      ?.some((f: string) => ESLINT_CONFIGURATION_FILES.includes(f))
-  )
+  Boolean(toolbox.filesystem.list()?.some(ESLINT_CONFIGURATION_FILES.includes))
 
 const execute =
   () => async (toolbox: CycliToolbox, context: ProjectContext) => {
     if (
-      !toolbox.dependencies.exists('eslint', context) &&
-      !toolbox.dependencies.existsDev('eslint', context)
+      !toolbox.dependencies.exists('eslint') &&
+      !toolbox.dependencies.existsDev('eslint')
     ) {
       // eslint@9 introduces new configuration format that is not supported by widely used plugins yet,
       // so we stick to ^8 for now.
       await toolbox.dependencies.addDev('eslint', context, '^8')
+    }
+
+    const withPrettier =
+      context.selectedOptions.includes(PRETTIER_FLAG) ||
+      toolbox.dependencies.existsDev('prettier') ||
+      toolbox.dependencies.exists('prettier')
+
+    if (withPrettier) {
+      await toolbox.dependencies.addDev('eslint-plugin-prettier', context)
+
+      await toolbox.dependencies.addDev('eslint-config-prettier', context)
     }
 
     await toolbox.scripts.add('lint', 'eslint "**/*.{js,jsx,ts,tsx}"')
@@ -35,6 +43,9 @@ const execute =
       await toolbox.template.generate({
         template: join('lint', '.eslintrc.json.ejs'),
         target: '.eslintrc.json',
+        props: {
+          withPrettier,
+        },
       })
 
       toolbox.interactive.step(
@@ -54,11 +65,13 @@ const execute =
   }
 
 const run = async (
-  toolbox: CycliToolbox
+  toolbox: CycliToolbox,
+  context: ProjectContext
 ): Promise<
   ((toolbox: CycliToolbox, context: ProjectContext) => Promise<string>) | null
 > => {
   if (toolbox.skipInteractiveForRecipe(FLAG)) {
+    context.selectedOptions.push(FLAG)
     return execute()
   }
 
@@ -74,7 +87,16 @@ const run = async (
     return null
   }
 
+  context.selectedOptions.push(FLAG)
   return execute()
 }
 
-export default run
+export const recipe: CycliRecipe = {
+  meta: {
+    flag: FLAG,
+    description: 'Generate ESLint workflow to run on every PR',
+  },
+  run,
+}
+
+export default recipe
