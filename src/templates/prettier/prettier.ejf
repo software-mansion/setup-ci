@@ -12,10 +12,9 @@ const run = {
 
 name: Prettier check
 on:
-  pull_request:
+  pull_request: <%= (props.pathRelativeToRoot !== '.') ? `
     paths:
-      - <%= ${props.pathRelativeToRoot} %>/**
-
+      - ${props.pathRelativeToRoot}/**` : "" %>
 jobs:
    prettier-check:
       name: Prettier check

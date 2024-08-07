@@ -7,10 +7,9 @@ const install = {
 
 name: EAS Update
 on:
-  pull_request:
+  pull_request: <%= (props.pathRelativeToRoot !== '.') ? `
     paths:
-      - <%= ${props.pathRelativeToRoot} %>/**
-
+      - ${props.pathRelativeToRoot}/**` : "" %>
 jobs:
   eas-update:
     runs-on: ubuntu-latest

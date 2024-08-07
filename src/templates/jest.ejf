@@ -12,9 +12,9 @@ const run = {
 
 name: Run Jest tests
 on:
-  pull_request:
+  pull_request: <%= (props.pathRelativeToRoot !== '.') ? `
     paths:
-      - <%= ${props.pathRelativeToRoot} %>/**
+      - ${props.pathRelativeToRoot}/**` : "" %>
 jobs:
    jest:
       name: Jest

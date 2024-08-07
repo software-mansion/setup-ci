@@ -12,9 +12,9 @@ const run = {
 
 name: Check ESLint
 on:
-  pull_request:
+  pull_request: <%= (props.pathRelativeToRoot !== '.') ? `
     paths:
-      - <%= ${props.pathRelativeToRoot} %>/**
+      - ${props.pathRelativeToRoot}/**` : "" %>
 jobs:
    eslint:
       name: ESLint
