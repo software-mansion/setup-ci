@@ -1,18 +1,23 @@
 <%
+const isMonorepo = props.pathRelativeToRoot !== '.'
+
 const install = {
   yarn: "yarn",
   npm: "npm install"
 }
 
 const runTests = {
-  yarn: `yarn --cwd ${props.pathRelativeToRoot} detox:test:android`,
-  npm: `npm run detox:test:android --prefix ${props.pathRelativeToRoot}`
+  yarn: `yarn ${(isMonorepo) ? `--cwd ${props.pathRelativeToRoot} ` : ""}detox:test:android`,
+  npm: `npm run detox:test:android ${(isMonorepo) ? `--prefix ${props.pathRelativeToRoot}` : ""}`
 }
 %>
 
 name: Test Detox Android
 
-on: [pull_request]
+on:
+  pull_request: <%= (props.pathRelativeToRoot !== '.') ? `
+    paths:
+      - ${props.pathRelativeToRoot}/**` : "" %>
 
 jobs:
   test-detox-android:

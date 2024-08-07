@@ -1,6 +1,5 @@
-import { Toolbox } from 'gluegun/build/types/domain/toolbox'
 import { confirm } from '@clack/prompts'
-import { CycliRecipe, ProjectContext } from '../types'
+import { CycliRecipe, CycliToolbox, ProjectContext } from '../types'
 import { createReleaseBuildWorkflowsForExpo } from './build-release'
 import { join } from 'path'
 
@@ -8,25 +7,22 @@ const DETOX_EXPO_PLUGIN = '@config-plugins/detox'
 const FLAG = 'detox'
 
 const createDetoxWorkflowsForExpo = async (
-  toolbox: Toolbox,
+  toolbox: CycliToolbox,
   context: ProjectContext
 ) => {
   toolbox.interactive.info('⚙️ Setting up app release build for Detox.')
 
   await createReleaseBuildWorkflowsForExpo(toolbox, context, ['android', 'ios'])
 
-  await toolbox.dependencies.add('detox', context.packageManager, true)
+  await toolbox.dependencies.add('detox', context)
   // @^29 because of https://wix.github.io/Detox/docs/introduction/project-setup#step-1-bootstrap
-  await toolbox.dependencies.add('jest@^29', context.packageManager, true)
-  await toolbox.dependencies.add('ts-jest', context.packageManager, true)
-  await toolbox.dependencies.add('@types/jest', context.packageManager, true)
-  await toolbox.dependencies.add(
-    DETOX_EXPO_PLUGIN,
-    context.packageManager,
-    true
-  )
+  await toolbox.dependencies.add('jest', context, '>=29')
+  await toolbox.dependencies.add('ts-jest', context)
+  await toolbox.dependencies.add('@types/jest', context)
+  await toolbox.dependencies.add(DETOX_EXPO_PLUGIN, context)
 
-  const currentExpoPlugins = context.expoConfigJson?.expo?.plugins || []
+  const currentExpoPlugins =
+    toolbox.projectConfig.appJson()?.expo?.plugins || []
 
   if (!currentExpoPlugins.includes(DETOX_EXPO_PLUGIN)) {
     await toolbox.patching.update('app.json', (config) => {
@@ -87,19 +83,10 @@ const createDetoxWorkflowsForExpo = async (
 
   await toolbox.workflows.generate(
     join('detox', 'test-detox-android.ejf'),
-    context.path.absFromRepoRoot(
-      '.github',
-      'workflows',
-      'test-detox-android.yml'
-    ),
     context
   )
 
-  await toolbox.workflows.generate(
-    join('detox', 'test-detox-ios.ejf'),
-    context.path.absFromRepoRoot('.github', 'workflows', 'test-detox-ios.yml'),
-    context
-  )
+  await toolbox.workflows.generate(join('detox', 'test-detox-ios.ejf'), context)
 
   toolbox.interactive.step('Created Detox workflow for Expo.')
 
@@ -111,20 +98,23 @@ const createDetoxWorkflowsForExpo = async (
   )
 }
 
-const execute = () => async (toolbox: Toolbox, context: ProjectContext) => {
-  if (context.expoConfigJson?.expo) {
-    await createDetoxWorkflowsForExpo(toolbox, context)
-  } else {
-    // TODO: Detox for React Native
+const execute =
+  () => async (toolbox: CycliToolbox, context: ProjectContext) => {
+    if (toolbox.projectConfig.appJson()?.expo) {
+      await createDetoxWorkflowsForExpo(toolbox, context)
+    } else {
+      throw Error(
+        'Detox workflows generation is currently not supported for non-expo projects.'
+      )
+    }
+
+    return `--${FLAG}`
   }
 
-  return `--${FLAG}`
-}
-
 const run = async (
-  toolbox: Toolbox
+  toolbox: CycliToolbox
 ): Promise<
-  ((toolbox: Toolbox, context: ProjectContext) => Promise<string>) | null
+  ((toolbox: CycliToolbox, context: ProjectContext) => Promise<string>) | null
 > => {
   if (toolbox.skipInteractiveForRecipe(FLAG)) {
     return execute()
@@ -151,6 +141,6 @@ export const recipe: CycliRecipe = {
     description: 'Generate workflow to run Detox e2e tests on every PR',
   },
   run,
-}
+} as const
 
 export default recipe

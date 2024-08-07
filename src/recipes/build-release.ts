@@ -1,28 +1,21 @@
-import { Toolbox } from 'gluegun/build/types/domain/toolbox'
-import { Platform, ProjectContext } from '../types'
+import { CycliToolbox, Platform, ProjectContext } from '../types'
 import { join } from 'path'
 
 const createReleaseBuildWorkflowAndroid = async (
-  toolbox: Toolbox,
+  toolbox: CycliToolbox,
   context: ProjectContext
 ) => {
   await toolbox.scripts.add(
     'build:release:android',
     [
-      `npx expo prebuild --${context.packageManager} &&`,
-      'cd android &&',
-      './gradlew assembleRelease assembleAndroidTest',
-      '-DtestBuildType=release',
-    ].join(' ')
+      `npx expo prebuild --${context.packageManager}`,
+      'cd android',
+      './gradlew assembleRelease assembleAndroidTest -DtestBuildType=release',
+    ].join(' && ')
   )
 
   await toolbox.workflows.generate(
     join('build-release', 'build-release-android.ejf'),
-    context.path.absFromRepoRoot(
-      '.github',
-      'workflows',
-      'build-release-android.yml'
-    ),
     context
   )
 
@@ -30,17 +23,23 @@ const createReleaseBuildWorkflowAndroid = async (
 }
 
 const createReleaseBuildWorkflowIOs = async (
-  toolbox: Toolbox,
+  toolbox: CycliToolbox,
   context: ProjectContext
 ) => {
+  if (!context.iOSAppName) {
+    throw Error(
+      'Failed to obtain iOS app name. Make sure you have field expo.name defined in your app.json.'
+    )
+  }
+
   await toolbox.scripts.add(
     'build:release:ios',
     [
       `npx expo prebuild --${context.packageManager} &&`,
       'xcodebuild ONLY_ACTIVE_ARCH=YES',
-      `-workspace ios/${context.iOsAppName}.xcworkspace`,
+      `-workspace ios/${context.iOSAppName}.xcworkspace`,
       '-UseNewBuildSystem=YES',
-      `-scheme ${context.iOsAppName}`,
+      `-scheme ${context.iOSAppName}`,
       '-configuration Release',
       '-sdk iphonesimulator',
       '-derivedDataPath ios/build',
@@ -50,14 +49,9 @@ const createReleaseBuildWorkflowIOs = async (
 
   await toolbox.workflows.generate(
     join('build-release', 'build-release-ios.ejf'),
-    context.path.absFromRepoRoot(
-      '.github',
-      'workflows',
-      'build-release-ios.yml'
-    ),
     context,
     {
-      iOsAppName: context.iOsAppName,
+      iOSAppName: context.iOSAppName,
     }
   )
 
@@ -65,14 +59,14 @@ const createReleaseBuildWorkflowIOs = async (
 }
 
 export const createReleaseBuildWorkflowsForExpo = async (
-  toolbox: Toolbox,
+  toolbox: CycliToolbox,
   context: ProjectContext,
   platforms: Platform[]
 ): Promise<void> => {
   const existsAndroidDir = toolbox.filesystem.exists('android')
   const existsIOsDir = toolbox.filesystem.exists('ios')
 
-  if (!context.expoConfigJson?.expo?.android.package) {
+  if (!toolbox.projectConfig.appJson()?.expo?.android.package) {
     toolbox.print.info('⚙️ Setting up expo prebuild.')
     await toolbox.system.spawn(
       `npx expo prebuild --${context.packageManager}`,

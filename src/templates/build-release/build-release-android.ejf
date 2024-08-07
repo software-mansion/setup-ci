@@ -1,18 +1,23 @@
 <%
+const isMonorepo = props.pathRelativeToRoot !== '.'
+
 const install = {
   yarn: "yarn",
   npm: "npm install"
 }
 
 const build = {
-  yarn: `yarn --cwd ${props.pathRelativeToRoot} build:release:android`,
-  npm: `npm run build:release:android --prefix ${props.pathRelativeToRoot}`
+  yarn: `yarn ${(isMonorepo) ? `--cwd ${props.pathRelativeToRoot} ` : ""}build:release:android`,
+  npm: `npm run build:release:android ${(isMonorepo) ? `--prefix ${props.pathRelativeToRoot}` : ""}`
 }
 %>
 
 name: Build Android Release App
 
-on: [pull_request]
+on:
+  pull_request: <%= (isMonorepo) ? `
+    paths:
+      - ${props.pathRelativeToRoot}/**` : "" %>
 
 jobs:
   lookup-cached-build:

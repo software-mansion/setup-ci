@@ -1,18 +1,23 @@
 <%
+const isMonorepo = props.pathRelativeToRoot !== '.'
+
 const install = {
   yarn: "yarn",
   npm: "npm install"
 }
 
 const build = {
-  yarn: `yarn --cwd ${props.pathRelativeToRoot} build:release:ios`,
-  npm: `npm run build:release:ios --prefix ${props.pathRelativeToRoot}`
+  yarn: `yarn ${(isMonorepo) ? `--cwd ${props.pathRelativeToRoot} ` : ""}build:release:ios`,
+  npm: `npm run build:release:ios ${(isMonorepo) ? `--prefix ${props.pathRelativeToRoot}` : ""}`
 }
 %>
 
 name: Build iOS Release App
 
-on: [pull_request]
+on:
+  pull_request: <%= (props.pathRelativeToRoot !== '.') ? `
+    paths:
+      - ${props.pathRelativeToRoot}/**` : "" %>
 
 jobs:
   lookup-cached-build:
@@ -50,7 +55,7 @@ jobs:
       - name: 📁 Prepare cache folder 
         run: |
           mkdir ios-release-build
-          mv ios/build/Build/Products/Release-iphonesimulator/<%= props.iOsAppName %>.app ios-release-build/ios-release.app
+          mv ios/build/Build/Products/Release-iphonesimulator/<%= props.iOSAppName %>.app ios-release-build/ios-release.app
 
       - name: 📡 Store built app in cache
         id: ios-release-save

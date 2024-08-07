@@ -41,7 +41,7 @@ export interface CycliRecipe {
 
 export type Platform = 'android' | 'ios'
 
-export interface ExpoConfig {
+export interface AppJson {
   expo?: {
     name: string
     plugins?: string[]
@@ -59,8 +59,7 @@ export interface ProjectContext {
     relFromRepoRoot: (p: string) => string
     absFromRepoRoot: (...p: string[]) => string
   }
-  expoConfigJson?: ExpoConfig
-  iOsAppName?: string
+  iOSAppName?: string
   selectedOptions: string[]
 }
 

@@ -44,7 +44,7 @@ module.exports = (toolbox: CycliToolbox) => {
 
     if (packageJson.workspaces) {
       throw Error(
-        '❗ The current directory is workspace root directory. Please run the script again from selected package root directory.'
+        'The current directory is workspace root directory. Please run the script again from selected package root directory.'
       )
     }
 
@@ -62,7 +62,7 @@ module.exports = (toolbox: CycliToolbox) => {
       join(repoRoot, ...paths)
 
     const expoConfigJson = toolbox.filesystem.read('app.json', 'json')
-    const iOsAppName = expoConfigJson?.expo?.name.replaceAll('-', '')
+    const iOSAppName = expoConfigJson?.expo?.name.replaceAll('-', '')
 
     return {
       packageManager: getPackageManager(repoRoot),
@@ -72,8 +72,7 @@ module.exports = (toolbox: CycliToolbox) => {
         relFromRepoRoot,
         absFromRepoRoot,
       },
-      expoConfigJson,
-      iOsAppName,
+      iOSAppName,
       selectedOptions: [],
     }
   }
