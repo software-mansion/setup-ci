@@ -57,11 +57,7 @@ const execute =
       )
     }
 
-    await toolbox.workflows.generate(
-      join('lint', 'lint.ejf'),
-      context.path.absFromRepoRoot('.github', 'workflows', 'lint.yml'),
-      context
-    )
+    await toolbox.workflows.generate(join('lint', 'lint.ejf'), context)
 
     toolbox.interactive.step('Created ESLint workflow.')
 

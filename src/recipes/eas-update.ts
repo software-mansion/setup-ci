@@ -21,11 +21,7 @@ const execute =
       stdio: 'inherit',
     })
 
-    await toolbox.workflows.generate(
-      join('eas', 'eas-update.ejf'),
-      context.path.absFromRepoRoot('.github', 'workflows', 'eas-update.yml'),
-      context
-    )
+    await toolbox.workflows.generate(join('eas', 'eas-update.ejf'), context)
 
     toolbox.interactive.step('Created EAS Update workflow.')
 
