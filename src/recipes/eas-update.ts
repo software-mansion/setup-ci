@@ -23,7 +23,11 @@ const execute =
 
     await toolbox.workflows.generate(
       join('eas', 'eas-update.ejf'),
-      context.path.absFromRepoRoot('.github', 'workflows', 'eas-update.yml'),
+      context.path.absFromRepoRoot(
+        '.github',
+        'workflows',
+        `${toolbox.projectConfig.packageJson().name}-eas-update.yml`
+      ),
       context
     )
 

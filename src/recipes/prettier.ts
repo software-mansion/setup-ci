@@ -19,7 +19,11 @@ const execute =
 
     await toolbox.workflows.generate(
       join('prettier', 'prettier.ejf'),
-      context.path.absFromRepoRoot('.github', 'workflows', 'prettier.yml'),
+      context.path.absFromRepoRoot(
+        '.github',
+        'workflows',
+        `${toolbox.projectConfig.packageJson().name}-prettier.yml`
+      ),
       context
     )
 
