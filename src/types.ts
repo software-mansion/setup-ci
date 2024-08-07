@@ -9,6 +9,7 @@ import { ProjectConfigExtension } from './extensions/projectConfig'
 import { LOCK_FILE_TO_MANAGER } from './constants'
 
 export interface PackageJson {
+  name: string
   dependencies?: {
     [key: string]: string
   }

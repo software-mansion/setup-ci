@@ -11,7 +11,6 @@ const execute =
 
     await toolbox.workflows.generate(
       join('typescript', 'typescript.ejf'),
-      context.path.absFromRepoRoot('.github', 'workflows', 'typescript.yml'),
       context
     )
 
