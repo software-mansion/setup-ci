@@ -1,6 +1,6 @@
 import { Toolbox } from 'gluegun/build/types/domain/toolbox'
 import { confirm } from '@clack/prompts'
-import { ProjectContext } from '../types'
+import { CycliRecipe, ProjectContext } from '../types'
 import { createReleaseBuildWorkflowsForExpo } from './build-release'
 import { join } from 'path'
 
@@ -26,7 +26,7 @@ const createDetoxWorkflowsForExpo = async (
     true
   )
 
-  const currentExpoPlugins = context.expoConfigJson.expo.plugins || []
+  const currentExpoPlugins = context.expoConfigJson?.expo?.plugins || []
 
   if (!currentExpoPlugins.includes(DETOX_EXPO_PLUGIN)) {
     await toolbox.patching.update('app.json', (config) => {
@@ -135,7 +135,7 @@ const run = async (
   }
 
   const proceed = await confirm({
-    message: 'Do you want to run Detox tests on every PR?',
+    message: 'Do you want to run Detox e2e tests on every PR?',
   })
 
   if (!proceed) {
@@ -145,4 +145,12 @@ const run = async (
   return execute()
 }
 
-export default run
+export const recipe: CycliRecipe = {
+  meta: {
+    flag: FLAG,
+    description: 'Generate workflow to run Detox e2e tests on every PR',
+  },
+  run,
+}
+
+export default recipe

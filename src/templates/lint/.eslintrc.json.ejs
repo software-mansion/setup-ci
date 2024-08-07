@@ -4,7 +4,12 @@
     "sourceType": "module"
   },
   "extends": [
-    "eslint:recommended"
+    <%-
+      ((props.withPrettier) ? 
+        ['"eslint:recommended"', '"prettier"', '"plugin:prettier/recommended"'] :
+        ['"eslint:recommended"']
+      ).join(',\n    ')
+    %>
   ],
   "env": {
     "browser": true,

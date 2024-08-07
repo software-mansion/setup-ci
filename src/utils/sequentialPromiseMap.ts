@@ -2,10 +2,10 @@ const sequentialPromiseMap = async <T, S>(
   input: T[],
   mapper: (arg: T) => Promise<S>
 ): Promise<S[]> => {
-  const results = []
+  const results: S[] = []
   for (const next of input) {
     const nextResult = await mapper(next)
-    results.push(nextResult)
+    if (nextResult) results.push(nextResult)
   }
   return results
 }

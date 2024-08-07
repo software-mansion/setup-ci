@@ -5,16 +5,16 @@ import {
   isCancel,
 } from '@clack/prompts'
 
-import { GluegunToolbox } from 'gluegun'
+import { CycliToolbox } from '../types'
 
 interface Spinner {
   stop: () => void
 }
 
-module.exports = (toolbox: GluegunToolbox) => {
+module.exports = (toolbox: CycliToolbox) => {
   const { print } = toolbox
 
-  const confirm = async (message: string) => {
+  const confirm = async (message: string): Promise<boolean> => {
     const confirmed = await clackConfirm({ message })
 
     if (isCancel(confirmed)) {
@@ -66,5 +66,19 @@ module.exports = (toolbox: GluegunToolbox) => {
     spin,
     intro,
     outro,
+  }
+}
+
+export interface InteractiveExtension {
+  interactive: {
+    confirm: (message: string) => Promise<boolean>
+    info: (message: string) => void
+    step: (message: string) => void
+    error: (message: string) => void
+    success: (message: string) => void
+    warning: (message: string) => void
+    spin: (message: string) => Spinner
+    intro: (message: string) => void
+    outro: (message: string) => void
   }
 }
