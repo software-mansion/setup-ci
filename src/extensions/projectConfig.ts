@@ -13,13 +13,19 @@ module.exports = (toolbox: CycliToolbox) => {
     return filesystem.read('package.json', 'json')
   }
 
+  const getName = (): string => {
+    return packageJson().name
+  }
+
   toolbox.projectConfig = {
     packageJson,
+    getName,
   }
 }
 
 export interface ProjectConfigExtension {
   projectConfig: {
     packageJson: () => PackageJson
+    getName: () => string
   }
 }

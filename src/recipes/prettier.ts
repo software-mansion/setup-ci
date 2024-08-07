@@ -17,15 +17,7 @@ const execute =
       'prettier --write "**/*.{ts,tsx,js,jsx,json,css,scss,md}"'
     )
 
-    await toolbox.workflows.generate(
-      join('prettier', 'prettier.ejf'),
-      context.path.absFromRepoRoot(
-        '.github',
-        'workflows',
-        `${toolbox.projectConfig.packageJson().name}-prettier.yml`
-      ),
-      context
-    )
+    await toolbox.workflows.generate(join('prettier', 'prettier.ejf'), context)
 
     if (!toolbox.filesystem.exists('.prettierrc')) {
       await toolbox.template.generate({

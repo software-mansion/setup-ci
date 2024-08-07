@@ -8,15 +8,7 @@ const execute =
 
     await toolbox.scripts.add('test', 'jest')
 
-    await toolbox.workflows.generate(
-      'jest.ejf',
-      context.path.absFromRepoRoot(
-        '.github',
-        'workflows',
-        `${toolbox.projectConfig.packageJson().name}-jest.yml`
-      ),
-      context
-    )
+    await toolbox.workflows.generate('jest.ejf', context)
 
     toolbox.interactive.step('Created Jest workflow.')
 
