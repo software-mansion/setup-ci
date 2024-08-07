@@ -16,7 +16,7 @@ on:
     paths:
       - <%= ${props.pathRelativeToRoot} %>/**
 jobs:
-   test:
+   jest:
       name: Jest
       runs-on: ubuntu-latest
       steps:

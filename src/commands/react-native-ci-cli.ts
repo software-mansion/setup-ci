@@ -1,13 +1,17 @@
 import { GluegunCommand, GluegunToolbox } from 'gluegun'
 import { SKIP_INTERACTIVE_FLAG } from '../constants'
-import runLint from '../recipes/lint'
-import runJest from '../recipes/jest'
-import runTypescript from '../recipes/typescript'
+import lint from '../recipes/lint'
+import jest from '../recipes/jest'
+import typescriptCheck from '../recipes/typescript'
+import prettierCheck from '../recipes/prettier'
+import easUpdate from '../recipes/eas-update'
 import isGitDirty from 'is-git-dirty'
 import sequentialPromiseMap from '../utils/sequentialPromiseMap'
 import { CycliToolbox, ProjectContext } from '../types'
+import messageFromError from '../utils/messageFromError'
 
 const SKIP_GIT_CHECK_FLAG = 'skip-git-check'
+const COMMAND = 'react-native-ci-cli'
 
 const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
   toolbox.interactive.intro('Welcome to React Native CI CLI')
@@ -37,13 +41,19 @@ const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
 
   const context: ProjectContext = toolbox.projectContext.obtain()
 
-  const lintExecutor = await runLint(toolbox)
-  const jestExecutor = await runJest(toolbox)
-  const typescriptExecutor = await runTypescript(toolbox)
+  const lintExecutor = await lint.run(toolbox, context)
+  const jestExecutor = await jest.run(toolbox, context)
+  const typescriptExecutor = await typescriptCheck.run(toolbox, context)
+  const prettierExecutor = await prettierCheck.run(toolbox, context)
+  const easUpdateExecutor = await easUpdate.run(toolbox, context)
 
-  const executors = [lintExecutor, jestExecutor, typescriptExecutor].filter(
-    (executor) => executor != null
-  )
+  const executors = [
+    lintExecutor,
+    jestExecutor,
+    typescriptExecutor,
+    prettierExecutor,
+    easUpdateExecutor,
+  ].filter((executor) => executor != null)
 
   if (executors.length === 0) {
     toolbox.interactive.outro('Nothing to do here. Cheers! 🎉')
@@ -62,22 +72,53 @@ const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
 
   const usedFlags = executorResults.join(' ')
 
-  toolbox.interactive.success(
-    `We're all set 🎉.\nNext time you can run the command in silent mode using npx create-react-native-ci-cli --${SKIP_INTERACTIVE_FLAG} ${usedFlags}.`
-  )
+  toolbox.interactive.success(`We're all set 🎉.`)
+
+  if (!toolbox.skipInteractive()) {
+    toolbox.interactive.success(
+      `Next time you can run the command in silent mode using npx ${COMMAND} --${SKIP_INTERACTIVE_FLAG} ${usedFlags}.`
+    )
+  }
 }
 
-const command: GluegunCommand = {
-  name: 'react-native-ci-cli',
+const getFeatureOptions = (): Option[] => {
+  return [
+    lint.meta,
+    jest.meta,
+    typescriptCheck.meta,
+    prettierCheck.meta,
+    easUpdate.meta,
+  ].map((meta) => ({
+    flag: meta.flag,
+    description: meta.description,
+  }))
+}
+
+const command: CycliCommand = {
+  name: COMMAND,
+  description: 'Quickly setup CI workflows for your React Native app',
+  options: [
+    { flag: 'help', description: 'Print help message' },
+    { flag: 'version', description: 'Print version' },
+    {
+      flag: 'skip-git-check',
+      description: 'Skip check for dirty git repository',
+    },
+    {
+      flag: 'silent',
+      description:
+        'Run in silent mode. Combine with feature flags to specify generated workflows',
+    },
+  ],
+  featureOptions: [...getFeatureOptions()],
   run: async (toolbox: GluegunToolbox) => {
     try {
       await runReactNativeCiCli(toolbox as CycliToolbox)
-    } catch (error) {
-      if (error instanceof Error) {
-        toolbox.interactive.error(
-          `Failed to execute react-native-ci-cli with following error:\n${error.message}`
-        )
-      }
+    } catch (error: unknown) {
+      const errMessage = messageFromError(error)
+      toolbox.interactive.error(
+        `Failed to execute react-native-ci-cli with following error:\n${errMessage}`
+      )
     } finally {
       process.exit()
     }
@@ -85,3 +126,11 @@ const command: GluegunCommand = {
 }
 
 module.exports = command
+
+type Option = { flag: string; description: string }
+
+export type CycliCommand = GluegunCommand & {
+  description: string
+  options: Option[]
+  featureOptions: Option[]
+}

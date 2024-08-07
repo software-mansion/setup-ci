@@ -1,4 +1,4 @@
-import { CycliToolbox, ProjectContext } from '../types'
+import { CycliRecipe, CycliToolbox, ProjectContext } from '../types'
 import { join } from 'path'
 
 const FLAG = 'ts'
@@ -14,7 +14,7 @@ const execute =
       context.path.absFromRepoRoot(
         '.github',
         'workflows',
-        `${context.packageJson.name}-typescript.yml`
+        `${toolbox.projectConfig.packageJson().name}-typescript.yml`
       ),
       context
     )
@@ -36,11 +36,13 @@ const execute =
   }
 
 const run = async (
-  toolbox: CycliToolbox
+  toolbox: CycliToolbox,
+  context: ProjectContext
 ): Promise<
   ((toolbox: CycliToolbox, context: ProjectContext) => Promise<string>) | null
 > => {
   if (toolbox.skipInteractiveForRecipe(FLAG)) {
+    context.selectedOptions.push(FLAG)
     return execute()
   }
 
@@ -56,7 +58,16 @@ const run = async (
     return null
   }
 
+  context.selectedOptions.push(FLAG)
   return execute()
 }
 
-export default run
+export const recipe: CycliRecipe = {
+  meta: {
+    flag: FLAG,
+    description: 'Generate Typescript check workflow to run on every PR',
+  },
+  run,
+}
+
+export default recipe

@@ -1,47 +1,30 @@
-import { GluegunToolbox } from 'gluegun'
-import { ProjectContext } from '../types'
+import { CycliToolbox, ProjectContext } from '../types'
 
-module.exports = (toolbox: GluegunToolbox) => {
+module.exports = (toolbox: CycliToolbox) => {
   const { packageManager, semver } = toolbox
 
-  const getSemver = (
-    name: string,
-    context: ProjectContext
-  ): string | undefined => {
-    return context.packageJson.dependencies?.[name]
+  const getSemver = (name: string): string | undefined => {
+    return toolbox.projectConfig.packageJson().dependencies?.[name]
   }
 
-  const getSemverDev = (
-    name: string,
-    context: ProjectContext
-  ): string | undefined => {
-    return context.packageJson.devDependencies?.[name]
+  const getSemverDev = (name: string): string | undefined => {
+    return toolbox.projectConfig.packageJson().devDependencies?.[name]
   }
 
-  const exists = (name: string, context: ProjectContext): boolean =>
-    !!getSemver(name, context)
+  const exists = (name: string): boolean => !!getSemver(name)
 
-  const existsDev = (name: string, context: ProjectContext): boolean =>
-    !!getSemverDev(name, context)
+  const existsDev = (name: string): boolean => !!getSemverDev(name)
 
-  const isSatisfied = (
-    name: string,
-    version: string,
-    context: ProjectContext
-  ): boolean => {
-    const currentVersion = getSemver(name, context)
+  const isSatisfied = (name: string, version: string): boolean => {
+    const currentVersion = getSemver(name)
     return (
       !!currentVersion &&
       (version === '' || semver.satisfies(currentVersion, version))
     )
   }
 
-  const isSatisfiedDev = (
-    name: string,
-    version: string,
-    context: ProjectContext
-  ): boolean => {
-    const currentVersion = getSemverDev(name, context)
+  const isSatisfiedDev = (name: string, version: string): boolean => {
+    const currentVersion = getSemverDev(name)
     return (
       !!currentVersion &&
       (version === '' || semver.satisfies(currentVersion, version))
@@ -49,7 +32,7 @@ module.exports = (toolbox: GluegunToolbox) => {
   }
 
   const add = async (name: string, context: ProjectContext, version = '') => {
-    if (existsDev(name, context)) {
+    if (existsDev(name)) {
       toolbox.interactive.warning(
         `Moving ${name} from "devDependencies" to "dependencies".`
       )
@@ -63,7 +46,7 @@ module.exports = (toolbox: GluegunToolbox) => {
 
     const fullName = version ? [name, version].join('@') : name
 
-    if (isSatisfied(name, version, context)) {
+    if (isSatisfied(name, version)) {
       toolbox.interactive.step(
         `Dependency ${fullName} is already satisfied, skipping adding dependency.`
       )
@@ -87,7 +70,7 @@ module.exports = (toolbox: GluegunToolbox) => {
     context: ProjectContext,
     version = ''
   ) => {
-    if (exists(name, context)) {
+    if (exists(name)) {
       toolbox.interactive.warning(
         `Detected package ${name} in "dependencies", but shouldn't it be in "devDependencies"?`
       )
@@ -97,7 +80,7 @@ module.exports = (toolbox: GluegunToolbox) => {
 
     const fullName = version ? [name, version].join('@') : name
 
-    if (isSatisfiedDev(name, version, context)) {
+    if (isSatisfiedDev(name, version)) {
       toolbox.interactive.step(
         `Dev dependency ${fullName} is already satisfied, skipping adding dependency.`
       )
@@ -127,8 +110,10 @@ module.exports = (toolbox: GluegunToolbox) => {
 
 export interface DependenciesExtension {
   dependencies: {
-    exists: (name: string, context: ProjectContext) => boolean
-    existsDev: (name: string, context: ProjectContext) => boolean
+    isSatisfied: (name: string, version: string) => boolean
+    isSatisfiedDev: (name: string, version: string) => boolean
+    exists: (name: string) => boolean
+    existsDev: (name: string) => boolean
     add: (
       name: string,
       context: ProjectContext,

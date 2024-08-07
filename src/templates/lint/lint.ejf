@@ -16,7 +16,7 @@ on:
     paths:
       - <%= ${props.pathRelativeToRoot} %>/**
 jobs:
-   test:
+   eslint:
       name: ESLint
       runs-on: ubuntu-latest
       steps:
