@@ -104,6 +104,7 @@ the maintainers directly.
 
 ## 🚸 Road map
 
+- [ ] Build Expo DevClient when finger print changes
 - [ ] Maestro support for E2E tests
 - [ ] Different workflows for different branches (ex. PR, main, release)
 - [ ] Upload source maps to Sentry
