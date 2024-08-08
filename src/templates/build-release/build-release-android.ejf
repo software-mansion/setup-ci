@@ -57,8 +57,8 @@ jobs:
       - name: 📁 Prepare cache folder 
         run: |
           mkdir android-release-build
-          mv android/app/build/outputs/apk/release/app-release.apk android-release-build/android-release.apk
-          mv android/app/build/outputs/apk/androidTest/release/app-release-androidTest.apk android-release-build/android-release-test.apk
+          mv <%= props.pathRelativeToRoot %>/android/app/build/outputs/apk/release/app-release.apk android-release-build/android-release.apk
+          mv <%= props.pathRelativeToRoot %>/android/app/build/outputs/apk/androidTest/release/app-release-androidTest.apk android-release-build/android-release-test.apk
 
       - name: 📡 Store built app in cache
         id: android-release-save

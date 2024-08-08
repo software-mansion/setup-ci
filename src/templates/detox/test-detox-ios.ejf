@@ -51,6 +51,8 @@ jobs:
         with:
           path: ios-release-build/
           key: ios-release-build-${{ github.event.pull_request.head.sha }}
-
+      <%= (isMonorepo) ? `
+      - name: 📁 Move build to app root directory
+        run: mv ios-release-build ${props.pathRelativeToRoot}/ios-release-build\n` : "" %>
       - name: 📋 Run Detox tests
         run: <%= runTests[props.packageManager] %>
