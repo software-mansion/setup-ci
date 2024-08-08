@@ -92,8 +92,8 @@ const createDetoxWorkflowsForExpo = async (
 
   toolbox.interactive.warning(
     [
-      'Remember to create GH_TOKEN repository secret to make Detox workflow work.',
-      'For more information check the "GitHub token" section in README.',
+      'Remember to create GH_TOKEN repository secret to make Detox workflow work. For more information check',
+      'https://github.com/software-mansion-labs/react-native-ci-cli?tab=readme-ov-file#-repository-secrets',
     ].join(' ')
   )
 }
@@ -103,8 +103,8 @@ const execute =
     if (toolbox.projectConfig.appJson()?.expo) {
       await createDetoxWorkflowsForExpo(toolbox, context)
     } else {
-      throw Error(
-        'Detox workflows generation is currently not supported for non-expo projects.'
+      toolbox.interactive.error(
+        'Detox workflows generation is currently not supported for non-expo projects. Skipping detox recipe.'
       )
     }
 

@@ -27,8 +27,8 @@ const execute =
 
     toolbox.interactive.warning(
       [
-        'Remember to create repository secret EXPO_TOKEN for EAS Update workflow to work properly.',
-        'Learn more at https://docs.expo.dev/eas-update/github-actions',
+        'Remember to create repository secret EXPO_TOKEN for EAS Update workflow to work properly. For more information check',
+        'https://github.com/software-mansion-labs/react-native-ci-cli?tab=readme-ov-file#-repository-secrets',
       ].join(' ')
     )
 
