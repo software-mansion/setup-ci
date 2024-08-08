@@ -1,13 +1,20 @@
-<h1 align="center">react-native-ci-cli</h1>
+<img src="https://s10.gifyu.com/images/SDHiW.png" />
 
-<p align="center">CLI to simplify CI setup in your React Native project.</p>
+## 🤔 Why?
+
+React Native CI CLI is ment to simplify CI/CD setup in your React Native project.
 
 ## 📖 Usage
 
-Simply go to your project root directory and run `npx react-native-ci-cli`. If your project has monorepo structure, run the script from the root
-directory of the app for which you want to setup workflows.
+Simply go to your project root directory and run: 
 
-## 💡 Example
+```
+npx react-native-ci-cli
+```
+
+If your project has monorepo structure, run the script from the root directory of the app for which you want to setup workflows.
+
+## 💡 Demo
 
 Say we want to setup GitHub actions that run ESLint check and Jest tests on our project every time we create or push to an existing Pull Request.
 Let's try to use `react-native-ci-cli` to do the heavy lifting and generate all the necessary configuration.
