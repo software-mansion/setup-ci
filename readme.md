@@ -102,6 +102,12 @@ This tool is supposed to be helpful to as many developers as possible - and ther
 have some thoughts about how it could be further developed, don't hesitate to create an issue or contact
 the maintainers directly.
 
+## 🚸 Road map
+
+- [ ] Maestro support for E2E tests
+- [ ] Different workflows for different branches (ex. PR, main, release)
+- [ ] Upload source maps to Sentry
+
 ## 📋 License
 
 MIT - see LICENSE
