@@ -21,14 +21,9 @@ const existsEslintConfigurationFile = (toolbox: CycliToolbox): boolean =>
 
 const execute =
   () => async (toolbox: CycliToolbox, context: ProjectContext) => {
-    if (
-      !toolbox.dependencies.exists('eslint') &&
-      !toolbox.dependencies.existsDev('eslint')
-    ) {
-      // eslint@9 introduces new configuration format that is not supported by widely used plugins yet,
-      // so we stick to ^8 for now.
-      await toolbox.dependencies.addDev('eslint', context, '^8')
-    }
+    // eslint@9 introduces new configuration format that is not supported by widely used plugins yet,
+    // so we stick to ^8 for now.
+    await toolbox.dependencies.addDev('eslint', context, '^8')
 
     const withPrettier =
       context.selectedOptions.includes(PRETTIER_FLAG) ||

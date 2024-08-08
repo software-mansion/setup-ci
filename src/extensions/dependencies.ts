@@ -1,54 +1,25 @@
 import { CycliToolbox, ProjectContext } from '../types'
 
 module.exports = (toolbox: CycliToolbox) => {
-  const { packageManager, semver } = toolbox
+  const { packageManager } = toolbox
 
-  const getSemver = (name: string): string | undefined => {
-    return toolbox.projectConfig.packageJson().dependencies?.[name]
-  }
+  const exists = (name: string): boolean =>
+    Boolean(toolbox.projectConfig.packageJson().dependencies?.[name])
 
-  const getSemverDev = (name: string): string | undefined => {
-    return toolbox.projectConfig.packageJson().devDependencies?.[name]
-  }
+  const existsDev = (name: string): boolean =>
+    Boolean(toolbox.projectConfig.packageJson().devDependencies?.[name])
 
-  const exists = (name: string): boolean => !!getSemver(name)
-
-  const existsDev = (name: string): boolean => !!getSemverDev(name)
-
-  const isSatisfied = (name: string, version: string): boolean => {
-    const currentVersion = getSemver(name)
-    return (
-      !!currentVersion &&
-      (version === '' || semver.satisfies(currentVersion, version))
-    )
-  }
-
-  const isSatisfiedDev = (name: string, version: string): boolean => {
-    const currentVersion = getSemverDev(name)
-    return (
-      !!currentVersion &&
-      (version === '' || semver.satisfies(currentVersion, version))
-    )
-  }
-
-  const add = async (name: string, context: ProjectContext, version = '') => {
-    if (existsDev(name)) {
-      toolbox.interactive.warning(
-        `Moving ${name} from "devDependencies" to "dependencies".`
-      )
-
-      const spinner = toolbox.interactive.spin(
-        `🗑️ Removing ${name} from "devDependencies"...`
-      )
-      await packageManager.remove(name, { dev: true })
-      spinner.stop()
-    }
-
+  const add = async (
+    name: string,
+    context: ProjectContext,
+    version = '',
+    skipInstalledCheck = false
+  ) => {
     const fullName = version ? [name, version].join('@') : name
 
-    if (isSatisfied(name, version)) {
+    if (!skipInstalledCheck && exists(name)) {
       toolbox.interactive.step(
-        `Dependency ${fullName} is already satisfied, skipping adding dependency.`
+        `Dependency ${name} is already installed, skipping adding dependency.`
       )
       return
     }
@@ -68,21 +39,22 @@ module.exports = (toolbox: CycliToolbox) => {
   const addDev = async (
     name: string,
     context: ProjectContext,
-    version = ''
+    version = '',
+    skipInstalledCheck = false
   ) => {
     if (exists(name)) {
       toolbox.interactive.warning(
         `Detected package ${name} in "dependencies", but shouldn't it be in "devDependencies"?`
       )
-      add(name, context, version)
+      add(name, context, version, skipInstalledCheck)
       return
     }
 
     const fullName = version ? [name, version].join('@') : name
 
-    if (isSatisfiedDev(name, version)) {
+    if (!skipInstalledCheck && existsDev(name)) {
       toolbox.interactive.step(
-        `Dev dependency ${fullName} is already satisfied, skipping adding dependency.`
+        `Dev dependency ${name} is already installed, skipping adding dependency.`
       )
     } else {
       const spinner = toolbox.interactive.spin(
@@ -99,8 +71,6 @@ module.exports = (toolbox: CycliToolbox) => {
   }
 
   toolbox.dependencies = {
-    isSatisfied,
-    isSatisfiedDev,
     exists,
     existsDev,
     add,
@@ -110,19 +80,19 @@ module.exports = (toolbox: CycliToolbox) => {
 
 export interface DependenciesExtension {
   dependencies: {
-    isSatisfied: (name: string, version: string) => boolean
-    isSatisfiedDev: (name: string, version: string) => boolean
     exists: (name: string) => boolean
     existsDev: (name: string) => boolean
     add: (
       name: string,
       context: ProjectContext,
-      version?: string
+      version?: string,
+      skipInstalledCheck?: boolean
     ) => Promise<void>
     addDev: (
       name: string,
       context: ProjectContext,
-      version?: string
+      version?: string,
+      skipInstalledCheck?: boolean
     ) => Promise<void>
   }
 }

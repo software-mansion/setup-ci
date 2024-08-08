@@ -14,12 +14,12 @@ const createDetoxWorkflowsForExpo = async (
 
   await createReleaseBuildWorkflowsForExpo(toolbox, context, ['android', 'ios'])
 
-  await toolbox.dependencies.add('detox', context)
+  await toolbox.dependencies.addDev('detox', context)
   // >=29 because of https://wix.github.io/Detox/docs/introduction/project-setup#step-1-bootstrap
-  await toolbox.dependencies.add('jest', context, '>=29')
-  await toolbox.dependencies.add('ts-jest', context)
-  await toolbox.dependencies.add('@types/jest', context)
-  await toolbox.dependencies.add(DETOX_EXPO_PLUGIN, context)
+  await toolbox.dependencies.addDev('jest', context, '">=29"', true)
+  await toolbox.dependencies.addDev('ts-jest', context)
+  await toolbox.dependencies.addDev('@types/jest', context)
+  await toolbox.dependencies.addDev(DETOX_EXPO_PLUGIN, context)
 
   const currentExpoPlugins =
     toolbox.projectConfig.appJson()?.expo?.plugins || []
