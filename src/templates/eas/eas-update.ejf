@@ -5,8 +5,6 @@ const install = {
   yarn: "yarn",
   npm: "npm install"
 }
-
-const update = `${(isMonorepo) ? `cd ${props.pathRelativeToRoot}; ` : ""}eas update`
 %>
 
 name: EAS Update
@@ -45,4 +43,5 @@ jobs:
       - name: 🚀 Publish update
         uses: expo/expo-github-action/preview@v8
         with:
-          command: <%= update %> --auto --branch ${{ github.event.pull_request.head.ref }}
+          working-directory: <%= props.pathRelativeToRoot %>
+          command: eas update --auto --branch ${{ github.event.pull_request.head.ref }}
