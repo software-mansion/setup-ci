@@ -1,17 +1,23 @@
 <%
+const isMonorepo = props.pathRelativeToRoot !== '.'
+
 const install = {
   yarn: "yarn",
   npm: "npm install"
 }
 
 const run = {
-  yarn: `yarn --cwd ${props.pathRelativeToRoot} ts:check`,
-  npm: `npm run ts:check --prefix ${props.pathRelativeToRoot}`
+  yarn: `yarn ${(isMonorepo) ? `--cwd ${props.pathRelativeToRoot} ` : ""}ts:check`,
+  npm: `npm run ts:check ${(isMonorepo) ? `--prefix ${props.pathRelativeToRoot}` : ""}`
 }
 %>
 
-name: Typescript check
-on: [pull_request]
+name: Run Typescript
+
+on:
+  pull_request: <%= (props.pathRelativeToRoot !== '.') ? `
+    paths:
+      - ${props.pathRelativeToRoot}/**` : "" %>
 
 jobs:
    typescript-check:

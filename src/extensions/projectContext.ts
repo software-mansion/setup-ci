@@ -1,16 +1,18 @@
-import { GluegunToolbox } from 'gluegun/build/types/domain/toolbox'
-import { PackageManager, ProjectContext } from '../types'
+import { CycliToolbox, PackageManager, ProjectContext } from '../types'
 import { LOCK_FILE_TO_MANAGER } from '../constants'
 import { lookItUpSync } from 'look-it-up'
 import { join, relative } from 'path'
 
-module.exports = (toolbox: GluegunToolbox) => {
+module.exports = (toolbox: CycliToolbox) => {
   const { filesystem } = toolbox
 
   const getPackageManager = (repoRoot: string): PackageManager => {
-    const lockFiles = filesystem
-      .list(repoRoot)
-      .filter((fileName) => LOCK_FILE_TO_MANAGER.has(fileName))
+    const lockFiles =
+      filesystem
+        .list(repoRoot)
+        ?.filter((fileName: string) =>
+          Object.keys(LOCK_FILE_TO_MANAGER).includes(fileName)
+        ) || []
 
     if (lockFiles.length == 0) {
       throw Error(
@@ -18,7 +20,7 @@ module.exports = (toolbox: GluegunToolbox) => {
       )
     }
 
-    const detectedLockFile = LOCK_FILE_TO_MANAGER.get(lockFiles[0])
+    const detectedLockFile = LOCK_FILE_TO_MANAGER[lockFiles[0]]
 
     if (lockFiles.length > 1) {
       toolbox.interactive.warning(
@@ -30,21 +32,17 @@ module.exports = (toolbox: GluegunToolbox) => {
   }
 
   const getRepoRoot = (): string => {
-    return lookItUpSync((dir) =>
-      filesystem.exists(filesystem.path(dir, '.git')) ? dir : null
+    return (
+      lookItUpSync((dir) =>
+        filesystem.exists(filesystem.path(dir, '.git')) ? dir : null
+      ) || ''
     )
   }
 
   const getPackageRoot = (): string => {
-    if (!filesystem.exists('package.json')) {
-      throw Error(
-        '❗ No package.json found in current directory. Are you sure you are in a project directory?'
-      )
-    }
+    const packageJson = toolbox.projectConfig.packageJson()
 
-    const packageJson = filesystem.read('package.json', 'json')
-
-    if (packageJson?.workspaces) {
+    if (packageJson.workspaces) {
       throw Error(
         '❗ The current directory is workspace root directory. Please run the script again from selected package root directory.'
       )
@@ -76,4 +74,10 @@ module.exports = (toolbox: GluegunToolbox) => {
   }
 
   toolbox.projectContext = { obtain }
+}
+
+export interface ProjectContextExtension {
+  projectContext: {
+    obtain: () => ProjectContext
+  }
 }

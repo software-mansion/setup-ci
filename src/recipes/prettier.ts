@@ -1,12 +1,11 @@
-import { GluegunToolbox } from 'gluegun'
-import { CycliRecipe, ProjectContext } from '../types'
+import { CycliRecipe, CycliToolbox, ProjectContext } from '../types'
 import { join } from 'path'
 
 export const FLAG = 'prettier'
 
 const execute =
-  () => async (toolbox: GluegunToolbox, context: ProjectContext) => {
-    await toolbox.dependencies.add('prettier', context.packageManager, true)
+  () => async (toolbox: CycliToolbox, context: ProjectContext) => {
+    await toolbox.dependencies.addDev('prettier', context)
 
     await toolbox.scripts.add(
       'prettier:check',
@@ -18,11 +17,7 @@ const execute =
       'prettier --write "**/*.{ts,tsx,js,jsx,json,css,scss,md}"'
     )
 
-    await toolbox.workflows.generate(
-      join('prettier', 'prettier.ejf'),
-      context.path.absFromRepoRoot('.github', 'workflows', 'prettier.yml'),
-      context
-    )
+    await toolbox.workflows.generate(join('prettier', 'prettier.ejf'), context)
 
     if (!toolbox.filesystem.exists('.prettierrc')) {
       await toolbox.template.generate({
@@ -50,10 +45,10 @@ const execute =
   }
 
 const run = async (
-  toolbox: GluegunToolbox,
+  toolbox: CycliToolbox,
   context: ProjectContext
 ): Promise<
-  ((toolbox: GluegunToolbox, context: ProjectContext) => Promise<string>) | null
+  ((toolbox: CycliToolbox, context: ProjectContext) => Promise<string>) | null
 > => {
   if (toolbox.skipInteractiveForRecipe(FLAG)) {
     context.selectedOptions.push(FLAG)

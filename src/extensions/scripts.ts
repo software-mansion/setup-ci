@@ -1,6 +1,6 @@
-import { GluegunToolbox } from 'gluegun'
+import { CycliToolbox } from '../types'
 
-module.exports = (toolbox: GluegunToolbox) => {
+module.exports = (toolbox: CycliToolbox) => {
   const { patching } = toolbox
 
   const add = async (name: string, command: string) => {
@@ -20,4 +20,10 @@ module.exports = (toolbox: GluegunToolbox) => {
   }
 
   toolbox.scripts = { add }
+}
+
+export interface ScriptsExtension {
+  scripts: {
+    add: (name: string, command: string) => Promise<void>
+  }
 }
