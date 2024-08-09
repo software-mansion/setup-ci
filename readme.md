@@ -2,7 +2,7 @@
 
 ## 🤔 Why?
 
-React Native CI CLI is ment to simplify CI/CD setup in your React Native project.
+React Native CI CLI is meant to simplify CI/CD setup in your React Native project.
 
 ## 📖 Usage
 
@@ -47,7 +47,7 @@ When using `react-native-ci-cli`, you can provide additional flags to modify its
   </tr>
   <tr>
     <td style="vertical-align: middle;">--skip-git-check</td>
-    <td style="vertical-align: middle;">By default, the script will prompt the user if there are uncommited changes in working repository. Use this flag to proceed without asking.</td>
+    <td style="vertical-align: middle;">By default, the script will prompt the user if there are uncommitted changes in working repository. Use this flag to proceed without asking.</td>
   </tr>
 </table>
 
