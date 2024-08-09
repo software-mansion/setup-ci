@@ -120,6 +120,7 @@ the maintainers directly.
 - [ ] Maestro support for E2E tests
 - [ ] Different workflows for different branches (ex. PR, main, release)
 - [ ] Upload source maps to Sentry
+- [ ] Handle different vendors
 
 ## 📋 License
 
