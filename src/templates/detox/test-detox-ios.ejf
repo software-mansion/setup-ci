@@ -1,0 +1,60 @@
+<%
+const isMonorepo = props.pathRelativeToRoot !== '.'
+
+const install = {
+  yarn: "yarn",
+  npm: "npm install"
+}
+
+const runTests = {
+  yarn: `yarn ${(isMonorepo) ? `--cwd ${props.pathRelativeToRoot} ` : ""}detox:test:ios`,
+  npm: `npm run detox:test:ios ${(isMonorepo) ? `--prefix ${props.pathRelativeToRoot}` : ""}`
+}
+%>
+
+name: Test Detox iOS
+
+on:
+  pull_request: <%= (props.pathRelativeToRoot !== '.') ? `
+    paths:
+      - ${props.pathRelativeToRoot}/**` : "" %>
+
+jobs:
+  test-detox-ios:
+    runs-on: macos-latest
+    timeout-minutes: 60
+    steps:
+      - name: ⌛ Wait for build to finish
+        uses: poseidon/wait-for-status-checks@v0.5.0
+        with:
+          token: ${{ secrets.GH_TOKEN }}
+          delay: 20s
+          match_pattern: build-release-ios
+
+      - name: 🏗 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 📦 Install dependencies
+        run: <%= install[props.packageManager] %>
+
+      - name: 📦 Install macOS dependencies
+        run: |
+          brew tap wix/brew
+          brew install applesimutils
+        env:
+          HOMEBREW_NO_AUTO_UPDATE: 1
+          HOMEBREW_NO_INSTALL_CLEANUP: 1
+
+      - name: 🐛 Try to restore build from cache
+        id: ios-release-restore
+        uses: actions/cache/restore@v4
+        with:
+          path: ios-release-build/
+          key: ios-release-build-${{ github.event.pull_request.head.sha }}
+
+      <%= (isMonorepo) ?
+     `- name: 📁 Move build to app root directory
+        run: mv ios-release-build ${props.pathRelativeToRoot}/ios-release-build` : "" %>
+
+      - name: 📋 Run Detox tests
+        run: <%= runTests[props.packageManager] %>

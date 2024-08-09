@@ -39,6 +39,18 @@ export interface CycliRecipe {
   >
 }
 
+export type Platform = 'android' | 'ios'
+
+export interface AppJson {
+  expo?: {
+    name: string
+    plugins?: string[]
+    android: {
+      package?: string
+    }
+  }
+}
+
 export interface ProjectContext {
   packageManager: PackageManager
   path: {
@@ -47,6 +59,7 @@ export interface ProjectContext {
     relFromRepoRoot: (p: string) => string
     absFromRepoRoot: (...p: string[]) => string
   }
+  iOSAppName?: string
   selectedOptions: string[]
 }
 

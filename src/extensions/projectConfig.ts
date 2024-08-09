@@ -1,4 +1,4 @@
-import { CycliToolbox, PackageJson } from '../types'
+import { AppJson, CycliToolbox, PackageJson } from '../types'
 
 module.exports = (toolbox: CycliToolbox) => {
   const { filesystem } = toolbox
@@ -6,11 +6,15 @@ module.exports = (toolbox: CycliToolbox) => {
   const packageJson = (): PackageJson => {
     if (!filesystem.exists('package.json')) {
       throw Error(
-        '❗ No package.json found in current directory. Are you sure you are in a project directory?'
+        'No package.json found in current directory. Are you sure you are in a project directory?'
       )
     }
 
     return filesystem.read('package.json', 'json')
+  }
+
+  const appJson = (): AppJson | undefined => {
+    return filesystem.read('app.json', 'json')
   }
 
   const getName = (): string => {
@@ -19,6 +23,7 @@ module.exports = (toolbox: CycliToolbox) => {
 
   toolbox.projectConfig = {
     packageJson,
+    appJson,
     getName,
   }
 }
@@ -26,6 +31,7 @@ module.exports = (toolbox: CycliToolbox) => {
 export interface ProjectConfigExtension {
   projectConfig: {
     packageJson: () => PackageJson
+    appJson: () => AppJson | undefined
     getName: () => string
   }
 }

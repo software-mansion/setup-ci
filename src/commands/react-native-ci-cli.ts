@@ -5,6 +5,7 @@ import jest from '../recipes/jest'
 import typescriptCheck from '../recipes/typescript'
 import prettierCheck from '../recipes/prettier'
 import easUpdate from '../recipes/eas-update'
+import detox from '../recipes/detox'
 import isGitDirty from 'is-git-dirty'
 import sequentialPromiseMap from '../utils/sequentialPromiseMap'
 import { CycliToolbox, ProjectContext } from '../types'
@@ -46,6 +47,7 @@ const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
   const typescriptExecutor = await typescriptCheck.run(toolbox, context)
   const prettierExecutor = await prettierCheck.run(toolbox, context)
   const easUpdateExecutor = await easUpdate.run(toolbox, context)
+  const detoxExecutor = await detox.run(toolbox, context)
 
   const executors = [
     lintExecutor,
@@ -53,6 +55,7 @@ const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
     typescriptExecutor,
     prettierExecutor,
     easUpdateExecutor,
+    detoxExecutor,
   ].filter((executor) => executor != null)
 
   if (executors.length === 0) {
@@ -88,6 +91,7 @@ const getFeatureOptions = (): Option[] => {
     typescriptCheck.meta,
     prettierCheck.meta,
     easUpdate.meta,
+    detox.meta,
   ].map((meta) => ({
     flag: meta.flag,
     description: meta.description,

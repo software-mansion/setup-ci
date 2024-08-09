@@ -1,0 +1,65 @@
+<%
+const isMonorepo = props.pathRelativeToRoot !== '.'
+
+const install = {
+  yarn: "yarn",
+  npm: "npm install"
+}
+
+const build = {
+  yarn: `yarn ${(isMonorepo) ? `--cwd ${props.pathRelativeToRoot} ` : ""}build:release:ios`,
+  npm: `npm run build:release:ios ${(isMonorepo) ? `--prefix ${props.pathRelativeToRoot}` : ""}`
+}
+%>
+
+name: Build iOS Release App
+
+on:
+  pull_request: <%= (props.pathRelativeToRoot !== '.') ? `
+    paths:
+      - ${props.pathRelativeToRoot}/**` : "" %>
+
+jobs:
+  lookup-cached-build:
+    runs-on: ubuntu-latest
+    outputs:
+      build-exists: ${{ steps.ios-release-restore.outputs.cache-hit }}
+    steps:
+      - name: 🐛 Try to restore build from cache
+        id: ios-release-restore
+        uses: actions/cache/restore@v4
+        with:
+          lookup-only: true
+          path: ios-release-build/
+          key: ios-release-build-${{ github.event.pull_request.head.sha }}
+
+  build-release-ios:
+    needs: lookup-cached-build 
+    if: needs.lookup-cached-build.outputs.build-exists != 'true'
+    runs-on: macos-latest
+    steps:
+      - name: 🏗 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 📦 Install dependencies
+        run: <%= install[props.packageManager] %>
+
+      - name: 🔨 Use latest stable Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - name: 🛠️ Build
+        run: <%= build[props.packageManager] %>
+
+      - name: 📁 Prepare cache folder 
+        run: |
+          mkdir ios-release-build
+          mv <%= props.pathRelativeToRoot %>/ios/build/Build/Products/Release-iphonesimulator/<%= props.iOSAppName %>.app ios-release-build/ios-release.app
+
+      - name: 📡 Store built app in cache
+        id: ios-release-save
+        uses: actions/cache/save@v4
+        with:
+          path: ios-release-build/
+          key: ios-release-build-${{ github.event.pull_request.head.sha }}

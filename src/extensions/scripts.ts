@@ -6,6 +6,12 @@ module.exports = (toolbox: CycliToolbox) => {
   const add = async (name: string, command: string) => {
     await patching.update('package.json', (config) => {
       if (config.scripts[name]) {
+        toolbox.interactive.warning(
+          [
+            `Skipping attempt to add script "${name}": "${command}" to package.json as script ${name} already exists.`,
+            `Consider updating it to make generated workflows work properly.`,
+          ].join(' ')
+        )
         return config
       }
 

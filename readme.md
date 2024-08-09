@@ -78,6 +78,10 @@ The following are **feature flags** that can be used in silent mode (they are ig
     <td style="vertical-align: middle;">--eas-update</td>
     <td style="vertical-align: middle;">Generate EAS Update and preview workflow to run on every PR.</td>
   </tr>
+  <tr>
+    <td style="vertical-align: middle;">--detox</td>
+    <td style="vertical-align: middle;">Generate workflow to run Detox e2e tests on every PR.</td>
+  </tr>
 </table>
 
 ## 🔐 Repository secrets
@@ -93,6 +97,14 @@ as you will always be prompted to create secrets if necessary. The following tab
   <tr>
     <td style="vertical-align: middle;">EXPO_TOKEN</td>
     <td style="vertical-align: middle;">Used for authentication in workflows using your Expo account. Learn more at <a href=https://docs.expo.dev/eas-update/github-actions>Expo with GitHub actions</a>.</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: middle;">GH_TOKEN</td>
+    <td style="vertical-align: middle;">
+      Used by workflows reading status of other GitHub actions. You can learn how to generate the token at 
+      <a href=https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens>Managing your personal access tokens</a>. 
+      Make sure that your generated token has <ins>read access to actions</ins>. 
+    </td>
   </tr>
 </table>
 
