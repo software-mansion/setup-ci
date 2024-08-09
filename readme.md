@@ -102,7 +102,7 @@ This tool is supposed to be helpful to as many developers as possible - and ther
 have some thoughts about how it could be further developed, don't hesitate to create an issue or contact
 the maintainers directly.
 
-## 🚸 Road map
+## 🚸 Roadmap
 
 - [ ] Build Expo DevClient when fingerprint changes
 - [ ] Maestro support for E2E tests
