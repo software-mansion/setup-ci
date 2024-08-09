@@ -15,6 +15,12 @@ module.exports = (toolbox: CycliToolbox) => {
     return `${toolbox.projectConfig.getName()}-${workflowBasename}.yml`
   }
 
+  const formatWorkflowString = (workflowString: string): string => {
+    return workflowString
+      .trimStart() // Remove white characters from beginning
+      .replace(/\n([ ]*\n[ ]*)+\n/g, '\n\n') // Replace >=3 consecutive empty lines (possibly containing spaces) with two endlines
+  }
+
   const generate = async (
     template: string,
     context: ProjectContext,
@@ -40,7 +46,7 @@ module.exports = (toolbox: CycliToolbox) => {
       workflowFileName
     )
 
-    toolbox.filesystem.write(target, workflowString.trimStart())
+    toolbox.filesystem.write(target, formatWorkflowString(workflowString))
 
     toolbox.interactive.step(`Created ${workflowFileName} workflow file.`)
   }

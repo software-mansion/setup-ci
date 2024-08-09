@@ -57,9 +57,11 @@ jobs:
         with:
           path: android-release-build/
           key: android-release-build-${{ github.event.pull_request.head.sha }}
-      <%= (isMonorepo) ? `
-      - name: 📁 Move build to app root directory
-        run: mv android-release-build ${props.pathRelativeToRoot}/android-release-build\n` : "" %>
+
+      <%= (isMonorepo) ?
+     `- name: 📁 Move build to app root directory
+        run: mv android-release-build ${props.pathRelativeToRoot}/android-release-build` : ""%>
+
       - name: 🏎️ Enable KVM
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
