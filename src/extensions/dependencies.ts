@@ -12,8 +12,13 @@ module.exports = (toolbox: CycliToolbox) => {
   const add = async (
     name: string,
     context: ProjectContext,
-    version = '',
-    skipInstalledCheck = false
+    {
+      version = '',
+      skipInstalledCheck = false,
+    }: { version?: string; skipInstalledCheck?: boolean } = {
+      version: '',
+      skipInstalledCheck: false,
+    }
   ) => {
     const fullName = version ? [name, version].join('@') : name
 
@@ -39,14 +44,19 @@ module.exports = (toolbox: CycliToolbox) => {
   const addDev = async (
     name: string,
     context: ProjectContext,
-    version = '',
-    skipInstalledCheck = false
+    {
+      version = '',
+      skipInstalledCheck = false,
+    }: { version?: string; skipInstalledCheck?: boolean } = {
+      version: '',
+      skipInstalledCheck: false,
+    }
   ) => {
     if (exists(name)) {
       toolbox.interactive.warning(
         `Detected package ${name} in "dependencies", but shouldn't it be in "devDependencies"?`
       )
-      add(name, context, version, skipInstalledCheck)
+      add(name, context, { version, skipInstalledCheck })
       return
     }
 
@@ -56,16 +66,17 @@ module.exports = (toolbox: CycliToolbox) => {
       toolbox.interactive.step(
         `Dev dependency ${name} is already installed, skipping adding dependency.`
       )
-    } else {
-      const spinner = toolbox.interactive.spin(
-        `📦 Installing ${fullName} as devDependency...`
-      )
-      await packageManager.add(fullName, {
-        dev: true,
-        force: context.packageManager,
-      })
-      spinner.stop()
+      return
     }
+
+    const spinner = toolbox.interactive.spin(
+      `📦 Installing ${fullName} as devDependency...`
+    )
+    await packageManager.add(fullName, {
+      dev: true,
+      force: context.packageManager,
+    })
+    spinner.stop()
 
     toolbox.interactive.step(`Installed ${fullName} as devDependency.`)
   }
@@ -85,14 +96,18 @@ export interface DependenciesExtension {
     add: (
       name: string,
       context: ProjectContext,
-      version?: string,
-      skipInstalledCheck?: boolean
+      options?: {
+        version?: string
+        skipInstalledCheck?: boolean
+      }
     ) => Promise<void>
     addDev: (
       name: string,
       context: ProjectContext,
-      version?: string,
-      skipInstalledCheck?: boolean
+      options?: {
+        version?: string
+        skipInstalledCheck?: boolean
+      }
     ) => Promise<void>
   }
 }

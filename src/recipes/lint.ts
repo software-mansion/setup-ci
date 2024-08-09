@@ -23,7 +23,7 @@ const execute =
   () => async (toolbox: CycliToolbox, context: ProjectContext) => {
     // eslint@9 introduces new configuration format that is not supported by widely used plugins yet,
     // so we stick to ^8 for now.
-    await toolbox.dependencies.addDev('eslint', context, '^8')
+    await toolbox.dependencies.addDev('eslint', context, { version: '^8' })
 
     const withPrettier =
       context.selectedOptions.includes(PRETTIER_FLAG) ||
