@@ -12,7 +12,12 @@ interface Spinner {
 }
 
 module.exports = (toolbox: CycliToolbox) => {
-  const { print } = toolbox
+  const {
+    print: {
+      colors: { cyan, green },
+      ...print
+    },
+  } = toolbox
 
   const confirm = async (message: string): Promise<boolean> => {
     const confirmed = await clackConfirm({ message })
@@ -28,8 +33,14 @@ module.exports = (toolbox: CycliToolbox) => {
     print.info(message)
   }
 
+  const infoCyan = (message: string) => {
+    info(cyan(message))
+  }
+
+  const vspace = () => info('')
+
   const step = (message: string) => {
-    print.info(`✔ ${message} `)
+    print.info(`${green('✔')} ${message} `)
   }
 
   const error = (message: string) => {
@@ -59,6 +70,8 @@ module.exports = (toolbox: CycliToolbox) => {
   toolbox.interactive = {
     confirm,
     info,
+    infoCyan,
+    vspace,
     step,
     error,
     success,
@@ -73,6 +86,8 @@ export interface InteractiveExtension {
   interactive: {
     confirm: (message: string) => Promise<boolean>
     info: (message: string) => void
+    infoCyan: (message: string) => void
+    vspace: () => void
     step: (message: string) => void
     error: (message: string) => void
     success: (message: string) => void

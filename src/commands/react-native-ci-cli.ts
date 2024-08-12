@@ -42,6 +42,8 @@ const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
 
   const context: ProjectContext = toolbox.projectContext.obtain()
 
+  const snapshotBefore = await toolbox.diff.gitStatus(context)
+
   const lintExecutor = await lint.run(toolbox, context)
   const jestExecutor = await jest.run(toolbox, context)
   const typescriptExecutor = await typescriptCheck.run(toolbox, context)
@@ -73,8 +75,13 @@ const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
     executor(toolbox, context)
   )
 
+  const snapshotAfter = await toolbox.diff.gitStatus(context)
+  const diff = toolbox.diff.getDiff(snapshotBefore, snapshotAfter)
+  toolbox.diff.printDiff(diff, context)
+
   const usedFlags = executorResults.join(' ')
 
+  toolbox.interactive.vspace()
   toolbox.interactive.success(`We're all set 🎉.`)
 
   if (!toolbox.skipInteractive()) {

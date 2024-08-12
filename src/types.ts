@@ -7,6 +7,7 @@ import { SkipInteractiveExtension } from './extensions/skipInteractive'
 import { WorkflowsExtension } from './extensions/workflows'
 import { ProjectConfigExtension } from './extensions/projectConfig'
 import { LOCK_FILE_TO_MANAGER } from './constants'
+import { DiffExtension } from './extensions/diff'
 
 export interface PackageJson {
   name: string
@@ -56,6 +57,7 @@ export interface ProjectContext {
   path: {
     repoRoot: string
     packageRoot: string
+    repoFolderName: string
     relFromRepoRoot: (p: string) => string
     absFromRepoRoot: (...p: string[]) => string
   }
@@ -73,4 +75,5 @@ export type CycliToolbox = {
   ProjectContextExtension &
   ScriptsExtension &
   SkipInteractiveExtension &
-  WorkflowsExtension
+  WorkflowsExtension &
+  DiffExtension
