@@ -8,11 +8,14 @@ import easUpdate from '../recipes/eas-update'
 import detox from '../recipes/detox'
 import isGitDirty from 'is-git-dirty'
 import sequentialPromiseMap from '../utils/sequentialPromiseMap'
-import { CycliToolbox, ProjectContext } from '../types'
+import { CycliRecipe, CycliToolbox, ProjectContext } from '../types'
 import messageFromError from '../utils/messageFromError'
+import { intersection } from 'lodash'
 
 const SKIP_GIT_CHECK_FLAG = 'skip-git-check'
 const COMMAND = 'react-native-ci-cli'
+
+const RECIPES = [lint, jest, typescriptCheck, prettierCheck, easUpdate, detox]
 
 const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
   toolbox.interactive.intro('Welcome to React Native CI CLI')
@@ -42,21 +45,23 @@ const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
 
   const context: ProjectContext = toolbox.projectContext.obtain()
 
-  const lintExecutor = await lint.run(toolbox, context)
-  const jestExecutor = await jest.run(toolbox, context)
-  const typescriptExecutor = await typescriptCheck.run(toolbox, context)
-  const prettierExecutor = await prettierCheck.run(toolbox, context)
-  const easUpdateExecutor = await easUpdate.run(toolbox, context)
-  const detoxExecutor = await detox.run(toolbox, context)
+  const featureFlags = getFeatureOptions().map((option) => option.flag)
 
-  const executors = [
-    lintExecutor,
-    jestExecutor,
-    typescriptExecutor,
-    prettierExecutor,
-    easUpdateExecutor,
-    detoxExecutor,
-  ].filter((executor) => executor != null)
+  const selectedFeatureFlags = toolbox.skipInteractive()
+    ? intersection(featureFlags, Object.keys(toolbox.parameters.options))
+    : await toolbox.interactive.multiselect(
+        'Select workflows you want to run on every PR',
+        RECIPES.map((recipe: CycliRecipe) => ({
+          label: recipe.meta.name,
+          value: recipe.meta.flag,
+        }))
+      )
+
+  context.selectedOptions = selectedFeatureFlags
+
+  const executors = RECIPES.filter((recipe: CycliRecipe) =>
+    selectedFeatureFlags.includes(recipe.meta.flag)
+  ).map((recipe: CycliRecipe) => recipe.execute)
 
   if (executors.length === 0) {
     toolbox.interactive.outro('Nothing to do here. Cheers! 🎉')
@@ -69,11 +74,11 @@ const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
     `Detected ${context.packageManager} as your package manager.`
   )
 
-  const executorResults = await sequentialPromiseMap(executors, (executor) =>
+  await sequentialPromiseMap(executors, (executor) =>
     executor(toolbox, context)
   )
 
-  const usedFlags = executorResults.join(' ')
+  const usedFlags = selectedFeatureFlags.map((flag) => `--${flag}`).join(' ')
 
   toolbox.interactive.success(`We're all set 🎉.`)
 
@@ -85,16 +90,9 @@ const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
 }
 
 const getFeatureOptions = (): Option[] => {
-  return [
-    lint.meta,
-    jest.meta,
-    typescriptCheck.meta,
-    prettierCheck.meta,
-    easUpdate.meta,
-    detox.meta,
-  ].map((meta) => ({
-    flag: meta.flag,
-    description: meta.description,
+  return RECIPES.map((recipe: CycliRecipe) => ({
+    flag: recipe.meta.flag,
+    description: recipe.meta.description,
   }))
 }
 
@@ -129,8 +127,6 @@ const command: CycliCommand = {
   },
 }
 
-module.exports = command
-
 type Option = { flag: string; description: string }
 
 export type CycliCommand = GluegunCommand & {
@@ -138,3 +134,5 @@ export type CycliCommand = GluegunCommand & {
   options: Option[]
   featureOptions: Option[]
 }
+
+module.exports = command

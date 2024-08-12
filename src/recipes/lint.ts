@@ -19,79 +19,53 @@ const existsEslintConfigurationFile = (toolbox: CycliToolbox): boolean =>
       ?.some((f) => ESLINT_CONFIGURATION_FILES.includes(f))
   )
 
-const execute =
-  () => async (toolbox: CycliToolbox, context: ProjectContext) => {
-    // eslint@9 introduces new configuration format that is not supported by widely used plugins yet,
-    // so we stick to ^8 for now.
-    await toolbox.dependencies.addDev('eslint', context, { version: '^8' })
-
-    const withPrettier =
-      context.selectedOptions.includes(PRETTIER_FLAG) ||
-      toolbox.dependencies.existsDev('prettier') ||
-      toolbox.dependencies.exists('prettier')
-
-    if (withPrettier) {
-      await toolbox.dependencies.addDev('eslint-plugin-prettier', context)
-
-      await toolbox.dependencies.addDev('eslint-config-prettier', context)
-    }
-
-    await toolbox.scripts.add('lint', 'eslint "**/*.{js,jsx,ts,tsx}"')
-
-    if (!existsEslintConfigurationFile(toolbox)) {
-      await toolbox.template.generate({
-        template: join('lint', '.eslintrc.json.ejs'),
-        target: '.eslintrc.json',
-        props: {
-          withPrettier,
-        },
-      })
-
-      toolbox.interactive.step(
-        'Created .eslintrc.json with default configuration.'
-      )
-    }
-
-    await toolbox.workflows.generate(join('lint', 'lint.ejf'), context)
-
-    toolbox.interactive.step('Created ESLint workflow.')
-
-    return `--${FLAG}`
-  }
-
-const run = async (
+const execute = async (
   toolbox: CycliToolbox,
   context: ProjectContext
-): Promise<
-  ((toolbox: CycliToolbox, context: ProjectContext) => Promise<string>) | null
-> => {
-  if (toolbox.skipInteractiveForRecipe(FLAG)) {
-    context.selectedOptions.push(FLAG)
-    return execute()
+): Promise<void> => {
+  // eslint@9 introduces new configuration format that is not supported by widely used plugins yet,
+  // so we stick to ^8 for now.
+  await toolbox.dependencies.addDev('eslint', context, { version: '^8' })
+
+  const withPrettier =
+    context.selectedOptions.includes(PRETTIER_FLAG) ||
+    toolbox.dependencies.existsDev('prettier') ||
+    toolbox.dependencies.exists('prettier')
+
+  if (withPrettier) {
+    await toolbox.dependencies.addDev('eslint-plugin-prettier', context)
+
+    await toolbox.dependencies.addDev('eslint-config-prettier', context)
   }
 
-  if (toolbox.skipInteractive()) {
-    return null
+  await toolbox.scripts.add('lint', 'eslint "**/*.{js,jsx,ts,tsx}"')
+
+  if (!existsEslintConfigurationFile(toolbox)) {
+    await toolbox.template.generate({
+      template: join('lint', '.eslintrc.json.ejs'),
+      target: '.eslintrc.json',
+      props: {
+        withPrettier,
+      },
+    })
+
+    toolbox.interactive.step(
+      'Created .eslintrc.json with default configuration.'
+    )
   }
 
-  const proceed = await toolbox.interactive.confirm(
-    'Do you want to run ESLint on your project on every PR?'
-  )
+  await toolbox.workflows.generate(join('lint', 'lint.ejf'), context)
 
-  if (!proceed) {
-    return null
-  }
-
-  context.selectedOptions.push(FLAG)
-  return execute()
+  toolbox.interactive.step('Created ESLint workflow.')
 }
 
 export const recipe: CycliRecipe = {
   meta: {
+    name: 'ESLint',
     flag: FLAG,
     description: 'Generate ESLint workflow to run on every PR',
   },
-  run,
+  execute,
 }
 
 export default recipe

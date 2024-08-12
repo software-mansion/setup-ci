@@ -25,18 +25,14 @@ export type PackageManager =
   (typeof LOCK_FILE_TO_MANAGER)[keyof typeof LOCK_FILE_TO_MANAGER]
 
 export interface RecipeMeta {
+  name: string
   flag: string
   description: string
 }
 
 export interface CycliRecipe {
   meta: RecipeMeta
-  run: (
-    toolbox: CycliToolbox,
-    context: ProjectContext
-  ) => Promise<
-    ((toolbox: CycliToolbox, context: ProjectContext) => Promise<string>) | null
-  >
+  execute: (toolbox: CycliToolbox, context: ProjectContext) => Promise<void>
 }
 
 export type Platform = 'android' | 'ios'

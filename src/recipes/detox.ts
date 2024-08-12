@@ -1,4 +1,3 @@
-import { confirm } from '@clack/prompts'
 import { CycliRecipe, CycliToolbox, ProjectContext } from '../types'
 import { createReleaseBuildWorkflowsForExpo } from './build-release'
 import { join } from 'path'
@@ -101,49 +100,26 @@ const createDetoxWorkflowsForExpo = async (
   )
 }
 
-const execute =
-  () => async (toolbox: CycliToolbox, context: ProjectContext) => {
-    if (toolbox.projectConfig.appJson()?.expo) {
-      await createDetoxWorkflowsForExpo(toolbox, context)
-    } else {
-      toolbox.interactive.error(
-        'Detox workflows generation is currently not supported for non-expo projects. Skipping detox recipe.'
-      )
-    }
-
-    return `--${FLAG}`
+const execute = async (
+  toolbox: CycliToolbox,
+  context: ProjectContext
+): Promise<void> => {
+  if (toolbox.projectConfig.appJson()?.expo) {
+    await createDetoxWorkflowsForExpo(toolbox, context)
+  } else {
+    toolbox.interactive.error(
+      'Detox workflows generation is currently not supported for non-expo projects. Skipping detox recipe.'
+    )
   }
-
-const run = async (
-  toolbox: CycliToolbox
-): Promise<
-  ((toolbox: CycliToolbox, context: ProjectContext) => Promise<string>) | null
-> => {
-  if (toolbox.skipInteractiveForRecipe(FLAG)) {
-    return execute()
-  }
-
-  if (toolbox.skipInteractive()) {
-    return null
-  }
-
-  const proceed = await confirm({
-    message: 'Do you want to run Detox e2e tests on every PR?',
-  })
-
-  if (!proceed) {
-    return null
-  }
-
-  return execute()
 }
 
 export const recipe: CycliRecipe = {
   meta: {
+    name: 'Detox E2E tests',
     flag: FLAG,
     description: 'Generate workflow to run Detox e2e tests on every PR',
   },
-  run,
+  execute,
 } as const
 
 export default recipe

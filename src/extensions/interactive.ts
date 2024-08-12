@@ -2,6 +2,7 @@ import {
   confirm as clackConfirm,
   outro as clackOutro,
   intro as clackIntro,
+  multiselect as clackMultiselect,
   isCancel,
 } from '@clack/prompts'
 
@@ -12,7 +13,12 @@ interface Spinner {
 }
 
 module.exports = (toolbox: CycliToolbox) => {
-  const { print } = toolbox
+  const {
+    print: {
+      colors: { bold },
+      ...print
+    },
+  } = toolbox
 
   const confirm = async (message: string): Promise<boolean> => {
     const confirmed = await clackConfirm({ message })
@@ -22,6 +28,19 @@ module.exports = (toolbox: CycliToolbox) => {
     }
 
     return confirmed
+  }
+
+  const multiselect = async (
+    message: string,
+    options: { label: string; value: string }[]
+  ): Promise<string[]> => {
+    const selected = await clackMultiselect({ message: bold(message), options })
+
+    if (isCancel(selected)) {
+      throw Error('The script execution has been canceled by the user.')
+    }
+
+    return selected as string[]
   }
 
   const info = (message: string) => {
@@ -58,6 +77,7 @@ module.exports = (toolbox: CycliToolbox) => {
 
   toolbox.interactive = {
     confirm,
+    multiselect,
     info,
     step,
     error,
@@ -72,6 +92,10 @@ module.exports = (toolbox: CycliToolbox) => {
 export interface InteractiveExtension {
   interactive: {
     confirm: (message: string) => Promise<boolean>
+    multiselect: (
+      message: string,
+      options: { label: string; value: string }[]
+    ) => Promise<string[]>
     info: (message: string) => void
     step: (message: string) => void
     error: (message: string) => void
