@@ -1,19 +1,24 @@
+import { print } from 'gluegun'
 import {
   confirm as clackConfirm,
   outro as clackOutro,
   intro as clackIntro,
   isCancel,
 } from '@clack/prompts'
-
 import { CycliToolbox } from '../types'
 
 interface Spinner {
   stop: () => void
 }
 
-module.exports = (toolbox: CycliToolbox) => {
-  const { print } = toolbox
+const COLORS = {
+  cyan: print.colors.cyan,
+  green: print.colors.green,
+}
 
+type MessageColor = keyof typeof COLORS
+
+module.exports = (toolbox: CycliToolbox) => {
   const confirm = async (message: string): Promise<boolean> => {
     const confirmed = await clackConfirm({ message })
 
@@ -24,12 +29,15 @@ module.exports = (toolbox: CycliToolbox) => {
     return confirmed
   }
 
-  const info = (message: string) => {
-    print.info(message)
+  const info = (message: string, color?: MessageColor) => {
+    if (color) print.info(`${COLORS[color](message)}`)
+    else print.info(message)
   }
 
+  const vspace = () => info('')
+
   const step = (message: string) => {
-    print.info(`✔ ${message} `)
+    print.info(`${COLORS.green('✔')} ${message} `)
   }
 
   const error = (message: string) => {
@@ -59,6 +67,7 @@ module.exports = (toolbox: CycliToolbox) => {
   toolbox.interactive = {
     confirm,
     info,
+    vspace,
     step,
     error,
     success,
@@ -72,7 +81,8 @@ module.exports = (toolbox: CycliToolbox) => {
 export interface InteractiveExtension {
   interactive: {
     confirm: (message: string) => Promise<boolean>
-    info: (message: string) => void
+    info: (message: string, color?: MessageColor) => void
+    vspace: () => void
     step: (message: string) => void
     error: (message: string) => void
     success: (message: string) => void
