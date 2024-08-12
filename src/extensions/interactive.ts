@@ -1,30 +1,24 @@
+import { print } from 'gluegun'
 import {
   confirm as clackConfirm,
   outro as clackOutro,
   intro as clackIntro,
   isCancel,
 } from '@clack/prompts'
-
 import { CycliToolbox } from '../types'
 
 interface Spinner {
   stop: () => void
 }
 
-type MessageColor = 'cyan'
+const COLORS = {
+  cyan: print.colors.cyan,
+  green: print.colors.green,
+}
+
+type MessageColor = keyof typeof COLORS
 
 module.exports = (toolbox: CycliToolbox) => {
-  const {
-    print: {
-      colors: { cyan, green },
-      ...print
-    },
-  } = toolbox
-
-  const COLORS: { [key in MessageColor]: (message: string) => string } = {
-    cyan: cyan,
-  }
-
   const confirm = async (message: string): Promise<boolean> => {
     const confirmed = await clackConfirm({ message })
 
@@ -43,7 +37,7 @@ module.exports = (toolbox: CycliToolbox) => {
   const vspace = () => info('')
 
   const step = (message: string) => {
-    print.info(`${green('✔')} ${message} `)
+    print.info(`${COLORS.green('✔')} ${message} `)
   }
 
   const error = (message: string) => {
