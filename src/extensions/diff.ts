@@ -76,7 +76,7 @@ module.exports = (toolbox: CycliToolbox) => {
     )
   }
 
-  const getDiff = (before: Snapshot, after: Snapshot): Diff => {
+  const compare = (before: Snapshot, after: Snapshot): Diff => {
     return Array.from(
       new Set([...Array.from(before.keys()), ...Array.from(after.keys())])
     ).reduce((diff, path) => {
@@ -108,16 +108,17 @@ module.exports = (toolbox: CycliToolbox) => {
     ].join(sep)
   }
 
-  const printDiff = (diff: Diff, context: ProjectContext): void => {
+  const print = (diff: Diff, context: ProjectContext): void => {
     toolbox.interactive.vspace()
 
     if (diff.size === 0) {
-      toolbox.interactive.infoCyan('No files have been added or modified.')
+      toolbox.interactive.info('No files have been added or modified.', 'cyan')
       return
     }
 
-    toolbox.interactive.infoCyan(
-      'The following files have been added or modified:'
+    toolbox.interactive.info(
+      'The following files have been added or modified:',
+      'cyan'
     )
     toolbox.interactive.vspace()
     toolbox.interactive.info(
@@ -131,7 +132,7 @@ module.exports = (toolbox: CycliToolbox) => {
     )
   }
 
-  toolbox.diff = { gitStatus, getDiff, printDiff }
+  toolbox.diff = { gitStatus, compare, print }
 }
 
 type Status = 'added' | 'modified' | 'deleted'
@@ -150,7 +151,7 @@ type Diff = Map<
 export interface DiffExtension {
   diff: {
     gitStatus: (context: ProjectContext) => Promise<Snapshot>
-    getDiff: (before: Snapshot, after: Snapshot) => Diff
-    printDiff: (diff: Diff, context: ProjectContext) => void
+    compare: (before: Snapshot, after: Snapshot) => Diff
+    print: (diff: Diff, context: ProjectContext) => void
   }
 }

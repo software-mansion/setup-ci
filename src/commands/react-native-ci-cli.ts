@@ -76,8 +76,8 @@ const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
   )
 
   const snapshotAfter = await toolbox.diff.gitStatus(context)
-  const diff = toolbox.diff.getDiff(snapshotBefore, snapshotAfter)
-  toolbox.diff.printDiff(diff, context)
+  const diff = toolbox.diff.compare(snapshotBefore, snapshotAfter)
+  toolbox.diff.print(diff, context)
 
   const usedFlags = executorResults.join(' ')
 
