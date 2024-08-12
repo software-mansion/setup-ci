@@ -1,27 +1,126 @@
 import {
-  confirm as clackConfirm,
   outro as clackOutro,
   intro as clackIntro,
   isCancel,
+  log as clackLog,
 } from '@clack/prompts'
-
 import { CycliToolbox } from '../types'
+import { ConfirmPrompt } from '@clack/core'
 
 interface Spinner {
   stop: () => void
 }
 
 module.exports = (toolbox: CycliToolbox) => {
-  const { print } = toolbox
+  const {
+    print: {
+      colors: { cyan, yellow, inverse, gray, dim, strikethrough, red },
+      ...print
+    },
+  } = toolbox
 
-  const confirm = async (message: string): Promise<boolean> => {
-    const confirmed = await clackConfirm({ message })
+  const S_STEP_ERROR = yellow('▲')
+  const S_SUCCESS = cyan('◆')
+  const S_STEP_CANCEL = red('■')
+  const S_BAR = '│'
+  const S_BAR_END = '└'
+  const S_RADIO_ACTIVE = '●'
+  const S_RADIO_INACTIVE = '○'
+
+  const confirm = async (
+    message: string,
+    type: 'normal' | 'warning' = 'normal'
+  ): Promise<boolean> => {
+    const active = 'Yes'
+    const inactive = 'No'
+
+    const title = () => {
+      switch (type) {
+        case 'normal':
+          return `${gray(S_BAR)}\n${S_SUCCESS}  ${message
+            .split('\n')
+            .join(`\n${S_BAR}  `)}\n`
+        case 'warning':
+          return `${gray(S_BAR)} \n${S_STEP_ERROR}  ${yellow(
+            message.split('\n').join(`\n${S_BAR}  `)
+          )}\n`
+      }
+    }
+
+    const titleSubmitted = () => {
+      switch (type) {
+        case 'normal':
+          return `${gray(S_BAR)} \n${S_SUCCESS}  ${message
+            .split('\n')
+            .join(`\n${gray(S_BAR)}  `)}\n`
+        case 'warning':
+          return `${gray(S_BAR)} \n${S_STEP_ERROR}  ${message
+            .split('\n')
+            .map((line) => yellow(line))
+            .join(`\n${gray(S_BAR)}  `)}\n`
+      }
+    }
+
+    const titleCancelled = () => {
+      switch (type) {
+        case 'normal':
+          return `${gray(S_BAR)} \n${S_STEP_CANCEL}  ${message
+            .split('\n')
+            .join(`\n${gray(S_BAR)}  `)}\n`
+        case 'warning':
+          return titleSubmitted()
+      }
+    }
+
+    const typeColor = (msg: string): string => {
+      switch (type) {
+        case 'normal':
+          return cyan(msg)
+        case 'warning':
+          return yellow(msg)
+      }
+    }
+
+    const confirmed = await new ConfirmPrompt({
+      active,
+      inactive,
+      initialValue: true,
+      render() {
+        const value = this.value ? active : inactive
+
+        switch (this.state) {
+          case 'submit':
+            return `${titleSubmitted()}${gray(S_BAR)}  ${dim(value)}`
+          case 'cancel':
+            return `${titleCancelled()}${gray(S_BAR)}  ${strikethrough(
+              dim(value)
+            )}\n${gray(S_BAR)}`
+          default: {
+            return `${title()}${typeColor(S_BAR)}  ${
+              this.value
+                ? `${typeColor(S_RADIO_ACTIVE)} ${active}`
+                : `${dim(S_RADIO_INACTIVE)} ${dim(active)}`
+            } ${dim('/')} ${
+              !this.value
+                ? `${typeColor(S_RADIO_ACTIVE)} ${inactive}`
+                : `${dim(S_RADIO_INACTIVE)} ${dim(inactive)}`
+            } \n${typeColor(S_BAR_END)} \n`
+          }
+        }
+      },
+    }).prompt()
 
     if (isCancel(confirmed)) {
       throw Error('The script execution has been canceled by the user.')
     }
 
-    return confirmed
+    return Boolean(confirmed)
+  }
+
+  const vspace = () => info('')
+
+  const surveyWarning = (message: string) => {
+    clackLog.warn(yellow(message))
   }
 
   const info = (message: string) => {
@@ -33,7 +132,7 @@ module.exports = (toolbox: CycliToolbox) => {
   }
 
   const error = (message: string) => {
-    print.error(`❗ ${message}`)
+    print.error(`❗ ${message} `)
   }
 
   const success = (message: string) => {
@@ -49,7 +148,7 @@ module.exports = (toolbox: CycliToolbox) => {
   }
 
   const intro = (message: string) => {
-    clackIntro(message)
+    clackIntro(inverse(message))
   }
 
   const outro = (message: string) => {
@@ -58,7 +157,9 @@ module.exports = (toolbox: CycliToolbox) => {
 
   toolbox.interactive = {
     confirm,
+    surveyWarning,
     info,
+    vspace,
     step,
     error,
     success,
@@ -71,8 +172,10 @@ module.exports = (toolbox: CycliToolbox) => {
 
 export interface InteractiveExtension {
   interactive: {
-    confirm: (message: string) => Promise<boolean>
+    confirm: (message: string, type?: 'normal' | 'warning') => Promise<boolean>
+    surveyWarning: (message: string) => void
     info: (message: string) => void
+    vspace: () => void
     step: (message: string) => void
     error: (message: string) => void
     success: (message: string) => void
