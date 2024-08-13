@@ -96,9 +96,10 @@ const createDetoxWorkflowsForExpo = async (
     toolbox.interactive.warning(jestConfigMessage)
     furtherActions.push(jestConfigMessage)
 
-    toolbox.interactive.warning(
+    const starterTestMessage =
       'Remember to edit example test in e2e/starter.test.ts to match your app.'
-    )
+    toolbox.interactive.warning(starterTestMessage)
+    furtherActions.push(starterTestMessage)
   }
 
   await toolbox.workflows.generate(
