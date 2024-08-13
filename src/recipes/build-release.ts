@@ -35,7 +35,10 @@ const createReleaseBuildWorkflowIOs = async (
 
   if (!iOSAppName) {
     throw Error(
-      'Failed to obtain iOS app name. Has expo prebuild executed without errors?'
+      [
+        'Failed to obtain iOS app name. Is there a ios/ directory without .xcworkspace file in your project?',
+        'If so, try running "npx expo prebuild --clean" manually and try again.',
+      ].join('\n')
     )
   }
 

@@ -66,7 +66,7 @@ const createDetoxWorkflowsForExpo = async (
   // >=29 because of https://wix.github.io/Detox/docs/introduction/project-setup#step-1-bootstrap
   await toolbox.dependencies.addDev('jest', context, {
     version: '">=29"',
-    skipInstalledCheck: false,
+    skipInstalledCheck: true,
   })
   await toolbox.dependencies.addDev('ts-jest', context)
   await toolbox.dependencies.addDev('@types/jest', context)
