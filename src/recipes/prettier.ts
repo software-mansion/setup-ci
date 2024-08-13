@@ -1,20 +1,31 @@
-import { CycliRecipe, CycliToolbox, ProjectContext } from '../types'
+import {
+  CycliRecipe,
+  CycliToolbox,
+  ExecutorResult,
+  ProjectContext,
+} from '../types'
 import { join } from 'path'
 
 export const FLAG = 'prettier'
 
 const execute =
   () => async (toolbox: CycliToolbox, context: ProjectContext) => {
+    const furtherActions: string[] = []
+
     await toolbox.dependencies.addDev('prettier', context)
 
-    await toolbox.scripts.add(
-      'prettier:check',
-      'prettier --check "**/*.{ts,tsx,js,jsx,json,css,scss,md}"'
+    furtherActions.push(
+      ...(await toolbox.scripts.add(
+        'prettier:check',
+        'prettier --check "**/*.{ts,tsx,js,jsx,json,css,scss,md}"'
+      ))
     )
 
-    await toolbox.scripts.add(
-      'prettier:write',
-      'prettier --write "**/*.{ts,tsx,js,jsx,json,css,scss,md}"'
+    furtherActions.push(
+      ...(await toolbox.scripts.add(
+        'prettier:write',
+        'prettier --write "**/*.{ts,tsx,js,jsx,json,css,scss,md}"'
+      ))
     )
 
     await toolbox.workflows.generate(join('prettier', 'prettier.ejf'), context)
@@ -41,14 +52,18 @@ const execute =
 
     toolbox.interactive.step('Created Prettier check workflow.')
 
-    return `--${FLAG}`
+    return { flag: `--${FLAG}`, furtherActions }
   }
 
 const run = async (
   toolbox: CycliToolbox,
   context: ProjectContext
 ): Promise<
-  ((toolbox: CycliToolbox, context: ProjectContext) => Promise<string>) | null
+  | ((
+      toolbox: CycliToolbox,
+      context: ProjectContext
+    ) => Promise<ExecutorResult>)
+  | null
 > => {
   if (toolbox.skipInteractiveForRecipe(FLAG)) {
     context.selectedOptions.push(FLAG)

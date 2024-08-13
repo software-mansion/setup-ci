@@ -8,8 +8,10 @@ import easUpdate from '../recipes/eas-update'
 import detox from '../recipes/detox'
 import isGitDirty from 'is-git-dirty'
 import sequentialPromiseMap from '../utils/sequentialPromiseMap'
-import { CycliToolbox, ProjectContext } from '../types'
+import { CycliToolbox, ExecutorResult, ProjectContext } from '../types'
 import messageFromError from '../utils/messageFromError'
+
+const box = require('ascii-box').box
 
 const SKIP_GIT_CHECK_FLAG = 'skip-git-check'
 const COMMAND = 'react-native-ci-cli'
@@ -83,15 +85,18 @@ const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
     `Detected ${context.packageManager} as your package manager.`
   )
 
-  const executorResults = await sequentialPromiseMap(executors, (executor) =>
-    executor(toolbox, context)
+  const executorResults: ExecutorResult[] = await sequentialPromiseMap(
+    executors,
+    (executor) => executor(toolbox, context)
   )
 
   const snapshotAfter = await toolbox.diff.gitStatus(context)
   const diff = toolbox.diff.compare(snapshotBefore, snapshotAfter)
   toolbox.diff.print(diff, context)
 
-  const usedFlags = executorResults.join(' ')
+  printFurtherActions(executorResults, toolbox)
+
+  const usedFlags = executorResults.map((result) => result.flag).join(' ')
 
   toolbox.interactive.vspace()
   toolbox.interactive.success(`We're all set 🎉`)
@@ -99,6 +104,30 @@ const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
   if (!toolbox.skipInteractive()) {
     toolbox.interactive.success(
       `Next time you can run the command in silent mode using npx ${COMMAND} --${SKIP_INTERACTIVE_FLAG} ${usedFlags}.`
+    )
+  }
+}
+
+const printFurtherActions = (
+  executorResults: ExecutorResult[],
+  toolbox: CycliToolbox
+) => {
+  const furtherActions = executorResults.flatMap(
+    (result) => result.furtherActions
+  )
+
+  if (furtherActions.length > 0) {
+    toolbox.interactive.vspace()
+
+    toolbox.interactive.info(
+      `${box(
+        `=== What next?\n\n${furtherActions
+          .map((action) => `● ${action}`)
+          .join('\n\n')}`,
+        { border: 'round', maxWidth: 90 }
+      )}
+  `,
+      'cyan'
     )
   }
 }
@@ -140,7 +169,7 @@ const command: CycliCommand = {
     } catch (error: unknown) {
       const errMessage = messageFromError(error)
       toolbox.interactive.error(
-        `Failed to execute react-native-ci-cli with following error:\n${errMessage}`
+        `Failed to execute react - native - ci - cli with following error: \n${errMessage} `
       )
     } finally {
       process.exit()

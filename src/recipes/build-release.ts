@@ -4,8 +4,8 @@ import { join } from 'path'
 const createReleaseBuildWorkflowAndroid = async (
   toolbox: CycliToolbox,
   context: ProjectContext
-) => {
-  await toolbox.scripts.add(
+): Promise<string[]> => {
+  const furtherActions = await toolbox.scripts.add(
     'build:release:android',
     [
       `npx expo prebuild --${context.packageManager}`,
@@ -20,19 +20,21 @@ const createReleaseBuildWorkflowAndroid = async (
   )
 
   toolbox.interactive.step('Created Android release build workflow for Expo.')
+
+  return furtherActions
 }
 
 const createReleaseBuildWorkflowIOs = async (
   toolbox: CycliToolbox,
   context: ProjectContext
-) => {
+): Promise<string[]> => {
   if (!context.iOSAppName) {
     throw Error(
       'Failed to obtain iOS app name. Make sure you have field expo.name defined in your app.json.'
     )
   }
 
-  await toolbox.scripts.add(
+  const furtherActions = await toolbox.scripts.add(
     'build:release:ios',
     [
       `npx expo prebuild --${context.packageManager} &&`,
@@ -56,13 +58,17 @@ const createReleaseBuildWorkflowIOs = async (
   )
 
   toolbox.interactive.step('Created iOS release build workflow for Expo.')
+
+  return furtherActions
 }
 
 export const createReleaseBuildWorkflowsForExpo = async (
   toolbox: CycliToolbox,
   context: ProjectContext,
   platforms: Platform[]
-): Promise<void> => {
+): Promise<string[]> => {
+  const furtherActions: string[] = []
+
   const existsAndroidDir = toolbox.filesystem.exists('android')
   const existsIOsDir = toolbox.filesystem.exists('ios')
 
@@ -81,8 +87,14 @@ export const createReleaseBuildWorkflowsForExpo = async (
   }
 
   if (platforms.includes('android'))
-    await createReleaseBuildWorkflowAndroid(toolbox, context)
+    furtherActions.push(
+      ...(await createReleaseBuildWorkflowAndroid(toolbox, context))
+    )
 
   if (platforms.includes('ios'))
-    await createReleaseBuildWorkflowIOs(toolbox, context)
+    furtherActions.push(
+      ...(await createReleaseBuildWorkflowIOs(toolbox, context))
+    )
+
+  return furtherActions
 }

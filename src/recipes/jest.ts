@@ -1,25 +1,39 @@
-import { CycliRecipe, CycliToolbox, ProjectContext } from '../types'
+import {
+  CycliRecipe,
+  CycliToolbox,
+  ExecutorResult,
+  ProjectContext,
+} from '../types'
 
 const FLAG = 'jest'
 
 const execute =
   () => async (toolbox: CycliToolbox, context: ProjectContext) => {
+    const furtherActions: string[] = []
+
     await toolbox.dependencies.addDev('jest', context)
 
-    await toolbox.scripts.add('test', 'jest')
+    furtherActions.push(...(await toolbox.scripts.add('test', 'jest')))
 
     await toolbox.workflows.generate('jest.ejf', context)
 
     toolbox.interactive.step('Created Jest workflow.')
 
-    return `--${FLAG}`
+    return {
+      flag: `--${FLAG}`,
+      furtherActions,
+    }
   }
 
 const run = async (
   toolbox: CycliToolbox,
   context: ProjectContext
 ): Promise<
-  ((toolbox: CycliToolbox, context: ProjectContext) => Promise<string>) | null
+  | ((
+      toolbox: CycliToolbox,
+      context: ProjectContext
+    ) => Promise<ExecutorResult>)
+  | null
 > => {
   if (toolbox.skipInteractiveForRecipe(FLAG)) {
     context.selectedOptions.push(FLAG)

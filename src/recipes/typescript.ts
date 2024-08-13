@@ -1,13 +1,22 @@
-import { CycliRecipe, CycliToolbox, ProjectContext } from '../types'
+import {
+  CycliRecipe,
+  CycliToolbox,
+  ExecutorResult,
+  ProjectContext,
+} from '../types'
 import { join } from 'path'
 
 const FLAG = 'ts'
 
 const execute =
   () => async (toolbox: CycliToolbox, context: ProjectContext) => {
+    const furtherActions: string[] = []
+
     await toolbox.dependencies.addDev('typescript', context)
 
-    await toolbox.scripts.add('ts:check', 'tsc -p . --noEmit')
+    furtherActions.push(
+      ...(await toolbox.scripts.add('ts:check', 'tsc -p . --noEmit'))
+    )
 
     await toolbox.workflows.generate(
       join('typescript', 'typescript.ejf'),
@@ -27,14 +36,18 @@ const execute =
 
     toolbox.interactive.step('Created Typescript check workflow.')
 
-    return `--${FLAG}`
+    return { flag: `--${FLAG}`, furtherActions }
   }
 
 const run = async (
   toolbox: CycliToolbox,
   context: ProjectContext
 ): Promise<
-  ((toolbox: CycliToolbox, context: ProjectContext) => Promise<string>) | null
+  | ((
+      toolbox: CycliToolbox,
+      context: ProjectContext
+    ) => Promise<ExecutorResult>)
+  | null
 > => {
   if (toolbox.skipInteractiveForRecipe(FLAG)) {
     context.selectedOptions.push(FLAG)

@@ -1,4 +1,9 @@
-import { CycliRecipe, CycliToolbox, ProjectContext } from '../types'
+import {
+  CycliRecipe,
+  CycliToolbox,
+  ExecutorResult,
+  ProjectContext,
+} from '../types'
 import { join } from 'path'
 import { FLAG as PRETTIER_FLAG } from './prettier'
 
@@ -21,6 +26,8 @@ const existsEslintConfigurationFile = (toolbox: CycliToolbox): boolean =>
 
 const execute =
   () => async (toolbox: CycliToolbox, context: ProjectContext) => {
+    const furtherActions: string[] = []
+
     // eslint@9 introduces new configuration format that is not supported by widely used plugins yet,
     // so we stick to ^8 for now.
     await toolbox.dependencies.addDev('eslint', context, { version: '^8' })
@@ -32,11 +39,12 @@ const execute =
 
     if (withPrettier) {
       await toolbox.dependencies.addDev('eslint-plugin-prettier', context)
-
       await toolbox.dependencies.addDev('eslint-config-prettier', context)
     }
 
-    await toolbox.scripts.add('lint', 'eslint "**/*.{js,jsx,ts,tsx}"')
+    furtherActions.push(
+      ...(await toolbox.scripts.add('lint', 'eslint "**/*.{js,jsx,ts,tsx}"'))
+    )
 
     if (!existsEslintConfigurationFile(toolbox)) {
       await toolbox.template.generate({
@@ -56,14 +64,18 @@ const execute =
 
     toolbox.interactive.step('Created ESLint workflow.')
 
-    return `--${FLAG}`
+    return { flag: `--${FLAG}`, furtherActions }
   }
 
 const run = async (
   toolbox: CycliToolbox,
   context: ProjectContext
 ): Promise<
-  ((toolbox: CycliToolbox, context: ProjectContext) => Promise<string>) | null
+  | ((
+      toolbox: CycliToolbox,
+      context: ProjectContext
+    ) => Promise<ExecutorResult>)
+  | null
 > => {
   if (toolbox.skipInteractiveForRecipe(FLAG)) {
     context.selectedOptions.push(FLAG)

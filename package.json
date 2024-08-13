@@ -39,6 +39,7 @@
   "dependencies": {
     "@clack/core": "^0.3.4",
     "@clack/prompts": "^0.7.0",
+    "ascii-box": "^1.1.2",
     "gluegun": "5.1.6",
     "is-git-dirty": "^2.0.2",
     "look-it-up": "^2.1.0",

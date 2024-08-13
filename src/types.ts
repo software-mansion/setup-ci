@@ -30,13 +30,22 @@ export interface RecipeMeta {
   description: string
 }
 
+export interface ExecutorResult {
+  flag: string
+  furtherActions: string[]
+}
+
 export interface CycliRecipe {
   meta: RecipeMeta
   run: (
     toolbox: CycliToolbox,
     context: ProjectContext
   ) => Promise<
-    ((toolbox: CycliToolbox, context: ProjectContext) => Promise<string>) | null
+    | ((
+        toolbox: CycliToolbox,
+        context: ProjectContext
+      ) => Promise<ExecutorResult>)
+    | null
   >
 }
 
