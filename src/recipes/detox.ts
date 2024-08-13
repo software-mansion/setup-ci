@@ -1,4 +1,3 @@
-import { confirm } from '@clack/prompts'
 import { CycliRecipe, CycliToolbox, ProjectContext } from '../types'
 import { createReleaseBuildWorkflowsForExpo } from './build-release'
 import { join } from 'path'
@@ -127,9 +126,9 @@ const run = async (
     return null
   }
 
-  const proceed = await confirm({
-    message: 'Do you want to run Detox e2e tests on every PR?',
-  })
+  const proceed = await toolbox.interactive.confirm(
+    'Do you want to run Detox e2e tests on every PR?'
+  )
 
   if (!proceed) {
     return null

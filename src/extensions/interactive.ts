@@ -1,3 +1,4 @@
+import { print } from 'gluegun'
 import {
   outro as clackOutro,
   intro as clackIntro,
@@ -11,13 +12,21 @@ interface Spinner {
   stop: () => void
 }
 
+const COLORS = {
+  cyan: print.colors.cyan,
+  green: print.colors.green,
+  yellow: print.colors.yellow,
+  gray: print.colors.gray,
+  red: print.colors.red,
+  inverse: print.colors.inverse,
+  dim: print.colors.dim,
+  strikethrough: print.colors.strikethrough,
+}
+
+type MessageColor = keyof typeof COLORS
+
 module.exports = (toolbox: CycliToolbox) => {
-  const {
-    print: {
-      colors: { cyan, yellow, inverse, gray, dim, strikethrough, red },
-      ...print
-    },
-  } = toolbox
+  const { cyan, yellow, gray, red, inverse, dim, strikethrough } = COLORS
 
   const S_STEP_ERROR = yellow('▲')
   const S_SUCCESS = cyan('◆')
@@ -117,18 +126,19 @@ module.exports = (toolbox: CycliToolbox) => {
     return Boolean(confirmed)
   }
 
-  const vspace = () => info('')
-
   const surveyWarning = (message: string) => {
     clackLog.warn(yellow(message))
   }
 
-  const info = (message: string) => {
-    print.info(message)
+  const info = (message: string, color?: MessageColor) => {
+    if (color) print.info(`${COLORS[color](message)}`)
+    else print.info(message)
   }
 
+  const vspace = () => info('')
+
   const step = (message: string) => {
-    print.info(`✔ ${message} `)
+    print.info(`${COLORS.green('✔')} ${message} `)
   }
 
   const error = (message: string) => {
@@ -174,7 +184,7 @@ export interface InteractiveExtension {
   interactive: {
     confirm: (message: string, type?: 'normal' | 'warning') => Promise<boolean>
     surveyWarning: (message: string) => void
-    info: (message: string) => void
+    info: (message: string, color?: MessageColor) => void
     vspace: () => void
     step: (message: string) => void
     error: (message: string) => void

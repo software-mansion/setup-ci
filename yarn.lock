@@ -3660,6 +3660,11 @@ prettier@^2.2.1:
   resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.8.8.tgz#e8c5d7e98a4305ffe3de2e1fc4aca1a71c28b1da"
   integrity sha512-tdN8qQGvNjw4CHbY+XXk0JgCXn9QiF21a55rBe5LJAU+kDyC4WQn4+awm2Xfk2lQMk5fKup9XgzTZtGkjBdP9Q==
 
+pretty-file-tree@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/pretty-file-tree/-/pretty-file-tree-1.0.1.tgz#ca876e6797c2078b5074f720bb2cd4cde92adb1c"
+  integrity sha512-w6uf7qIl6GTx8QjPKuhz62AjVJIg6/YD8aiblq7oXbl4XhdZqtarKMftFVxWoII4JSxS20CUK9ixoTVsJLDIZg==
+
 pretty-format@^26.0.0, pretty-format@^26.6.2:
   version "26.6.2"
   resolved "https://registry.yarnpkg.com/pretty-format/-/pretty-format-26.6.2.tgz#e35c2705f14cb7fe2fe94fa078345b444120fc93"

@@ -41,7 +41,8 @@
     "@clack/prompts": "^0.7.0",
     "gluegun": "5.1.6",
     "is-git-dirty": "^2.0.2",
-    "look-it-up": "^2.1.0"
+    "look-it-up": "^2.1.0",
+    "pretty-file-tree": "^1.0.1"
   },
   "devDependencies": {
     "@types/jest": "^26.0.20",
