@@ -15,28 +15,40 @@ const SKIP_GIT_CHECK_FLAG = 'skip-git-check'
 const COMMAND = 'react-native-ci-cli'
 
 const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
-  toolbox.interactive.intro('Welcome to React Native CI CLI')
+  toolbox.interactive.vspace()
+  toolbox.interactive.intro(' Welcome to React Native CI CLI! ')
 
   if (isGitDirty() == null) {
     throw Error('This is not a git repository.')
   }
 
-  if (isGitDirty() && !toolbox.parameters.options[SKIP_GIT_CHECK_FLAG]) {
-    if (toolbox.skipInteractive()) {
-      throw Error(
-        `You have to commit your changes before running in silent mode or use --${SKIP_GIT_CHECK_FLAG}.`
+  if (isGitDirty()) {
+    if (toolbox.parameters.options[SKIP_GIT_CHECK_FLAG]) {
+      toolbox.interactive.surveyWarning(
+        'Proceeding with dirty git repository as --skip-git-check option is enabled.'
       )
-    }
+    } else {
+      if (toolbox.skipInteractive()) {
+        throw Error(
+          `You have to commit your changes before running in silent mode or use --${SKIP_GIT_CHECK_FLAG}.`
+        )
+      }
 
-    const proceed = await toolbox.interactive.confirm(
-      'You have uncommitted changes. Do you want to proceed?'
-    )
-
-    if (!proceed) {
-      toolbox.interactive.outro(
-        'Please commit your changes before running this command.'
+      const proceed = await toolbox.interactive.confirm(
+        [
+          `It is advised to commit all your changes before running ${COMMAND}.`,
+          'Running the script with uncommitted changes may have destructive consequences.',
+          'Do you want to proceed anyway?',
+        ].join('\n'),
+        'warning'
       )
-      return
+
+      if (!proceed) {
+        toolbox.interactive.outro(
+          'Please commit your changes before running this command.'
+        )
+        return
+      }
     }
   }
 
@@ -82,7 +94,7 @@ const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
   const usedFlags = executorResults.join(' ')
 
   toolbox.interactive.vspace()
-  toolbox.interactive.success(`We're all set 🎉.`)
+  toolbox.interactive.success(`We're all set 🎉`)
 
   if (!toolbox.skipInteractive()) {
     toolbox.interactive.success(

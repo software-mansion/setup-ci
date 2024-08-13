@@ -37,6 +37,7 @@
     "CD"
   ],
   "dependencies": {
+    "@clack/core": "^0.3.4",
     "@clack/prompts": "^0.7.0",
     "gluegun": "5.1.6",
     "is-git-dirty": "^2.0.2",
