@@ -118,11 +118,11 @@ const run = async (
 ): Promise<
   ((toolbox: CycliToolbox, context: ProjectContext) => Promise<string>) | null
 > => {
-  if (toolbox.skipInteractiveForRecipe(FLAG)) {
+  if (toolbox.options.isRecipeSelected(FLAG)) {
     return execute()
   }
 
-  if (toolbox.skipInteractive()) {
+  if (toolbox.options.isPreset()) {
     return null
   }
 

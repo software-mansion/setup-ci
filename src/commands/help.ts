@@ -42,7 +42,7 @@ module.exports = {
 
     interactive.vspace()
     interactive.info(
-      'Use any combination of the following in silent mode (with --silent flag) to specify your own preset of workflows to generate'
+      'Use any combination of the following with --preset flag to specify your own combination of workflows to generate'
     )
     interactive.vspace()
     interactive.info(bold(underline('Feature flags:')))
