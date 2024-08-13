@@ -11,6 +11,42 @@ import { join } from 'path'
 const DETOX_EXPO_PLUGIN = '@config-plugins/detox'
 const FLAG = 'detox'
 
+const addDetoxExpoPlugin = async (toolbox: CycliToolbox): Promise<string[]> => {
+  const furtherActions: string[] = []
+
+  const appJsonFile = toolbox.projectConfig.appJsonFile()
+
+  if (!appJsonFile) {
+    toolbox.interactive.warning(
+      `Cannot write to dynamic config. Make sure to add "${DETOX_EXPO_PLUGIN}" to expo.plugins in app.config.js.`
+    )
+    furtherActions.push(
+      `Add "${DETOX_EXPO_PLUGIN}" to expo.plugins in app.config.js.`
+    )
+  } else {
+    const currentExpoPlugins =
+      toolbox.projectConfig.appJson()?.expo?.plugins || []
+
+    if (!currentExpoPlugins.includes(DETOX_EXPO_PLUGIN)) {
+      await toolbox.patching.update(appJsonFile, (config) => {
+        if (!config.expo.plugins) {
+          config.expo.plugins = []
+        }
+
+        if (!config.expo.plugins.includes(DETOX_EXPO_PLUGIN)) {
+          config.expo.plugins.push(DETOX_EXPO_PLUGIN)
+        }
+
+        return config
+      })
+
+      toolbox.interactive.step(`Added ${DETOX_EXPO_PLUGIN} plugin to app.json`)
+    }
+  }
+
+  return furtherActions
+}
+
 const createDetoxWorkflowsForExpo = async (
   toolbox: CycliToolbox,
   context: ProjectContext
@@ -30,30 +66,13 @@ const createDetoxWorkflowsForExpo = async (
   // >=29 because of https://wix.github.io/Detox/docs/introduction/project-setup#step-1-bootstrap
   await toolbox.dependencies.addDev('jest', context, {
     version: '">=29"',
-    skipInstalledCheck: true,
+    skipInstalledCheck: false,
   })
   await toolbox.dependencies.addDev('ts-jest', context)
   await toolbox.dependencies.addDev('@types/jest', context)
   await toolbox.dependencies.addDev(DETOX_EXPO_PLUGIN, context)
 
-  const currentExpoPlugins =
-    toolbox.projectConfig.appJson()?.expo?.plugins || []
-
-  if (!currentExpoPlugins.includes(DETOX_EXPO_PLUGIN)) {
-    await toolbox.patching.update('app.json', (config) => {
-      if (!config.expo.plugins) {
-        config.expo.plugins = []
-      }
-
-      if (!config.expo.plugins.includes(DETOX_EXPO_PLUGIN)) {
-        config.expo.plugins.push(DETOX_EXPO_PLUGIN)
-      }
-
-      return config
-    })
-
-    toolbox.interactive.step(`Added ${DETOX_EXPO_PLUGIN} plugin to app.json`)
-  }
+  furtherActions.push(...(await addDetoxExpoPlugin(toolbox)))
 
   furtherActions.push(
     ...(await toolbox.scripts.add(
@@ -123,10 +142,12 @@ const createDetoxWorkflowsForExpo = async (
 
 const execute =
   () => async (toolbox: CycliToolbox, context: ProjectContext) => {
-    let furtherActions: string[] = []
+    const furtherActions: string[] = []
 
-    if (toolbox.projectConfig.appJson()?.expo) {
-      furtherActions = await createDetoxWorkflowsForExpo(toolbox, context)
+    if (toolbox.projectConfig.isExpo()) {
+      furtherActions.push(
+        ...(await createDetoxWorkflowsForExpo(toolbox, context))
+      )
     } else {
       toolbox.interactive.error(
         'Detox workflows generation is currently not supported for non-expo projects. Skipping detox recipe.'
