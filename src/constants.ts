@@ -1,4 +1,4 @@
-export const SKIP_INTERACTIVE_FLAG = 'silent'
+export const PRESET_FLAG = 'preset'
 
 export const LOCK_FILE_TO_MANAGER = {
   ['yarn.lock']: 'yarn',
