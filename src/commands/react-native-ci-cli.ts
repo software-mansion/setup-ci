@@ -1,5 +1,4 @@
 import { GluegunCommand, GluegunToolbox } from 'gluegun'
-import { SKIP_INTERACTIVE_FLAG } from '../constants'
 import lint from '../recipes/lint'
 import jest from '../recipes/jest'
 import typescriptCheck from '../recipes/typescript'
@@ -10,6 +9,7 @@ import isGitDirty from 'is-git-dirty'
 import sequentialPromiseMap from '../utils/sequentialPromiseMap'
 import { CycliToolbox, ExecutorResult, ProjectContext } from '../types'
 import messageFromError from '../utils/messageFromError'
+import { PRESET_FLAG } from '../constants'
 
 const box = require('ascii-box').box
 
@@ -30,9 +30,9 @@ const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
         'Proceeding with dirty git repository as --skip-git-check option is enabled.'
       )
     } else {
-      if (toolbox.skipInteractive()) {
+      if (toolbox.options.isPreset()) {
         throw Error(
-          `You have to commit your changes before running in silent mode or use --${SKIP_GIT_CHECK_FLAG}.`
+          `You have to commit your changes before running with preset or use --${SKIP_GIT_CHECK_FLAG}.`
         )
       }
 
@@ -101,9 +101,9 @@ const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
   toolbox.interactive.vspace()
   toolbox.interactive.success(`We're all set 🎉`)
 
-  if (!toolbox.skipInteractive()) {
+  if (!toolbox.options.isPreset()) {
     toolbox.interactive.success(
-      `Next time you can run the command in silent mode using npx ${COMMAND} --${SKIP_INTERACTIVE_FLAG} ${usedFlags}.`
+      `Next time you can specify a preset to reproduce this run using npx ${COMMAND} --${PRESET_FLAG} ${usedFlags}.`
     )
   }
 }
@@ -157,9 +157,9 @@ const command: CycliCommand = {
       description: 'Skip check for dirty git repository',
     },
     {
-      flag: 'silent',
+      flag: 'preset',
       description:
-        'Run in silent mode. Combine with feature flags to specify generated workflows',
+        'Run with preset. Combine with feature flags to specify generated workflows',
     },
   ],
   featureOptions: [...getFeatureOptions()],

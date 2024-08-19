@@ -3,11 +3,11 @@ import { DependenciesExtension } from './extensions/dependencies'
 import { InteractiveExtension } from './extensions/interactive'
 import { ProjectContextExtension } from './extensions/projectContext'
 import { ScriptsExtension } from './extensions/scripts'
-import { SkipInteractiveExtension } from './extensions/skipInteractive'
 import { WorkflowsExtension } from './extensions/workflows'
 import { ProjectConfigExtension } from './extensions/projectConfig'
 import { LOCK_FILE_TO_MANAGER } from './constants'
 import { DiffExtension } from './extensions/diff'
+import { OptionsExtension } from './extensions/options'
 
 export interface PackageJson {
   name: string
@@ -83,6 +83,6 @@ export type CycliToolbox = {
   ProjectConfigExtension &
   ProjectContextExtension &
   ScriptsExtension &
-  SkipInteractiveExtension &
+  OptionsExtension &
   WorkflowsExtension &
   DiffExtension
