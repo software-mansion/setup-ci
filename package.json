@@ -15,6 +15,8 @@
     "format": "eslint \"**/*.{js,jsx,ts,tsx}\" --fix && prettier \"**/*.{js,jsx,ts,tsx,json}\" --write",
     "test": "jest",
     "watch": "jest --watch",
+    "publish": "yarn build && npm publish",
+    "publish:alias": "sed -i 's/\"name\": \"react-native-ci-cli\"/\"name\": \"setup-ci\"/g' package.json && yarn publish",
     "snapupdate": "jest --updateSnapshot",
     "coverage": "jest --coverage",
     "ts:check": "tsc -p . --noEmit",
