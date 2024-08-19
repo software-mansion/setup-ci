@@ -10,6 +10,7 @@ import sequentialPromiseMap from '../utils/sequentialPromiseMap'
 import { CycliToolbox, ProjectContext } from '../types'
 import messageFromError from '../utils/messageFromError'
 import { PRESET_FLAG } from '../constants'
+import { addTerminatingNewline } from '../utils/addTerminatingNewline'
 
 const SKIP_GIT_CHECK_FLAG = 'skip-git-check'
 const COMMAND = 'react-native-ci-cli'
@@ -54,7 +55,13 @@ const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
 
   const context: ProjectContext = toolbox.projectContext.obtain()
 
+  toolbox.interactive.surveyStep('Obtained project context.')
+
   const snapshotBefore = await toolbox.diff.gitStatus(context)
+
+  toolbox.interactive.surveyStep(
+    'Created snapshot of project state before execution.'
+  )
 
   const lintExecutor = await lint.run(toolbox, context)
   const jestExecutor = await jest.run(toolbox, context)
@@ -86,6 +93,9 @@ const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
   const executorResults = await sequentialPromiseMap(executors, (executor) =>
     executor(toolbox, context)
   )
+
+  // Sometimes gluegun leaves package.json without eol at the end
+  addTerminatingNewline('package.json')
 
   const snapshotAfter = await toolbox.diff.gitStatus(context)
   const diff = toolbox.diff.compare(snapshotBefore, snapshotAfter)

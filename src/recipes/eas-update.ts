@@ -5,6 +5,8 @@ const FLAG = 'eas-update'
 
 const execute =
   () => async (toolbox: CycliToolbox, context: ProjectContext) => {
+    toolbox.dependencies.add('expo', context)
+
     if (toolbox.filesystem.exists('eas.json')) {
       toolbox.interactive.step(
         'Detected eas.json, skipping EAS Build configuration.'

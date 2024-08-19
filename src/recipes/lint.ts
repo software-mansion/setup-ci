@@ -24,6 +24,7 @@ const execute =
     // eslint@9 introduces new configuration format that is not supported by widely used plugins yet,
     // so we stick to ^8 for now.
     await toolbox.dependencies.addDev('eslint', context, { version: '^8' })
+    await toolbox.dependencies.addDev('@react-native/eslint-config', context)
 
     const withPrettier =
       context.selectedOptions.includes(PRETTIER_FLAG) ||
@@ -32,7 +33,6 @@ const execute =
 
     if (withPrettier) {
       await toolbox.dependencies.addDev('eslint-plugin-prettier', context)
-
       await toolbox.dependencies.addDev('eslint-config-prettier', context)
     }
 

@@ -1,6 +1,10 @@
 import { CycliRecipe, CycliToolbox, ProjectContext } from '../types'
+import { join } from 'path'
 
 const FLAG = 'jest'
+
+const existsJestConfigurationFile = (toolbox: CycliToolbox): boolean =>
+  Boolean(toolbox.filesystem.list()?.some((f) => f.includes('jest.config.')))
 
 const execute =
   () => async (toolbox: CycliToolbox, context: ProjectContext) => {
@@ -8,7 +12,18 @@ const execute =
 
     await toolbox.scripts.add('test', 'jest')
 
-    await toolbox.workflows.generate('jest.ejf', context)
+    if (!existsJestConfigurationFile(toolbox)) {
+      await toolbox.template.generate({
+        template: join('jest', 'jest.config.json.ejs'),
+        target: 'jest.config.json',
+      })
+
+      toolbox.interactive.step(
+        'Created jest.config.json with default configuration.'
+      )
+    }
+
+    await toolbox.workflows.generate(join('jest', 'jest.ejf'), context)
 
     toolbox.interactive.step('Created Jest workflow.')
 
