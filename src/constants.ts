@@ -1,3 +1,4 @@
+export const HELP_FLAG = 'help'
 export const PRESET_FLAG = 'preset'
 
 export const LOCK_FILE_TO_MANAGER = {

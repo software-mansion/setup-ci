@@ -9,18 +9,10 @@ import isGitDirty from 'is-git-dirty'
 import sequentialPromiseMap from '../utils/sequentialPromiseMap'
 import { CycliToolbox, ProjectContext } from '../types'
 import messageFromError from '../utils/messageFromError'
-import { PRESET_FLAG } from '../constants'
+import { HELP_FLAG, PRESET_FLAG } from '../constants'
 
 const COMMAND = 'react-native-ci-cli'
-const DESCRIPTION = 'Quickly setup CI workflows for your React Native app'
-const VERSION_FLAG = 'version'
-const VERSION_FLAG_DESCRIPTION = 'Print version'
-const HELP_FLAG = 'help'
-const HELP_FLAG_DESCRIPTION = 'Print help message'
-const PRESET_FLAG_DESCRIPTION =
-  'Run with preset. Combine with feature flags to specify generated workflows'
 const SKIP_GIT_CHECK_FLAG = 'skip-git-check'
-const SKIP_GIT_CHECK_FLAG_DESCRIPTION = 'Skip check for dirty git repository'
 
 type Option = { flag: string; description: string }
 
@@ -151,17 +143,18 @@ export const getFeatureOptions = (): Option[] => {
 
 const command: CycliCommand = {
   name: COMMAND,
-  description: DESCRIPTION,
+  description: 'Quickly setup CI workflows for your React Native app',
   options: [
-    { flag: HELP_FLAG, description: HELP_FLAG_DESCRIPTION },
-    { flag: VERSION_FLAG, description: VERSION_FLAG_DESCRIPTION },
+    { flag: HELP_FLAG, description: 'Print help message' },
+    { flag: 'version', description: 'Print version' },
     {
       flag: SKIP_GIT_CHECK_FLAG,
-      description: SKIP_GIT_CHECK_FLAG_DESCRIPTION,
+      description: 'Skip check for dirty git repository',
     },
     {
       flag: PRESET_FLAG,
-      description: PRESET_FLAG_DESCRIPTION,
+      description:
+        'Run with preset. Combine with feature flags to specify generated workflows',
     },
   ],
   featureOptions: [...getFeatureOptions()],
