@@ -21,8 +21,6 @@ const existsEslintConfigurationFile = (toolbox: CycliToolbox): boolean =>
 
 const execute =
   () => async (toolbox: CycliToolbox, context: ProjectContext) => {
-    const furtherActions: string[] = []
-
     // eslint@9 introduces new configuration format that is not supported by widely used plugins yet,
     // so we stick to ^8 for now.
     await toolbox.dependencies.addDev('eslint', context, { version: '^8' })
@@ -37,9 +35,7 @@ const execute =
       await toolbox.dependencies.addDev('eslint-config-prettier', context)
     }
 
-    furtherActions.push(
-      ...(await toolbox.scripts.add('lint', 'eslint "**/*.{js,jsx,ts,tsx}"'))
-    )
+    await toolbox.scripts.add('lint', 'eslint "**/*.{js,jsx,ts,tsx}"')
 
     if (!existsEslintConfigurationFile(toolbox)) {
       await toolbox.template.generate({
@@ -59,7 +55,7 @@ const execute =
 
     toolbox.interactive.step('Created ESLint workflow.')
 
-    return { flag: `--${FLAG}`, furtherActions }
+    return `--${FLAG}`
   }
 
 const run = async (

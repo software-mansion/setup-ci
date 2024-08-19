@@ -9,17 +9,10 @@ const FLAG = 'detox'
 const createDetoxWorkflowsForExpo = async (
   toolbox: CycliToolbox,
   context: ProjectContext
-): Promise<string[]> => {
+) => {
   toolbox.interactive.info('⚙️ Setting up app release build for Detox.')
 
-  const furtherActions: string[] = []
-
-  furtherActions.push(
-    ...(await createReleaseBuildWorkflowsForExpo(toolbox, context, [
-      'android',
-      'ios',
-    ]))
-  )
+  await createReleaseBuildWorkflowsForExpo(toolbox, context, ['android', 'ios'])
 
   await toolbox.dependencies.addDev('detox', context)
   // >=29 because of https://wix.github.io/Detox/docs/introduction/project-setup#step-1-bootstrap
@@ -50,18 +43,14 @@ const createDetoxWorkflowsForExpo = async (
     toolbox.interactive.step(`Added ${DETOX_EXPO_PLUGIN} plugin to app.json`)
   }
 
-  furtherActions.push(
-    ...(await toolbox.scripts.add(
-      'detox:test:android',
-      'detox test --config-path .detoxrc-ci.js --configuration android.emu.release --cleanup'
-    ))
+  await toolbox.scripts.add(
+    'detox:test:android',
+    'detox test --config-path .detoxrc-ci.js --configuration android.emu.release --cleanup'
   )
 
-  furtherActions.push(
-    ...(await toolbox.scripts.add(
-      'detox:test:ios',
-      'detox test --config-path .detoxrc-ci.js --configuration ios.sim.release --cleanup'
-    ))
+  await toolbox.scripts.add(
+    'detox:test:ios',
+    'detox test --config-path .detoxrc-ci.js --configuration ios.sim.release --cleanup'
   )
 
   await toolbox.template.generate({
@@ -89,12 +78,12 @@ const createDetoxWorkflowsForExpo = async (
     const jestConfigMessage =
       'Consider adding "modulePathIgnorePatterns": ["e2e"] to your jest config.'
     toolbox.interactive.warning(jestConfigMessage)
-    furtherActions.push(jestConfigMessage)
+    toolbox.furtherActions.push(jestConfigMessage)
 
     const starterTestMessage =
       'Remember to edit example test in e2e/starter.test.ts to match your app.'
     toolbox.interactive.warning(starterTestMessage)
-    furtherActions.push(starterTestMessage)
+    toolbox.furtherActions.push(starterTestMessage)
   }
 
   await toolbox.workflows.generate(
@@ -109,29 +98,22 @@ const createDetoxWorkflowsForExpo = async (
   toolbox.interactive.warning(
     `Remember to create GH_TOKEN repository secret to make Detox workflow work. For more information check ${REPOSITORY_SECRETS_HELP_URL}`
   )
-  furtherActions.push(
+  toolbox.furtherActions.push(
     `Create GH_TOKEN repository secret. More info at ${REPOSITORY_SECRETS_HELP_URL}`
   )
-
-  return furtherActions
 }
 
 const execute =
   () => async (toolbox: CycliToolbox, context: ProjectContext) => {
-    let furtherActions: string[] = []
-
     if (toolbox.projectConfig.appJson()?.expo) {
-      furtherActions = await createDetoxWorkflowsForExpo(toolbox, context)
+      await createDetoxWorkflowsForExpo(toolbox, context)
     } else {
       toolbox.interactive.error(
         'Detox workflows generation is currently not supported for non-expo projects. Skipping detox recipe.'
       )
     }
 
-    return {
-      flag: `--${FLAG}`,
-      furtherActions,
-    }
+    return `--${FLAG}`
   }
 
 const run = async (toolbox: CycliToolbox): Promise<RunResult> => {

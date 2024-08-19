@@ -5,13 +5,9 @@ const FLAG = 'ts'
 
 const execute =
   () => async (toolbox: CycliToolbox, context: ProjectContext) => {
-    const furtherActions: string[] = []
-
     await toolbox.dependencies.addDev('typescript', context)
 
-    furtherActions.push(
-      ...(await toolbox.scripts.add('ts:check', 'tsc -p . --noEmit'))
-    )
+    await toolbox.scripts.add('ts:check', 'tsc -p . --noEmit')
 
     await toolbox.workflows.generate(
       join('typescript', 'typescript.ejf'),
@@ -31,7 +27,7 @@ const execute =
 
     toolbox.interactive.step('Created Typescript check workflow.')
 
-    return { flag: `--${FLAG}`, furtherActions }
+    return `--${FLAG}`
   }
 
 const run = async (

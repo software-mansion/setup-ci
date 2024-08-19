@@ -4,20 +4,15 @@ const FLAG = 'jest'
 
 const execute =
   () => async (toolbox: CycliToolbox, context: ProjectContext) => {
-    const furtherActions: string[] = []
-
     await toolbox.dependencies.addDev('jest', context)
 
-    furtherActions.push(...(await toolbox.scripts.add('test', 'jest')))
+    await toolbox.scripts.add('test', 'jest')
 
     await toolbox.workflows.generate('jest.ejf', context)
 
     toolbox.interactive.step('Created Jest workflow.')
 
-    return {
-      flag: `--${FLAG}`,
-      furtherActions,
-    }
+    return `--${FLAG}`
   }
 
 const run = async (
