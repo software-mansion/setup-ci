@@ -14,7 +14,6 @@ jobs:
         uses: TriPSs/conventional-changelog-action@v3
         with:
           github-token: ${{ secrets.PA_TOKEN }}
-          version-file: './package.json,./package-lock.json'
       - name: Create release
         uses: actions/create-release@v1
         if: ${{ steps.changelog.outputs.skipped == 'false' }}
