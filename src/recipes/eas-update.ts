@@ -1,10 +1,5 @@
 import { REPOSITORY_SECRETS_HELP_URL } from '../constants'
-import {
-  CycliRecipe,
-  CycliToolbox,
-  ExecutorResult,
-  ProjectContext,
-} from '../types'
+import { CycliRecipe, CycliToolbox, ProjectContext, RunResult } from '../types'
 import { join } from 'path'
 
 const FLAG = 'eas-update'
@@ -52,13 +47,7 @@ const execute =
 const run = async (
   toolbox: CycliToolbox,
   context: ProjectContext
-): Promise<
-  | ((
-      toolbox: CycliToolbox,
-      context: ProjectContext
-    ) => Promise<ExecutorResult>)
-  | null
-> => {
+): Promise<RunResult> => {
   if (toolbox.options.isRecipeSelected(FLAG)) {
     context.selectedOptions.push(FLAG)
     return execute()

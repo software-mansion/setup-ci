@@ -27,7 +27,7 @@ const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
   if (isGitDirty()) {
     if (toolbox.parameters.options[SKIP_GIT_CHECK_FLAG]) {
       toolbox.interactive.surveyWarning(
-        'Proceeding with dirty git repository as --skip-git-check option is enabled.'
+        `Proceeding with dirty git repository as --${SKIP_GIT_CHECK_FLAG} option is enabled.`
       )
     } else {
       if (toolbox.options.isPreset()) {
@@ -169,7 +169,7 @@ const command: CycliCommand = {
     } catch (error: unknown) {
       const errMessage = messageFromError(error)
       toolbox.interactive.error(
-        `Failed to execute react - native - ci - cli with following error: \n${errMessage} `
+        `Failed to execute ${COMMAND} with following error:\n${errMessage}`
       )
     } finally {
       process.exit()

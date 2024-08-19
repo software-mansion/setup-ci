@@ -1,10 +1,5 @@
 import { REPOSITORY_SECRETS_HELP_URL } from '../constants'
-import {
-  CycliRecipe,
-  CycliToolbox,
-  ExecutorResult,
-  ProjectContext,
-} from '../types'
+import { CycliRecipe, CycliToolbox, ProjectContext, RunResult } from '../types'
 import { createReleaseBuildWorkflowsForExpo } from './build-release'
 import { join } from 'path'
 
@@ -139,15 +134,7 @@ const execute =
     }
   }
 
-const run = async (
-  toolbox: CycliToolbox
-): Promise<
-  | ((
-      toolbox: CycliToolbox,
-      context: ProjectContext
-    ) => Promise<ExecutorResult>)
-  | null
-> => {
+const run = async (toolbox: CycliToolbox): Promise<RunResult> => {
   if (toolbox.options.isRecipeSelected(FLAG)) {
     return execute()
   }

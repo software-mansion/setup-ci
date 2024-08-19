@@ -5,5 +5,6 @@ export const LOCK_FILE_TO_MANAGER = {
   ['package-lock.json']: 'npm',
 } as const
 
-export const REPOSITORY_SECRETS_HELP_URL =
-  'https://github.com/software-mansion-labs/react-native-ci-cli?tab=readme-ov-file#-repository-secrets'
+const REPOSITORY_URL =
+  'https://github.com/software-mansion-labs/react-native-ci-cli'
+export const REPOSITORY_SECRETS_HELP_URL = `${REPOSITORY_URL}?tab=readme-ov-file#-repository-secrets`

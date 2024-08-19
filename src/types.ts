@@ -35,18 +35,16 @@ export interface ExecutorResult {
   furtherActions: string[]
 }
 
+export type RunResult =
+  | ((
+      toolbox: CycliToolbox,
+      context: ProjectContext
+    ) => Promise<ExecutorResult>)
+  | null
+
 export interface CycliRecipe {
   meta: RecipeMeta
-  run: (
-    toolbox: CycliToolbox,
-    context: ProjectContext
-  ) => Promise<
-    | ((
-        toolbox: CycliToolbox,
-        context: ProjectContext
-      ) => Promise<ExecutorResult>)
-    | null
-  >
+  run: (toolbox: CycliToolbox, context: ProjectContext) => Promise<RunResult>
 }
 
 export type Platform = 'android' | 'ios'
