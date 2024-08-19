@@ -1,4 +1,13 @@
-# 0.1.0 (2024-08-19)
+## [0.1.1](https://github.com/software-mansion-labs/react-native-ci-cli/compare/v0.1.0...v0.1.1) (2024-08-19)
+
+
+### Bug Fixes
+
+* fix CI ([4126420](https://github.com/software-mansion-labs/react-native-ci-cli/commit/412642095daed028b59aca8cdf8a2b6b7a92bbcc))
+
+
+
+# [0.1.0](https://github.com/software-mansion-labs/react-native-ci-cli/compare/4cea61c98af8f37bdfae0379621191331d6d2d04...v0.1.0) (2024-08-19)
 
 
 ### Bug Fixes
