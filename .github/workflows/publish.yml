@@ -17,10 +17,10 @@ jobs:
       - name: Install dependencies and build 🔧
         run: yarn install
       - name: Publish package on NPM 📦
-        run: yarn publish
+        run: yarn release
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Publish package on NPM alias 📦
-        run: yarn publish:alias
+        run: yarn release:alias
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
