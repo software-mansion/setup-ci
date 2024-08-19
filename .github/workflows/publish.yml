@@ -21,12 +21,12 @@ jobs:
       - name: Build 🏗️
         run: yarn build
       - name: Publish package on NPM 📦
-        run: npm publish --provenance
+        run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Build for alias 🏗️
         run: yarn build:alias
       - name: Publish package on NPM for alias 📦
-        run: npm publish --provenance
+        run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
