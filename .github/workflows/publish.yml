@@ -15,12 +15,14 @@ jobs:
           cache: 'yarn'
           registry-url: 'https://registry.npmjs.org'
       - name: Install dependencies and build 🔧
-        run: yarn install
+        run: yarn build
       - name: Publish package on NPM 📦
-        run: yarn release
+        run: npm publish --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Publish package on NPM alias 📦
-        run: yarn release:alias
+      - name: Install dependencies and build for alias 🔧
+        run: yarn build:alias
+      - name: Publish package on NPM for alias 📦
+        run: npm publish --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
