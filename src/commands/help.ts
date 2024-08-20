@@ -1,8 +1,9 @@
 import { GluegunCommand, GluegunToolbox } from 'gluegun'
 import { CycliCommand } from './react-native-ci-cli'
+import { HELP_FLAG } from '../constants'
 
 module.exports = {
-  name: 'help',
+  name: HELP_FLAG,
   run: async (toolbox: GluegunToolbox, cycliCommand: CycliCommand) => {
     const {
       print: {

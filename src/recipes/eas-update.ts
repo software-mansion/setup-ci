@@ -1,4 +1,5 @@
-import { CycliRecipe, CycliToolbox, ProjectContext } from '../types'
+import { REPOSITORY_SECRETS_HELP_URL } from '../constants'
+import { CycliRecipe, CycliToolbox, ProjectContext, RunResult } from '../types'
 import { join } from 'path'
 
 const FLAG = 'eas-update'
@@ -31,6 +32,9 @@ const execute =
         'https://github.com/software-mansion-labs/react-native-ci-cli?tab=readme-ov-file#-repository-secrets',
       ].join(' ')
     )
+    toolbox.furtherActions.push(
+      `Create EXPO_TOKEN repository secret. More info at ${REPOSITORY_SECRETS_HELP_URL}`
+    )
 
     return `--${FLAG}`
   }
@@ -38,9 +42,7 @@ const execute =
 const run = async (
   toolbox: CycliToolbox,
   context: ProjectContext
-): Promise<
-  ((toolbox: CycliToolbox, context: ProjectContext) => Promise<string>) | null
-> => {
+): Promise<RunResult> => {
   if (toolbox.options.isRecipeSelected(FLAG)) {
     context.selectedOptions.push(FLAG)
     return execute()

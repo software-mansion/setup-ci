@@ -1,4 +1,5 @@
-import { CycliRecipe, CycliToolbox, ProjectContext } from '../types'
+import { REPOSITORY_SECRETS_HELP_URL } from '../constants'
+import { CycliRecipe, CycliToolbox, ProjectContext, RunResult } from '../types'
 import { createReleaseBuildWorkflowsForExpo } from './build-release'
 import { join } from 'path'
 
@@ -74,13 +75,15 @@ const createDetoxWorkflowsForExpo = async (
       'Initialized e2e/ directory with default detox jest configuration.'
     )
 
-    toolbox.interactive.warning(
+    const jestConfigMessage =
       'Consider adding "modulePathIgnorePatterns": ["e2e"] to your jest config.'
-    )
+    toolbox.interactive.warning(jestConfigMessage)
+    toolbox.furtherActions.push(jestConfigMessage)
 
-    toolbox.interactive.warning(
+    const starterTestMessage =
       'Remember to edit example test in e2e/starter.test.ts to match your app.'
-    )
+    toolbox.interactive.warning(starterTestMessage)
+    toolbox.furtherActions.push(starterTestMessage)
   }
 
   await toolbox.workflows.generate(
@@ -93,10 +96,10 @@ const createDetoxWorkflowsForExpo = async (
   toolbox.interactive.step('Created Detox workflow for Expo.')
 
   toolbox.interactive.warning(
-    [
-      'Remember to create GH_TOKEN repository secret to make Detox workflow work. For more information check',
-      'https://github.com/software-mansion-labs/react-native-ci-cli?tab=readme-ov-file#-repository-secrets',
-    ].join(' ')
+    `Remember to create GH_TOKEN repository secret to make Detox workflow work. For more information check ${REPOSITORY_SECRETS_HELP_URL}`
+  )
+  toolbox.furtherActions.push(
+    `Create GH_TOKEN repository secret. More info at ${REPOSITORY_SECRETS_HELP_URL}`
   )
 }
 
@@ -113,11 +116,7 @@ const execute =
     return `--${FLAG}`
   }
 
-const run = async (
-  toolbox: CycliToolbox
-): Promise<
-  ((toolbox: CycliToolbox, context: ProjectContext) => Promise<string>) | null
-> => {
+const run = async (toolbox: CycliToolbox): Promise<RunResult> => {
   if (toolbox.options.isRecipeSelected(FLAG)) {
     return execute()
   }

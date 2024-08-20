@@ -1,4 +1,4 @@
-import { CycliRecipe, CycliToolbox, ProjectContext } from '../types'
+import { CycliRecipe, CycliToolbox, ProjectContext, RunResult } from '../types'
 import { join } from 'path'
 
 export const FLAG = 'prettier'
@@ -47,9 +47,7 @@ const execute =
 const run = async (
   toolbox: CycliToolbox,
   context: ProjectContext
-): Promise<
-  ((toolbox: CycliToolbox, context: ProjectContext) => Promise<string>) | null
-> => {
+): Promise<RunResult> => {
   if (toolbox.options.isRecipeSelected(FLAG)) {
     context.selectedOptions.push(FLAG)
     return execute()
