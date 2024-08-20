@@ -12,7 +12,8 @@ const ESLINT_CONFIGURATION_FILES = [
   'eslint.config.cjs',
 ]
 
-const existsEslintConfigurationFile = (toolbox: CycliToolbox): boolean =>
+const existsEslintConfiguration = (toolbox: CycliToolbox): boolean =>
+  Boolean(toolbox.projectConfig.packageJson().eslintConfig) ||
   Boolean(
     toolbox.filesystem
       .list()
@@ -38,7 +39,7 @@ const execute =
 
     await toolbox.scripts.add('lint', 'eslint "**/*.{js,jsx,ts,tsx}"')
 
-    if (!existsEslintConfigurationFile(toolbox)) {
+    if (!existsEslintConfiguration(toolbox)) {
       await toolbox.template.generate({
         template: join('lint', '.eslintrc.json.ejs'),
         target: '.eslintrc.json',

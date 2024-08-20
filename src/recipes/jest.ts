@@ -3,7 +3,8 @@ import { join } from 'path'
 
 const FLAG = 'jest'
 
-const existsJestConfigurationFile = (toolbox: CycliToolbox): boolean =>
+const existsJestConfiguration = (toolbox: CycliToolbox): boolean =>
+  Boolean(toolbox.projectConfig.packageJson().jest) ||
   Boolean(toolbox.filesystem.list()?.some((f) => f.includes('jest.config.')))
 
 const execute =
@@ -12,7 +13,7 @@ const execute =
 
     await toolbox.scripts.add('test', 'jest')
 
-    if (!existsJestConfigurationFile(toolbox)) {
+    if (!existsJestConfiguration(toolbox)) {
       await toolbox.template.generate({
         template: join('jest', 'jest.config.json.ejs'),
         target: 'jest.config.json',

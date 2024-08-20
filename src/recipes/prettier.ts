@@ -3,6 +3,16 @@ import { join } from 'path'
 
 export const FLAG = 'prettier'
 
+const PRETTIER_CONFIGURATION_FILES = ['.prettierrc', 'prettier.config.js']
+
+const existsPrettierConfiguration = (toolbox: CycliToolbox): boolean =>
+  Boolean(toolbox.projectConfig.packageJson().prettier) ||
+  Boolean(
+    toolbox.filesystem
+      .list()
+      ?.some((f) => PRETTIER_CONFIGURATION_FILES.includes(f))
+  )
+
 const execute =
   () => async (toolbox: CycliToolbox, context: ProjectContext) => {
     await toolbox.dependencies.addDev('prettier', context)
@@ -19,7 +29,7 @@ const execute =
 
     await toolbox.workflows.generate(join('prettier', 'prettier.ejf'), context)
 
-    if (!toolbox.filesystem.exists('.prettierrc')) {
+    if (!existsPrettierConfiguration(toolbox)) {
       await toolbox.template.generate({
         template: join('prettier', '.prettierrc.ejs'),
         target: '.prettierrc',
@@ -28,9 +38,7 @@ const execute =
       toolbox.interactive.step(
         'Created default .prettierrc configuration file.'
       )
-    }
 
-    if (!toolbox.filesystem.exists('.prettierignore')) {
       await toolbox.template.generate({
         template: join('prettier', '.prettierignore.ejs'),
         target: '.prettierignore',

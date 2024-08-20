@@ -54,11 +54,11 @@ const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
   }
 
   const context: ProjectContext = toolbox.projectContext.obtain()
-
   toolbox.interactive.surveyStep('Obtained project context.')
 
-  const snapshotBefore = await toolbox.diff.gitStatus(context)
+  // TODO: Check if project is expo and if not, throw error if eas-update or detox is selected.
 
+  const snapshotBefore = await toolbox.diff.gitStatus(context)
   toolbox.interactive.surveyStep(
     'Created snapshot of project state before execution.'
   )
