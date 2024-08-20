@@ -64,8 +64,6 @@ const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
   const context: ProjectContext = toolbox.projectContext.obtain()
   toolbox.interactive.surveyStep('Obtained project context.')
 
-  // TODO: Check if project is expo and if not, throw error if eas-update or detox is selected.
-
   const snapshotBefore = await toolbox.diff.gitStatus(context)
   toolbox.interactive.surveyStep(
     'Created snapshot of project state before execution.'
@@ -77,6 +75,17 @@ const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
   const prettierExecutor = await prettierCheck.run(toolbox, context)
   const easUpdateExecutor = await easUpdate.run(toolbox, context)
   const detoxExecutor = await detox.run(toolbox, context)
+
+  // Detox and EAS Update recipes are currently supported only for Expo projects
+  if (
+    !toolbox.projectConfig.isExpo() &&
+    (context.selectedOptions.includes(detox.meta.flag) ||
+      context.selectedOptions.includes(easUpdate.meta.flag))
+  ) {
+    throw Error(
+      'Detox and EAS Update workflows are supported only for Expo projects.'
+    )
+  }
 
   const executors = [
     lintExecutor,

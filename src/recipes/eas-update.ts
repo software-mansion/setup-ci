@@ -52,7 +52,7 @@ const run = async (
   }
 
   const proceed = await toolbox.interactive.confirm(
-    'Do you want to run EAS Update on your project on every PR?'
+    'Do you want to run EAS Update on your project on every PR? (Expo projects only)'
   )
 
   if (!proceed) {
@@ -66,7 +66,8 @@ const run = async (
 export const recipe: CycliRecipe = {
   meta: {
     flag: FLAG,
-    description: 'Generate EAS Update and preview workflow to run on every PR',
+    description:
+      'Generate EAS Update and preview workflow to run on every PR (Expo projects only)',
   },
   run,
 }
