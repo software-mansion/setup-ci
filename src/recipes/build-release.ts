@@ -26,9 +26,17 @@ const createReleaseBuildWorkflowIOs = async (
   toolbox: CycliToolbox,
   context: ProjectContext
 ) => {
-  if (!context.iOSAppName) {
+  const iOSAppName = toolbox.filesystem
+    .list('ios')
+    ?.find((file) => file.endsWith('.xcworkspace'))
+    ?.replace('.xcworkspace', '')
+
+  if (!iOSAppName) {
     throw Error(
-      'Failed to obtain iOS app name. Make sure you have field expo.name defined in your app.json.'
+      [
+        'Failed to obtain iOS app name. Is there a ios/ directory without .xcworkspace file in your project?',
+        'If so, try running "npx expo prebuild --clean" manually and try again.',
+      ].join('\n')
     )
   }
 
@@ -37,9 +45,9 @@ const createReleaseBuildWorkflowIOs = async (
     [
       `npx expo prebuild --${context.packageManager} &&`,
       'xcodebuild ONLY_ACTIVE_ARCH=YES',
-      `-workspace ios/${context.iOSAppName}.xcworkspace`,
+      `-workspace ios/${iOSAppName}.xcworkspace`,
       '-UseNewBuildSystem=YES',
-      `-scheme ${context.iOSAppName}`,
+      `-scheme ${iOSAppName}`,
       '-configuration Release',
       '-sdk iphonesimulator',
       '-derivedDataPath ios/build',
@@ -51,7 +59,7 @@ const createReleaseBuildWorkflowIOs = async (
     join('build-release', 'build-release-ios.ejf'),
     context,
     {
-      iOSAppName: context.iOSAppName,
+      iOSAppName: iOSAppName,
     }
   )
 
@@ -66,23 +74,23 @@ export const createReleaseBuildWorkflowsForExpo = async (
   const existsAndroidDir = toolbox.filesystem.exists('android')
   const existsIOsDir = toolbox.filesystem.exists('ios')
 
-  if (!toolbox.projectConfig.appJson()?.expo?.android.package) {
-    toolbox.print.info('⚙️ Running expo prebuild to setup app.json properly.')
-    await toolbox.system.spawn(
-      `npx expo prebuild --${context.packageManager}`,
-      { stdio: 'inherit' }
-    )
-    const spinner = toolbox.print.spin('🧹 Cleaning up expo prebuild.')
+  toolbox.print.info('⚙️ Running expo prebuild to setup app.json properly.')
+  await toolbox.system.spawn(`npx expo prebuild --${context.packageManager}`, {
+    stdio: 'inherit',
+  })
 
-    if (!existsAndroidDir) toolbox.filesystem.remove('android')
-    if (!existsIOsDir) toolbox.filesystem.remove('ios')
-
-    spinner.stop()
+  if (platforms.includes('android')) {
+    await createReleaseBuildWorkflowAndroid(toolbox, context)
   }
 
-  if (platforms.includes('android'))
-    await createReleaseBuildWorkflowAndroid(toolbox, context)
-
-  if (platforms.includes('ios'))
+  if (platforms.includes('ios')) {
     await createReleaseBuildWorkflowIOs(toolbox, context)
+  }
+
+  const spinner = toolbox.print.spin('🧹 Cleaning up expo prebuild.')
+
+  if (!existsAndroidDir) toolbox.filesystem.remove('android')
+  if (!existsIOsDir) toolbox.filesystem.remove('ios')
+
+  spinner.stop()
 }

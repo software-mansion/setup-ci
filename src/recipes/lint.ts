@@ -1,4 +1,4 @@
-import { CycliRecipe, CycliToolbox, ProjectContext } from '../types'
+import { CycliRecipe, CycliToolbox, ProjectContext, RunResult } from '../types'
 import { join } from 'path'
 import { FLAG as PRETTIER_FLAG } from './prettier'
 
@@ -63,9 +63,7 @@ const execute =
 const run = async (
   toolbox: CycliToolbox,
   context: ProjectContext
-): Promise<
-  ((toolbox: CycliToolbox, context: ProjectContext) => Promise<string>) | null
-> => {
+): Promise<RunResult> => {
   if (toolbox.options.isRecipeSelected(FLAG)) {
     context.selectedOptions.push(FLAG)
     return execute()

@@ -8,6 +8,7 @@ import { ProjectConfigExtension } from './extensions/projectConfig'
 import { LOCK_FILE_TO_MANAGER } from './constants'
 import { DiffExtension } from './extensions/diff'
 import { OptionsExtension } from './extensions/options'
+import { FurtherActionsExtension } from './extensions/furtherActions'
 
 export interface PackageJson {
   name: string
@@ -33,25 +34,20 @@ export interface RecipeMeta {
   description: string
 }
 
+export type RunResult =
+  | ((toolbox: CycliToolbox, context: ProjectContext) => Promise<string>)
+  | null
+
 export interface CycliRecipe {
   meta: RecipeMeta
-  run: (
-    toolbox: CycliToolbox,
-    context: ProjectContext
-  ) => Promise<
-    ((toolbox: CycliToolbox, context: ProjectContext) => Promise<string>) | null
-  >
+  run: (toolbox: CycliToolbox, context: ProjectContext) => Promise<RunResult>
 }
 
 export type Platform = 'android' | 'ios'
 
 export interface AppJson {
   expo?: {
-    name: string
     plugins?: string[]
-    android: {
-      package?: string
-    }
   }
 }
 
@@ -64,7 +60,6 @@ export interface ProjectContext {
     relFromRepoRoot: (p: string) => string
     absFromRepoRoot: (...p: string[]) => string
   }
-  iOSAppName?: string
   selectedOptions: string[]
 }
 
@@ -79,4 +74,5 @@ export type CycliToolbox = {
   ScriptsExtension &
   OptionsExtension &
   WorkflowsExtension &
-  DiffExtension
+  DiffExtension &
+  FurtherActionsExtension

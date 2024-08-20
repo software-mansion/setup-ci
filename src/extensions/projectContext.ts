@@ -63,9 +63,6 @@ module.exports = (toolbox: CycliToolbox) => {
 
     const repoFolderName = basename(repoRoot)
 
-    const expoConfigJson = toolbox.filesystem.read('app.json', 'json')
-    const iOSAppName = expoConfigJson?.expo?.name.replaceAll('-', '')
-
     return {
       packageManager: getPackageManager(repoRoot),
       path: {
@@ -75,7 +72,6 @@ module.exports = (toolbox: CycliToolbox) => {
         relFromRepoRoot,
         absFromRepoRoot,
       },
-      iOSAppName,
       selectedOptions: [],
     }
   }
