@@ -1,3 +1,12 @@
+# [0.2.0](https://github.com/software-mansion-labs/react-native-ci-cli/compare/v0.1.1...v0.2.0) (2024-08-20)
+
+
+### Features
+
+* print further actions at the end of script execution ([#58](https://github.com/software-mansion-labs/react-native-ci-cli/issues/58)) ([3e6393b](https://github.com/software-mansion-labs/react-native-ci-cli/commit/3e6393b98901345f76e4839e4b4df5f58016ab67))
+
+
+
 ## [0.1.1](https://github.com/software-mansion-labs/react-native-ci-cli/compare/v0.1.0...v0.1.1) (2024-08-19)
 
 
