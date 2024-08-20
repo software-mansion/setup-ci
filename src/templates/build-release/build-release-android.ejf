@@ -38,6 +38,14 @@ jobs:
     if: needs.lookup-cached-build.outputs.build-exists != 'true'
     runs-on: ubuntu-latest
     steps:
+      - name: 💾 Maximize build space
+        uses: AdityaGarg8/remove-unwanted-software@v4.1
+        with:
+          remove-dotnet: "true"
+          remove-haskell: "true"
+          remove-codeql: "true"
+          remove-docker-images: "true"
+
       - name: 🏗 Checkout repository
         uses: actions/checkout@v4
 
@@ -49,7 +57,11 @@ jobs:
         with:
           java-version: '17'
           distribution: 'zulu'
-          cache: 'gradle'
+
+      - name: 🐘 Setup Gradle 8.8
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: 8.8
 
       - name: 🛠️ Build
         run: <%= build[props.packageManager] %>
