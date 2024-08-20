@@ -27,10 +27,7 @@ const execute =
     toolbox.interactive.step('Created EAS Update workflow.')
 
     toolbox.interactive.warning(
-      [
-        'Remember to create repository secret EXPO_TOKEN for EAS Update workflow to work properly. For more information check',
-        'https://github.com/software-mansion-labs/react-native-ci-cli?tab=readme-ov-file#-repository-secrets',
-      ].join(' ')
+      `Remember to create repository secret EXPO_TOKEN for EAS Update workflow to work properly. For more information check ${REPOSITORY_SECRETS_HELP_URL}`
     )
     toolbox.furtherActions.push(
       `Create EXPO_TOKEN repository secret. More info at ${REPOSITORY_SECRETS_HELP_URL}`

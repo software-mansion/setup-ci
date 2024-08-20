@@ -6,6 +6,38 @@ import { join } from 'path'
 const DETOX_EXPO_PLUGIN = '@config-plugins/detox'
 const FLAG = 'detox'
 
+const addDetoxExpoPlugin = async (toolbox: CycliToolbox) => {
+  const appJsonFile = toolbox.projectConfig.appJsonFile()
+
+  if (!appJsonFile) {
+    toolbox.interactive.warning(
+      `Cannot write to dynamic config. Make sure to add "${DETOX_EXPO_PLUGIN}" to expo.plugins in app.config.js.`
+    )
+    toolbox.furtherActions.push(
+      `Add "${DETOX_EXPO_PLUGIN}" to expo.plugins in app.config.js.`
+    )
+  } else {
+    const currentExpoPlugins =
+      toolbox.projectConfig.appJson()?.expo?.plugins || []
+
+    if (!currentExpoPlugins.includes(DETOX_EXPO_PLUGIN)) {
+      await toolbox.patching.update(appJsonFile, (config) => {
+        if (!config.expo.plugins) {
+          config.expo.plugins = []
+        }
+
+        if (!config.expo.plugins.includes(DETOX_EXPO_PLUGIN)) {
+          config.expo.plugins.push(DETOX_EXPO_PLUGIN)
+        }
+
+        return config
+      })
+
+      toolbox.interactive.step(`Added ${DETOX_EXPO_PLUGIN} plugin to app.json`)
+    }
+  }
+}
+
 const createDetoxWorkflowsForExpo = async (
   toolbox: CycliToolbox,
   context: ProjectContext
@@ -24,24 +56,7 @@ const createDetoxWorkflowsForExpo = async (
   await toolbox.dependencies.addDev('@types/jest', context)
   await toolbox.dependencies.addDev(DETOX_EXPO_PLUGIN, context)
 
-  const currentExpoPlugins =
-    toolbox.projectConfig.appJson()?.expo?.plugins || []
-
-  if (!currentExpoPlugins.includes(DETOX_EXPO_PLUGIN)) {
-    await toolbox.patching.update('app.json', (config) => {
-      if (!config.expo.plugins) {
-        config.expo.plugins = []
-      }
-
-      if (!config.expo.plugins.includes(DETOX_EXPO_PLUGIN)) {
-        config.expo.plugins.push(DETOX_EXPO_PLUGIN)
-      }
-
-      return config
-    })
-
-    toolbox.interactive.step(`Added ${DETOX_EXPO_PLUGIN} plugin to app.json`)
-  }
+  await addDetoxExpoPlugin(toolbox)
 
   await toolbox.scripts.add(
     'detox:test:android',
@@ -105,7 +120,7 @@ const createDetoxWorkflowsForExpo = async (
 
 const execute =
   () => async (toolbox: CycliToolbox, context: ProjectContext) => {
-    if (toolbox.projectConfig.appJson()?.expo) {
+    if (toolbox.projectConfig.isExpo()) {
       await createDetoxWorkflowsForExpo(toolbox, context)
     } else {
       toolbox.interactive.error(
