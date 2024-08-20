@@ -1,6 +1,6 @@
 {
   "name": "react-native-ci-cli",
-  "version": "0.0.13",
+  "version": "0.2.0",
   "description": "React Native CI CLI is meant to simplify CI/CD setup in your React Native project.",
   "types": "build/types/types.d.ts",
   "bin": {
@@ -15,6 +15,7 @@
     "format": "eslint \"**/*.{js,jsx,ts,tsx}\" --fix && prettier \"**/*.{js,jsx,ts,tsx,json}\" --write",
     "test": "jest",
     "watch": "jest --watch",
+    "build:alias": "sed -i 's/\"name\": \"react-native-ci-cli\"/\"name\": \"setup-ci\"/g' package.json && yarn build",
     "snapupdate": "jest --updateSnapshot",
     "coverage": "jest --coverage",
     "ts:check": "tsc -p . --noEmit",

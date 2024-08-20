@@ -1,18 +1,11 @@
 import { REPOSITORY_SECRETS_HELP_URL } from '../constants'
-import {
-  CycliRecipe,
-  CycliToolbox,
-  ExecutorResult,
-  ProjectContext,
-} from '../types'
+import { CycliRecipe, CycliToolbox, ProjectContext, RunResult } from '../types'
 import { join } from 'path'
 
 const FLAG = 'eas-update'
 
 const execute =
   () => async (toolbox: CycliToolbox, context: ProjectContext) => {
-    const furtherActions: string[] = []
-
     if (toolbox.filesystem.exists('eas.json')) {
       toolbox.interactive.step(
         'Detected eas.json, skipping EAS Build configuration.'
@@ -34,37 +27,25 @@ const execute =
     toolbox.interactive.step('Created EAS Update workflow.')
 
     toolbox.interactive.warning(
-      [
-        'Remember to create repository secret EXPO_TOKEN for EAS Update workflow to work properly. For more information check',
-        'https://github.com/software-mansion-labs/react-native-ci-cli?tab=readme-ov-file#-repository-secrets',
-      ].join(' ')
+      `Remember to create repository secret EXPO_TOKEN for EAS Update workflow to work properly. For more information check ${REPOSITORY_SECRETS_HELP_URL}`
     )
-    furtherActions.push(
+    toolbox.furtherActions.push(
       `Create EXPO_TOKEN repository secret. More info at ${REPOSITORY_SECRETS_HELP_URL}`
     )
 
-    return {
-      flag: `--${FLAG}`,
-      furtherActions,
-    }
+    return `--${FLAG}`
   }
 
 const run = async (
   toolbox: CycliToolbox,
   context: ProjectContext
-): Promise<
-  | ((
-      toolbox: CycliToolbox,
-      context: ProjectContext
-    ) => Promise<ExecutorResult>)
-  | null
-> => {
-  if (toolbox.skipInteractiveForRecipe(FLAG)) {
+): Promise<RunResult> => {
+  if (toolbox.options.isRecipeSelected(FLAG)) {
     context.selectedOptions.push(FLAG)
     return execute()
   }
 
-  if (toolbox.skipInteractive()) {
+  if (toolbox.options.isPreset()) {
     return null
   }
 

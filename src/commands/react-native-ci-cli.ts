@@ -1,5 +1,4 @@
 import { GluegunCommand, GluegunToolbox } from 'gluegun'
-import { SKIP_INTERACTIVE_FLAG } from '../constants'
 import lint from '../recipes/lint'
 import jest from '../recipes/jest'
 import typescriptCheck from '../recipes/typescript'
@@ -8,13 +7,20 @@ import easUpdate from '../recipes/eas-update'
 import detox from '../recipes/detox'
 import isGitDirty from 'is-git-dirty'
 import sequentialPromiseMap from '../utils/sequentialPromiseMap'
-import { CycliToolbox, ExecutorResult, ProjectContext } from '../types'
+import { CycliToolbox, ProjectContext } from '../types'
 import messageFromError from '../utils/messageFromError'
+import { HELP_FLAG, PRESET_FLAG } from '../constants'
 
-const box = require('ascii-box').box
-
-const SKIP_GIT_CHECK_FLAG = 'skip-git-check'
 const COMMAND = 'react-native-ci-cli'
+const SKIP_GIT_CHECK_FLAG = 'skip-git-check'
+
+type Option = { flag: string; description: string }
+
+export type CycliCommand = GluegunCommand & {
+  description: string
+  options: Option[]
+  featureOptions: Option[]
+}
 
 const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
   toolbox.interactive.vspace()
@@ -27,12 +33,12 @@ const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
   if (isGitDirty()) {
     if (toolbox.parameters.options[SKIP_GIT_CHECK_FLAG]) {
       toolbox.interactive.surveyWarning(
-        'Proceeding with dirty git repository as --skip-git-check option is enabled.'
+        `Proceeding with dirty git repository as --${SKIP_GIT_CHECK_FLAG} option is enabled.`
       )
     } else {
-      if (toolbox.skipInteractive()) {
+      if (toolbox.options.isPreset()) {
         throw Error(
-          `You have to commit your changes before running in silent mode or use --${SKIP_GIT_CHECK_FLAG}.`
+          `You have to commit your changes before running with preset or use --${SKIP_GIT_CHECK_FLAG}.`
         )
       }
 
@@ -85,7 +91,7 @@ const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
     `Detected ${context.packageManager} as your package manager.`
   )
 
-  const executorResults: ExecutorResult[] = await sequentialPromiseMap(
+  const executorResults: string[] = await sequentialPromiseMap(
     executors,
     (executor) => executor(toolbox, context)
   )
@@ -94,45 +100,34 @@ const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
   const diff = toolbox.diff.compare(snapshotBefore, snapshotAfter)
   toolbox.diff.print(diff, context)
 
-  printFurtherActions(executorResults, toolbox)
+  toolbox.furtherActions.print()
 
-  const usedFlags = executorResults.map((result) => result.flag).join(' ')
+  const usedFlags = executorResults.join(' ')
 
   toolbox.interactive.vspace()
   toolbox.interactive.success(`We're all set 🎉`)
 
-  if (!toolbox.skipInteractive()) {
+  if (!toolbox.options.isPreset()) {
     toolbox.interactive.success(
-      `Next time you can run the command in silent mode using npx ${COMMAND} --${SKIP_INTERACTIVE_FLAG} ${usedFlags}.`
+      `Next time you can specify a preset to reproduce this run using npx ${COMMAND} --${PRESET_FLAG} ${usedFlags}.`
     )
   }
 }
 
-const printFurtherActions = (
-  executorResults: ExecutorResult[],
-  toolbox: CycliToolbox
-) => {
-  const furtherActions = executorResults.flatMap(
-    (result) => result.furtherActions
-  )
-
-  if (furtherActions.length > 0) {
-    toolbox.interactive.vspace()
-
-    toolbox.interactive.info(
-      `${box(
-        `=== What next?\n\n${furtherActions
-          .map((action) => `● ${action}`)
-          .join('\n\n')}`,
-        { border: 'round', maxWidth: 90 }
-      )}
-  `,
-      'cyan'
+const run = async (toolbox: GluegunToolbox) => {
+  try {
+    await runReactNativeCiCli(toolbox as CycliToolbox)
+  } catch (error: unknown) {
+    const errMessage = messageFromError(error)
+    toolbox.interactive.error(
+      `Failed to execute ${COMMAND} with following error:\n${errMessage}`
     )
+  } finally {
+    process.exit()
   }
 }
 
-const getFeatureOptions = (): Option[] => {
+export const getFeatureOptions = (): Option[] => {
   return [
     lint.meta,
     jest.meta,
@@ -150,39 +145,20 @@ const command: CycliCommand = {
   name: COMMAND,
   description: 'Quickly setup CI workflows for your React Native app',
   options: [
-    { flag: 'help', description: 'Print help message' },
+    { flag: HELP_FLAG, description: 'Print help message' },
     { flag: 'version', description: 'Print version' },
     {
-      flag: 'skip-git-check',
+      flag: SKIP_GIT_CHECK_FLAG,
       description: 'Skip check for dirty git repository',
     },
     {
-      flag: 'silent',
+      flag: PRESET_FLAG,
       description:
-        'Run in silent mode. Combine with feature flags to specify generated workflows',
+        'Run with preset. Combine with feature flags to specify generated workflows',
     },
   ],
   featureOptions: [...getFeatureOptions()],
-  run: async (toolbox: GluegunToolbox) => {
-    try {
-      await runReactNativeCiCli(toolbox as CycliToolbox)
-    } catch (error: unknown) {
-      const errMessage = messageFromError(error)
-      toolbox.interactive.error(
-        `Failed to execute react - native - ci - cli with following error: \n${errMessage} `
-      )
-    } finally {
-      process.exit()
-    }
-  },
+  run,
 }
 
 module.exports = command
-
-type Option = { flag: string; description: string }
-
-export type CycliCommand = GluegunCommand & {
-  description: string
-  options: Option[]
-  featureOptions: Option[]
-}

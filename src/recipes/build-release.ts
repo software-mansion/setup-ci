@@ -4,8 +4,8 @@ import { join } from 'path'
 const createReleaseBuildWorkflowAndroid = async (
   toolbox: CycliToolbox,
   context: ProjectContext
-): Promise<string[]> => {
-  const furtherActions = await toolbox.scripts.add(
+) => {
+  await toolbox.scripts.add(
     'build:release:android',
     [
       `npx expo prebuild --${context.packageManager}`,
@@ -20,14 +20,12 @@ const createReleaseBuildWorkflowAndroid = async (
   )
 
   toolbox.interactive.step('Created Android release build workflow for Expo.')
-
-  return furtherActions
 }
 
 const createReleaseBuildWorkflowIOs = async (
   toolbox: CycliToolbox,
   context: ProjectContext
-): Promise<string[]> => {
+) => {
   const iOSAppName = toolbox.filesystem
     .list('ios')
     ?.find((file) => file.endsWith('.xcworkspace'))
@@ -42,7 +40,7 @@ const createReleaseBuildWorkflowIOs = async (
     )
   }
 
-  const furtherActions = await toolbox.scripts.add(
+  await toolbox.scripts.add(
     'build:release:ios',
     [
       `npx expo prebuild --${context.packageManager} &&`,
@@ -66,17 +64,13 @@ const createReleaseBuildWorkflowIOs = async (
   )
 
   toolbox.interactive.step('Created iOS release build workflow for Expo.')
-
-  return furtherActions
 }
 
 export const createReleaseBuildWorkflowsForExpo = async (
   toolbox: CycliToolbox,
   context: ProjectContext,
   platforms: Platform[]
-): Promise<string[]> => {
-  const furtherActions: string[] = []
-
+): Promise<void> => {
   const existsAndroidDir = toolbox.filesystem.exists('android')
   const existsIOsDir = toolbox.filesystem.exists('ios')
 
@@ -86,15 +80,11 @@ export const createReleaseBuildWorkflowsForExpo = async (
   })
 
   if (platforms.includes('android')) {
-    furtherActions.push(
-      ...(await createReleaseBuildWorkflowAndroid(toolbox, context))
-    )
+    await createReleaseBuildWorkflowAndroid(toolbox, context)
   }
 
   if (platforms.includes('ios')) {
-    furtherActions.push(
-      ...(await createReleaseBuildWorkflowIOs(toolbox, context))
-    )
+    await createReleaseBuildWorkflowIOs(toolbox, context)
   }
 
   const spinner = toolbox.print.spin('🧹 Cleaning up expo prebuild.')
@@ -103,6 +93,4 @@ export const createReleaseBuildWorkflowsForExpo = async (
   if (!existsIOsDir) toolbox.filesystem.remove('ios')
 
   spinner.stop()
-
-  return furtherActions
 }
