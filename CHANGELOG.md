@@ -1,3 +1,12 @@
+# [0.3.0](https://github.com/software-mansion-labs/react-native-ci-cli/compare/v0.2.1...v0.3.0) (2024-08-20)
+
+
+### Features
+
+* handle app.config.js ([#59](https://github.com/software-mansion-labs/react-native-ci-cli/issues/59)) ([f2fa46f](https://github.com/software-mansion-labs/react-native-ci-cli/commit/f2fa46ff6f63f8f5a225284abb9c99593c9f625a))
+
+
+
 ## [0.2.1](https://github.com/software-mansion-labs/react-native-ci-cli/compare/v0.2.0...v0.2.1) (2024-08-20)
 
 
