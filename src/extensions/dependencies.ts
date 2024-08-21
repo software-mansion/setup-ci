@@ -56,7 +56,7 @@ module.exports = (toolbox: CycliToolbox) => {
       toolbox.interactive.warning(
         `Detected package ${name} in "dependencies", but shouldn't it be in "devDependencies"?`
       )
-      add(name, context, { version, skipInstalledCheck })
+      await add(name, context, { version, skipInstalledCheck })
       return
     }
 

@@ -6,7 +6,7 @@ React Native CI CLI is meant to simplify CI/CD setup in your React Native projec
 
 ## 📖 Usage
 
-Simply go to your project root directory and run: 
+Simply go to your project root directory and run:
 
 ```
 npx react-native-ci-cli
@@ -25,7 +25,7 @@ Let's try to use `react-native-ci-cli` to do the heavy lifting and generate all 
     src="https://s10.gifyu.com/images/S59js.gif"/>
 </p>
 
-Alternatively, we can go fully automatic by passing flags `--silent --lint --jest` to avoid all interaction with the script. You can check the section below for more information about available flags!
+Alternatively, we can go fully automatic by passing flags `--preset --lint --jest` to avoid all interaction with the script. You can check the section below for more information about available flags!
 
 ## ⚙️ Features
 
@@ -42,8 +42,8 @@ When using `react-native-ci-cli`, you can provide additional flags to modify its
     <th style="text-align: center; vertical-align: middle;">Description</th>
   </tr>
   <tr>
-    <td style="vertical-align: middle;">--silent</td>
-    <td style="vertical-align: middle;">Run the script in silent mode. Combine it with feature flags to specify what workflows you want to generate.</td>
+    <td style="vertical-align: middle;">--preset</td>
+    <td style="vertical-align: middle;">Run the script with your own preset. Combine it with feature flags to specify what workflows you want to generate.</td>
   </tr>
   <tr>
     <td style="vertical-align: middle;">--skip-git-check</td>
@@ -51,7 +51,7 @@ When using `react-native-ci-cli`, you can provide additional flags to modify its
   </tr>
 </table>
 
-The following are **feature flags** that can be used in silent mode (they are ignored if `--silent` flag is not provided).
+The following are **feature flags** that can be used with `--preset` flag (they are ignored if `--preset` is not provided).
 
 <table>
   <tr>
@@ -60,27 +60,27 @@ The following are **feature flags** that can be used in silent mode (they are ig
   </tr>
   <tr>
     <td style="vertical-align: middle;">--lint</td>
-    <td style="vertical-align: middle;">Generate ESLint workflow to run on every PR.</td>
+    <td style="vertical-align: middle;">Generate ESLint workflow to run on every PR</td>
   </tr>
   <tr>
     <td style="vertical-align: middle;">--jest</td>
-    <td style="vertical-align: middle;">Generate Jest workflow to run on every PR.</td>
+    <td style="vertical-align: middle;">Generate Jest workflow to run on every PR</td>
   </tr>
   <tr>
     <td style="vertical-align: middle;">--ts</td>
-    <td style="vertical-align: middle;">Generate Typescript check workflow to run on every PR.</td>
+    <td style="vertical-align: middle;">Generate Typescript check workflow to run on every PR</td>
   </tr>
   <tr>
     <td style="vertical-align: middle;">--prettier</td>
-    <td style="vertical-align: middle;">Generate Prettier check workflow to run on every PR.</td>
+    <td style="vertical-align: middle;">Generate Prettier check workflow to run on every PR</td>
   </tr>
   <tr>
     <td style="vertical-align: middle;">--eas-update</td>
-    <td style="vertical-align: middle;">Generate EAS Update and preview workflow to run on every PR.</td>
+    <td style="vertical-align: middle;">Generate EAS Update and preview workflow to run on every PR (Expo projects only)</td>
   </tr>
   <tr>
     <td style="vertical-align: middle;">--detox</td>
-    <td style="vertical-align: middle;">Generate workflow to run Detox e2e tests on every PR.</td>
+    <td style="vertical-align: middle;">Generate workflow to run Detox e2e tests on every PR (Expo projects only)</td>
   </tr>
 </table>
 

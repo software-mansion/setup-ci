@@ -3,15 +3,21 @@ import { CycliToolbox } from '../types'
 module.exports = (toolbox: CycliToolbox) => {
   const { patching } = toolbox
 
-  const add = async (name: string, command: string) => {
+  const add = async (name: string, command: string): Promise<void> => {
     await patching.update('package.json', (config) => {
       if (config.scripts[name]) {
-        toolbox.interactive.warning(
-          [
-            `Skipping attempt to add script "${name}": "${command}" to package.json as script ${name} already exists.`,
-            `Consider updating it to make generated workflows work properly.`,
-          ].join(' ')
-        )
+        let warningMessage = `Skipping attempt to add script "${name}": "${command}" to package.json as script ${name} already exists.`
+
+        if (config.scripts[name] !== command) {
+          warningMessage +=
+            ' Consider updating it to make generated workflows work properly.'
+          toolbox.furtherActions.push(
+            `Consider updating script "${name}" in package.json to "${command}".`
+          )
+        }
+
+        toolbox.interactive.warning(warningMessage)
+
         return config
       }
 

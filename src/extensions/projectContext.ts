@@ -1,7 +1,7 @@
 import { CycliToolbox, PackageManager, ProjectContext } from '../types'
 import { LOCK_FILE_TO_MANAGER } from '../constants'
 import { lookItUpSync } from 'look-it-up'
-import { join, relative } from 'path'
+import { basename, join, relative } from 'path'
 
 module.exports = (toolbox: CycliToolbox) => {
   const { filesystem } = toolbox
@@ -61,18 +61,17 @@ module.exports = (toolbox: CycliToolbox) => {
     const absFromRepoRoot = (...paths: string[]): string =>
       join(repoRoot, ...paths)
 
-    const expoConfigJson = toolbox.filesystem.read('app.json', 'json')
-    const iOSAppName = expoConfigJson?.expo?.name.replaceAll('-', '')
+    const repoFolderName = basename(repoRoot)
 
     return {
       packageManager: getPackageManager(repoRoot),
       path: {
         repoRoot,
         packageRoot,
+        repoFolderName,
         relFromRepoRoot,
         absFromRepoRoot,
       },
-      iOSAppName,
       selectedOptions: [],
     }
   }

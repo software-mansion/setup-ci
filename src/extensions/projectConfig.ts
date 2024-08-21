@@ -1,5 +1,7 @@
 import { AppJson, CycliToolbox, PackageJson } from '../types'
 
+const APP_JSON_FILES = ['app.json', 'app.config.json']
+
 module.exports = (toolbox: CycliToolbox) => {
   const { filesystem } = toolbox
 
@@ -13,8 +15,36 @@ module.exports = (toolbox: CycliToolbox) => {
     return filesystem.read('package.json', 'json')
   }
 
+  const appJsonFile = (): string | undefined => {
+    return APP_JSON_FILES.find((file) => filesystem.exists(file))
+  }
+
   const appJson = (): AppJson | undefined => {
-    return filesystem.read('app.json', 'json')
+    const file = appJsonFile()
+
+    if (file) {
+      return filesystem.read(file, 'json')
+    }
+
+    return undefined
+  }
+
+  const isExpo = (): boolean => {
+    const appConfig = appJson()
+
+    if (appConfig?.expo) {
+      return true
+    }
+
+    if (filesystem.exists('app.config.js')) {
+      const appJs = filesystem.read('app.config.js')
+
+      if (appJs?.includes('expo:')) {
+        return true
+      }
+    }
+
+    return false
   }
 
   const getName = (): string => {
@@ -23,7 +53,9 @@ module.exports = (toolbox: CycliToolbox) => {
 
   toolbox.projectConfig = {
     packageJson,
+    appJsonFile,
     appJson,
+    isExpo,
     getName,
   }
 }
@@ -31,7 +63,9 @@ module.exports = (toolbox: CycliToolbox) => {
 export interface ProjectConfigExtension {
   projectConfig: {
     packageJson: () => PackageJson
+    appJsonFile: () => string | undefined
     appJson: () => AppJson | undefined
+    isExpo: () => boolean
     getName: () => string
   }
 }

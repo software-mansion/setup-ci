@@ -1,8 +1,9 @@
 import { GluegunCommand, GluegunToolbox } from 'gluegun'
 import { CycliCommand } from './react-native-ci-cli'
+import { HELP_FLAG } from '../constants'
 
 module.exports = {
-  name: 'help',
+  name: HELP_FLAG,
   run: async (toolbox: GluegunToolbox, cycliCommand: CycliCommand) => {
     const {
       print: {
@@ -12,19 +13,17 @@ module.exports = {
       meta,
     } = toolbox
 
-    const vspace = () => interactive.info('')
-
-    vspace()
+    interactive.vspace()
     interactive.info(
       bold(green(`Welcome to ${cycliCommand.name} ${meta.version()}!`))
     )
-    vspace()
+    interactive.vspace()
     interactive.info(gray(cycliCommand.description))
-    vspace()
+    interactive.vspace()
     interactive.info(
       `${bold(underline('Usage:'))} ${cycliCommand.name} [FLAGS]`
     )
-    vspace()
+    interactive.vspace()
     interactive.info(bold(underline('Flags:')))
 
     const maxFlagLength = Math.max(
@@ -42,11 +41,11 @@ module.exports = {
       )
     }
 
-    vspace()
+    interactive.vspace()
     interactive.info(
-      'Use any combination of the following in silent mode (with --silent flag) to specify your own preset of workflows to generate'
+      'Use any combination of the following with --preset flag to specify your own set of workflows to generate'
     )
-    vspace()
+    interactive.vspace()
     interactive.info(bold(underline('Feature flags:')))
 
     for (const option of cycliCommand.featureOptions) {
@@ -58,7 +57,7 @@ module.exports = {
       )
     }
 
-    vspace()
+    interactive.vspace()
   },
 }
 

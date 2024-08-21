@@ -1,3 +1,4 @@
+import { REPOSITORY_SECRETS_HELP_URL } from '../constants'
 import { CycliRecipe, CycliToolbox, ProjectContext } from '../types'
 import { createReleaseBuildWorkflowsForExpo } from './build-release'
 import { join } from 'path'
@@ -5,10 +6,39 @@ import { join } from 'path'
 const DETOX_EXPO_PLUGIN = '@config-plugins/detox'
 const FLAG = 'detox'
 
-const createDetoxWorkflowsForExpo = async (
-  toolbox: CycliToolbox,
-  context: ProjectContext
-) => {
+const addDetoxExpoPlugin = async (toolbox: CycliToolbox) => {
+  const appJsonFile = toolbox.projectConfig.appJsonFile()
+
+  if (!appJsonFile) {
+    toolbox.interactive.warning(
+      `Cannot write to dynamic config. Make sure to add "${DETOX_EXPO_PLUGIN}" to expo.plugins in app.config.js.`
+    )
+    toolbox.furtherActions.push(
+      `Add "${DETOX_EXPO_PLUGIN}" to expo.plugins in app.config.js.`
+    )
+  } else {
+    const currentExpoPlugins =
+      toolbox.projectConfig.appJson()?.expo?.plugins || []
+
+    if (!currentExpoPlugins.includes(DETOX_EXPO_PLUGIN)) {
+      await toolbox.patching.update(appJsonFile, (config) => {
+        if (!config.expo.plugins) {
+          config.expo.plugins = []
+        }
+
+        if (!config.expo.plugins.includes(DETOX_EXPO_PLUGIN)) {
+          config.expo.plugins.push(DETOX_EXPO_PLUGIN)
+        }
+
+        return config
+      })
+
+      toolbox.interactive.step(`Added ${DETOX_EXPO_PLUGIN} plugin to app.json`)
+    }
+  }
+}
+
+const execute = async (toolbox: CycliToolbox, context: ProjectContext) => {
   toolbox.interactive.info('⚙️ Setting up app release build for Detox.')
 
   await createReleaseBuildWorkflowsForExpo(toolbox, context, ['android', 'ios'])
@@ -23,24 +53,7 @@ const createDetoxWorkflowsForExpo = async (
   await toolbox.dependencies.addDev('@types/jest', context)
   await toolbox.dependencies.addDev(DETOX_EXPO_PLUGIN, context)
 
-  const currentExpoPlugins =
-    toolbox.projectConfig.appJson()?.expo?.plugins || []
-
-  if (!currentExpoPlugins.includes(DETOX_EXPO_PLUGIN)) {
-    await toolbox.patching.update('app.json', (config) => {
-      if (!config.expo.plugins) {
-        config.expo.plugins = []
-      }
-
-      if (!config.expo.plugins.includes(DETOX_EXPO_PLUGIN)) {
-        config.expo.plugins.push(DETOX_EXPO_PLUGIN)
-      }
-
-      return config
-    })
-
-    toolbox.interactive.step(`Added ${DETOX_EXPO_PLUGIN} plugin to app.json`)
-  }
+  await addDetoxExpoPlugin(toolbox)
 
   await toolbox.scripts.add(
     'detox:test:android',
@@ -74,13 +87,15 @@ const createDetoxWorkflowsForExpo = async (
       'Initialized e2e/ directory with default detox jest configuration.'
     )
 
-    toolbox.interactive.warning(
+    const jestConfigMessage =
       'Consider adding "modulePathIgnorePatterns": ["e2e"] to your jest config.'
-    )
+    toolbox.interactive.warning(jestConfigMessage)
+    toolbox.furtherActions.push(jestConfigMessage)
 
-    toolbox.interactive.warning(
+    const starterTestMessage =
       'Remember to edit example test in e2e/starter.test.ts to match your app.'
-    )
+    toolbox.interactive.warning(starterTestMessage)
+    toolbox.furtherActions.push(starterTestMessage)
   }
 
   await toolbox.workflows.generate(
@@ -93,31 +108,19 @@ const createDetoxWorkflowsForExpo = async (
   toolbox.interactive.step('Created Detox workflow for Expo.')
 
   toolbox.interactive.warning(
-    [
-      'Remember to create GH_TOKEN repository secret to make Detox workflow work. For more information check',
-      'https://github.com/software-mansion-labs/react-native-ci-cli?tab=readme-ov-file#-repository-secrets',
-    ].join(' ')
+    `Remember to create GH_TOKEN repository secret to make Detox workflow work. For more information check ${REPOSITORY_SECRETS_HELP_URL}`
   )
-}
-
-const execute = async (
-  toolbox: CycliToolbox,
-  context: ProjectContext
-): Promise<void> => {
-  if (toolbox.projectConfig.appJson()?.expo) {
-    await createDetoxWorkflowsForExpo(toolbox, context)
-  } else {
-    toolbox.interactive.error(
-      'Detox workflows generation is currently not supported for non-expo projects. Skipping detox recipe.'
-    )
-  }
+  toolbox.furtherActions.push(
+    `Create GH_TOKEN repository secret. More info at ${REPOSITORY_SECRETS_HELP_URL}`
+  )
 }
 
 export const recipe: CycliRecipe = {
   meta: {
     name: 'Detox E2E tests',
     flag: FLAG,
-    description: 'Generate workflow to run Detox e2e tests on every PR',
+    description:
+      'Generate workflow to run Detox e2e tests on every PR (Expo projects only)',
   },
   execute,
 } as const

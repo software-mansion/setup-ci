@@ -1,3 +1,4 @@
+import { REPOSITORY_SECRETS_HELP_URL } from '../constants'
 import { CycliRecipe, CycliToolbox, ProjectContext } from '../types'
 import { join } from 'path'
 
@@ -28,10 +29,7 @@ const execute = async (
   toolbox.interactive.step('Created EAS Update workflow.')
 
   toolbox.interactive.warning(
-    [
-      'Remember to create repository secret EXPO_TOKEN for EAS Update workflow to work properly. For more information check',
-      'https://github.com/software-mansion-labs/react-native-ci-cli?tab=readme-ov-file#-repository-secrets',
-    ].join(' ')
+    `Remember to create repository secret EXPO_TOKEN for EAS Update workflow to work properly. For more information check ${REPOSITORY_SECRETS_HELP_URL}`
   )
 }
 
@@ -39,7 +37,8 @@ export const recipe: CycliRecipe = {
   meta: {
     name: 'EAS Update and Preview',
     flag: FLAG,
-    description: 'Generate EAS Update and preview workflow to run on every PR',
+    description:
+      'Generate EAS Update and preview workflow to run on every PR (Expo projects only)',
   },
   execute,
 }
