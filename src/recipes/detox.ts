@@ -131,8 +131,12 @@ const execute =
     return `--${FLAG}`
   }
 
-const run = async (toolbox: CycliToolbox): Promise<RunResult> => {
+const run = async (
+  toolbox: CycliToolbox,
+  context: ProjectContext
+): Promise<RunResult> => {
   if (toolbox.options.isRecipeSelected(FLAG)) {
+    context.selectedOptions.push(FLAG)
     return execute()
   }
 
@@ -141,20 +145,22 @@ const run = async (toolbox: CycliToolbox): Promise<RunResult> => {
   }
 
   const proceed = await toolbox.interactive.confirm(
-    'Do you want to run Detox e2e tests on every PR?'
+    'Do you want to run Detox e2e tests on every PR? (Expo projects only)'
   )
 
   if (!proceed) {
     return null
   }
 
+  context.selectedOptions.push(FLAG)
   return execute()
 }
 
 export const recipe: CycliRecipe = {
   meta: {
     flag: FLAG,
-    description: 'Generate workflow to run Detox e2e tests on every PR',
+    description:
+      'Generate workflow to run Detox e2e tests on every PR (Expo projects only)',
   },
   run,
 } as const

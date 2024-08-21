@@ -12,7 +12,8 @@ const ESLINT_CONFIGURATION_FILES = [
   'eslint.config.cjs',
 ]
 
-const existsEslintConfigurationFile = (toolbox: CycliToolbox): boolean =>
+const existsEslintConfiguration = (toolbox: CycliToolbox): boolean =>
+  Boolean(toolbox.projectConfig.packageJson().eslintConfig) ||
   Boolean(
     toolbox.filesystem
       .list()
@@ -24,6 +25,7 @@ const execute =
     // eslint@9 introduces new configuration format that is not supported by widely used plugins yet,
     // so we stick to ^8 for now.
     await toolbox.dependencies.addDev('eslint', context, { version: '^8' })
+    await toolbox.dependencies.addDev('@react-native/eslint-config', context)
 
     const withPrettier =
       context.selectedOptions.includes(PRETTIER_FLAG) ||
@@ -37,7 +39,7 @@ const execute =
 
     await toolbox.scripts.add('lint', 'eslint "**/*.{js,jsx,ts,tsx}"')
 
-    if (!existsEslintConfigurationFile(toolbox)) {
+    if (!existsEslintConfiguration(toolbox)) {
       await toolbox.template.generate({
         template: join('lint', '.eslintrc.json.ejs'),
         target: '.eslintrc.json',

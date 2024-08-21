@@ -60,27 +60,27 @@ The following are **feature flags** that can be used with `--preset` flag (they 
   </tr>
   <tr>
     <td style="vertical-align: middle;">--lint</td>
-    <td style="vertical-align: middle;">Generate ESLint workflow to run on every PR.</td>
+    <td style="vertical-align: middle;">Generate ESLint workflow to run on every PR</td>
   </tr>
   <tr>
     <td style="vertical-align: middle;">--jest</td>
-    <td style="vertical-align: middle;">Generate Jest workflow to run on every PR.</td>
+    <td style="vertical-align: middle;">Generate Jest workflow to run on every PR</td>
   </tr>
   <tr>
     <td style="vertical-align: middle;">--ts</td>
-    <td style="vertical-align: middle;">Generate Typescript check workflow to run on every PR.</td>
+    <td style="vertical-align: middle;">Generate Typescript check workflow to run on every PR</td>
   </tr>
   <tr>
     <td style="vertical-align: middle;">--prettier</td>
-    <td style="vertical-align: middle;">Generate Prettier check workflow to run on every PR.</td>
+    <td style="vertical-align: middle;">Generate Prettier check workflow to run on every PR</td>
   </tr>
   <tr>
     <td style="vertical-align: middle;">--eas-update</td>
-    <td style="vertical-align: middle;">Generate EAS Update and preview workflow to run on every PR.</td>
+    <td style="vertical-align: middle;">Generate EAS Update and preview workflow to run on every PR (Expo projects only)</td>
   </tr>
   <tr>
     <td style="vertical-align: middle;">--detox</td>
-    <td style="vertical-align: middle;">Generate workflow to run Detox e2e tests on every PR.</td>
+    <td style="vertical-align: middle;">Generate workflow to run Detox e2e tests on every PR (Expo projects only)</td>
   </tr>
 </table>
 

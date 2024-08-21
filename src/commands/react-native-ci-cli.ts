@@ -9,6 +9,7 @@ import isGitDirty from 'is-git-dirty'
 import sequentialPromiseMap from '../utils/sequentialPromiseMap'
 import { CycliToolbox, ProjectContext } from '../types'
 import messageFromError from '../utils/messageFromError'
+import { addTerminatingNewline } from '../utils/addTerminatingNewline'
 import { HELP_FLAG, PRESET_FLAG } from '../constants'
 
 const COMMAND = 'react-native-ci-cli'
@@ -61,8 +62,12 @@ const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
   }
 
   const context: ProjectContext = toolbox.projectContext.obtain()
+  toolbox.interactive.surveyStep('Obtained project context.')
 
   const snapshotBefore = await toolbox.diff.gitStatus(context)
+  toolbox.interactive.surveyStep(
+    'Created snapshot of project state before execution.'
+  )
 
   const lintExecutor = await lint.run(toolbox, context)
   const jestExecutor = await jest.run(toolbox, context)
@@ -70,6 +75,17 @@ const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
   const prettierExecutor = await prettierCheck.run(toolbox, context)
   const easUpdateExecutor = await easUpdate.run(toolbox, context)
   const detoxExecutor = await detox.run(toolbox, context)
+
+  // Detox and EAS Update recipes are currently supported only for Expo projects
+  if (
+    !toolbox.projectConfig.isExpo() &&
+    (context.selectedOptions.includes(detox.meta.flag) ||
+      context.selectedOptions.includes(easUpdate.meta.flag))
+  ) {
+    throw Error(
+      'Detox and EAS Update workflows are supported only for Expo projects.'
+    )
+  }
 
   const executors = [
     lintExecutor,
@@ -95,6 +111,9 @@ const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
     executors,
     (executor) => executor(toolbox, context)
   )
+
+  // Sometimes gluegun leaves package.json without eol at the end
+  addTerminatingNewline('package.json')
 
   const snapshotAfter = await toolbox.diff.gitStatus(context)
   const diff = toolbox.diff.compare(snapshotBefore, snapshotAfter)

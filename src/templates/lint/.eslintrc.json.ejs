@@ -6,8 +6,8 @@
   "extends": [
     <%-
       ((props.withPrettier) ? 
-        ['"eslint:recommended"', '"prettier"', '"plugin:prettier/recommended"'] :
-        ['"eslint:recommended"']
+        ['"@react-native"', '"eslint:recommended"', '"prettier"', '"plugin:prettier/recommended"'] :
+        ['"@react-native"', '"eslint:recommended"']
       ).join(',\n    ')
     %>
   ],

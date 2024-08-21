@@ -45,7 +45,7 @@ module.exports = (toolbox: CycliToolbox) => {
       .then((output) =>
         output
           .split('\n')
-          .map((line: string) => line.trim().split(' '))
+          .map((line: string) => line.trim().split(' ').filter(Boolean))
           .filter((line: string[]) => line.length >= 2)
           .map((line: string[]) => [statusFromGitOutput(line[0]), line[1]])
       )
@@ -53,7 +53,9 @@ module.exports = (toolbox: CycliToolbox) => {
     let expandedPathsList: [Status, string][] = []
 
     for (const [status, path] of pathsList) {
-      const expandedPaths = await expandDirectory(path)
+      const expandedPaths = await expandDirectory(
+        context.path.absFromRepoRoot(path)
+      )
       expandedPathsList = expandedPathsList.concat(
         expandedPaths.map((expandedPath) => [status, expandedPath])
       )
@@ -124,7 +126,13 @@ module.exports = (toolbox: CycliToolbox) => {
     toolbox.interactive.info(
       prettyTree(
         Array.from(diff.entries()).map(([path, { status }]) =>
-          colorizeDiffPath(join(context.path.repoFolderName, path), status)
+          colorizeDiffPath(
+            join(
+              context.path.repoFolderName,
+              path.substring(context.path.absFromRepoRoot().length + 1)
+            ),
+            status
+          )
         )
       )
         .split('|')

@@ -6,6 +6,8 @@ const FLAG = 'eas-update'
 
 const execute =
   () => async (toolbox: CycliToolbox, context: ProjectContext) => {
+    toolbox.dependencies.add('expo', context)
+
     if (toolbox.filesystem.exists('eas.json')) {
       toolbox.interactive.step(
         'Detected eas.json, skipping EAS Build configuration.'
@@ -50,7 +52,7 @@ const run = async (
   }
 
   const proceed = await toolbox.interactive.confirm(
-    'Do you want to run EAS Update on your project on every PR?'
+    'Do you want to run EAS Update on your project on every PR? (Expo projects only)'
   )
 
   if (!proceed) {
@@ -64,7 +66,8 @@ const run = async (
 export const recipe: CycliRecipe = {
   meta: {
     flag: FLAG,
-    description: 'Generate EAS Update and preview workflow to run on every PR',
+    description:
+      'Generate EAS Update and preview workflow to run on every PR (Expo projects only)',
   },
   run,
 }

@@ -18,6 +18,9 @@ export interface PackageJson {
   devDependencies?: {
     [key: string]: string
   }
+  eslintConfig?: unknown
+  jest?: unknown
+  prettier?: unknown
   workspaces?: string[]
 }
 

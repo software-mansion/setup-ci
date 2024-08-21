@@ -126,6 +126,10 @@ module.exports = (toolbox: CycliToolbox) => {
     return Boolean(confirmed)
   }
 
+  const surveyStep = (message: string) => {
+    clackLog.step(message)
+  }
+
   const surveyWarning = (message: string) => {
     clackLog.warn(yellow(message))
   }
@@ -167,6 +171,7 @@ module.exports = (toolbox: CycliToolbox) => {
 
   toolbox.interactive = {
     confirm,
+    surveyStep,
     surveyWarning,
     info,
     vspace,
@@ -183,6 +188,7 @@ module.exports = (toolbox: CycliToolbox) => {
 export interface InteractiveExtension {
   interactive: {
     confirm: (message: string, type?: 'normal' | 'warning') => Promise<boolean>
+    surveyStep: (message: string) => void
     surveyWarning: (message: string) => void
     info: (message: string, color?: MessageColor) => void
     vspace: () => void
