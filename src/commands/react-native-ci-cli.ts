@@ -14,6 +14,7 @@ import { HELP_FLAG, PRESET_FLAG } from '../constants'
 
 const COMMAND = 'react-native-ci-cli'
 const SKIP_GIT_CHECK_FLAG = 'skip-git-check'
+const DETOX_BARE_PROJECT_CONFIG_URL = `https://wix.github.io/Detox/docs/next/introduction/project-setup/#step-4-additional-android-configuration`
 
 type Option = { flag: string; description: string }
 
@@ -47,9 +48,9 @@ const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
         [
           `It is advised to commit all your changes before running ${COMMAND}.`,
           'Running the script with uncommitted changes may have destructive consequences.',
-          'Do you want to proceed anyway?',
+          'Do you want to proceed anyway?\n',
         ].join('\n'),
-        'warning'
+        { type: 'warning' }
       )
 
       if (!proceed) {
@@ -76,15 +77,30 @@ const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
   const easUpdateExecutor = await easUpdate.run(toolbox, context)
   const detoxExecutor = await detox.run(toolbox, context)
 
-  // Detox and EAS Update recipes are currently supported only for Expo projects
   if (
     !toolbox.projectConfig.isExpo() &&
-    (context.selectedOptions.includes(detox.meta.flag) ||
-      context.selectedOptions.includes(easUpdate.meta.flag))
+    context.selectedOptions.includes(detox.meta.flag)
   ) {
-    throw Error(
-      'Detox and EAS Update workflows are supported only for Expo projects.'
+    toolbox.furtherActions.push(
+      `Follow Step 4 of ${DETOX_BARE_PROJECT_CONFIG_URL} to patch native code for Detox.`
     )
+    await toolbox.interactive.actionPrompt(
+      [
+        'You have chosen to setup Detox for a non-expo project.',
+        'To make the setup work properly, you need to manually patch native code for Detox.',
+        'Please follow the instructions in Step 4 of',
+        `${DETOX_BARE_PROJECT_CONFIG_URL}.`,
+        'You can do it now or after the script finishes.\n',
+      ].join('\n')
+    )
+  }
+
+  // EAS Update recipes is currently supported only for Expo projects
+  if (
+    !toolbox.projectConfig.isExpo() &&
+    context.selectedOptions.includes(easUpdate.meta.flag)
+  ) {
+    throw Error('EAS Update workflow is supported only for Expo projects.')
   }
 
   const executors = [

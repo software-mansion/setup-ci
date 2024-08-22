@@ -52,7 +52,8 @@ const run = async (
   }
 
   const proceed = await toolbox.interactive.confirm(
-    'Do you want to run EAS Update on your project on every PR? (Expo projects only)'
+    'Do you want to run EAS Update on your project on every PR? (Expo projects only)',
+    { type: 'normal' }
   )
 
   if (!proceed) {
