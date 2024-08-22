@@ -75,9 +75,11 @@ export const createReleaseBuildWorkflowsForExpo = async (
   const existsIOsDir = toolbox.filesystem.exists('ios')
 
   toolbox.print.info('⚙️ Running expo prebuild to setup app.json properly.')
-  await toolbox.system.spawn(`npx expo prebuild --${context.packageManager}`, {
-    stdio: 'inherit',
-  })
+  await toolbox.interactive.spawnSubprocess(
+    'Expo prebuild',
+    `npx expo prebuild --${context.packageManager}`,
+    { alwaysPrintStderr: true }
+  )
 
   if (platforms.includes('android')) {
     await createReleaseBuildWorkflowAndroid(toolbox, context)
