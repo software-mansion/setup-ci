@@ -18,7 +18,6 @@ import {
   S_DR,
   S_RADIO_ACTIVE,
   S_RADIO_INACTIVE,
-  S_SELECT,
   S_STEP_ERROR,
   S_STEP_SUCCESS,
   S_STEP_WARNING,
@@ -117,7 +116,7 @@ module.exports = (toolbox: CycliToolbox) => {
     const title = () => {
       switch (type) {
         case 'normal':
-          return `${gray(S_BAR)}\n${S_SELECT}  ${message
+          return `${gray(S_BAR)}\n${S_CONFIRM}  ${message
             .split('\n')
             .join(`\n${S_BAR}  `)}\n`
         case 'warning':

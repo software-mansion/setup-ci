@@ -3,6 +3,7 @@ import { CycliRecipe, CycliToolbox, ProjectContext, RunResult } from '../types'
 import { createReleaseBuildWorkflows } from './build-release'
 import { join } from 'path'
 
+const DETOX_BARE_PROJECT_CONFIG_URL = `https://wix.github.io/Detox/docs/next/introduction/project-setup/#step-4-additional-android-configuration`
 const DETOX_EXPO_PLUGIN = '@config-plugins/detox'
 const FLAG = 'detox'
 
@@ -138,26 +139,39 @@ const run = async (
   toolbox: CycliToolbox,
   context: ProjectContext
 ): Promise<RunResult> => {
+  let runRecipe = false
+
   if (toolbox.options.isRecipeSelected(FLAG)) {
+    runRecipe = true
+  } else if (!toolbox.options.isPreset()) {
+    runRecipe = await toolbox.interactive.confirm(
+      'Do you want to run Detox e2e tests on every PR?',
+      { type: 'normal' }
+    )
+  }
+
+  if (runRecipe) {
+    if (!toolbox.projectConfig.isExpo()) {
+      await toolbox.interactive.actionPrompt(
+        [
+          'You have chosen to setup Detox for a non-expo project.',
+          'To make the setup work properly, you need to manually patch native code for Detox.',
+          'Please follow the instructions in Step 4 of',
+          `${DETOX_BARE_PROJECT_CONFIG_URL}.`,
+          'You can do it now or after the script finishes.\n',
+        ].join('\n')
+      )
+      toolbox.furtherActions.push(
+        `Follow Step 4 of ${DETOX_BARE_PROJECT_CONFIG_URL} to patch native code for Detox.`
+      )
+    }
+
     context.selectedOptions.push(FLAG)
+
     return execute()
   }
 
-  if (toolbox.options.isPreset()) {
-    return null
-  }
-
-  const proceed = await toolbox.interactive.confirm(
-    'Do you want to run Detox e2e tests on every PR?',
-    { type: 'normal' }
-  )
-
-  if (!proceed) {
-    return null
-  }
-
-  context.selectedOptions.push(FLAG)
-  return execute()
+  return null
 }
 
 export const recipe: CycliRecipe = {
