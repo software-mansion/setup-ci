@@ -44,9 +44,10 @@ const execute = async (
 
 export const recipe: CycliRecipe = {
   meta: {
-    name: 'Prettier check',
+    name: 'Prettier',
     flag: FLAG,
     description: 'Generate Prettier check workflow to run on every PR',
+    selectHint: 'check your code format with prettier',
   },
   execute,
 }

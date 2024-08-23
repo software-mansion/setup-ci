@@ -64,6 +64,7 @@ export const recipe: CycliRecipe = {
     name: 'ESLint',
     flag: FLAG,
     description: 'Generate ESLint workflow to run on every PR',
+    selectHint: 'check your code style with linter',
   },
   execute,
 }

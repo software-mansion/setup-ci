@@ -36,6 +36,7 @@ export const recipe: CycliRecipe = {
     name: 'Jest',
     flag: FLAG,
     description: 'Generate Jest workflow to run on every PR',
+    selectHint: 'test your program with jest',
   },
   execute,
 }

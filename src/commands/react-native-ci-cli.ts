@@ -11,7 +11,11 @@ import { CycliRecipe, CycliToolbox, ProjectContext } from '../types'
 import messageFromError from '../utils/messageFromError'
 import { intersection } from 'lodash'
 import { addTerminatingNewline } from '../utils/addTerminatingNewline'
-import { HELP_FLAG, PRESET_FLAG } from '../constants'
+import {
+  HELP_FLAG,
+  PRESET_FLAG,
+  REPOSITORY_FEATURES_HELP_URL,
+} from '../constants'
 
 const COMMAND = 'react-native-ci-cli'
 const SKIP_GIT_CHECK_FLAG = 'skip-git-check'
@@ -74,13 +78,17 @@ const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
 
   const featureFlags = getFeatureOptions().map((option) => option.flag)
 
+  // TODO: Better README (features section) to explain what workflows do. (so the user clicking link in hint knows whats going on)
+  //  Also, we can add the link from hint to help message!
   const selectedFeatureFlags = toolbox.options.isPreset()
     ? intersection(featureFlags, Object.keys(toolbox.parameters.options))
     : await toolbox.interactive.multiselect(
         'Select workflows you want to run on every PR',
+        `Learn more about PR workflows: ${REPOSITORY_FEATURES_HELP_URL}`,
         RECIPES.map((recipe: CycliRecipe) => ({
           label: recipe.meta.name,
           value: recipe.meta.flag,
+          hint: recipe.meta.selectHint,
         }))
       )
 

@@ -117,10 +117,10 @@ const execute = async (toolbox: CycliToolbox, context: ProjectContext) => {
 
 export const recipe: CycliRecipe = {
   meta: {
-    name: 'Detox E2E tests',
+    name: 'Detox',
     flag: FLAG,
-    description:
-      'Generate workflow to run Detox e2e tests on every PR (Expo projects only)',
+    description: 'Generate workflow to run Detox e2e tests on every PR',
+    selectHint: 'run detox e2e tests suite',
   },
   execute,
 } as const

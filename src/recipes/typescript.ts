@@ -32,9 +32,10 @@ const execute = async (
 
 export const recipe: CycliRecipe = {
   meta: {
-    name: 'Typescript check',
+    name: 'Typescript',
     flag: FLAG,
     description: 'Generate Typescript check workflow to run on every PR',
+    selectHint: 'check your code for compilation errors',
   },
   execute,
 }

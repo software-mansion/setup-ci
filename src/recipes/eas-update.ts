@@ -35,10 +35,10 @@ const execute = async (
 
 export const recipe: CycliRecipe = {
   meta: {
-    name: 'EAS Update and Preview',
+    name: 'EAS Preview',
     flag: FLAG,
-    description:
-      'Generate EAS Update and preview workflow to run on every PR (Expo projects only)',
+    description: 'Generate EAS Update and preview workflow to run on every PR',
+    selectHint: 'run EAS Update and generate preview with QR code',
   },
   execute,
 }
