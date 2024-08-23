@@ -1,3 +1,12 @@
+## [0.3.4](https://github.com/software-mansion-labs/react-native-ci-cli/compare/v0.3.1...v0.3.4) (2024-08-23)
+
+
+### Bug Fixes
+
+* remove unnecessary warning about existing script if it is the same ([#70](https://github.com/software-mansion-labs/react-native-ci-cli/issues/70)) ([4552010](https://github.com/software-mansion-labs/react-native-ci-cli/commit/455201006984c1a40b75ba8d8eeaba54f6230eb7))
+
+
+
 ## [0.3.1](https://github.com/software-mansion-labs/react-native-ci-cli/compare/v0.3.0...v0.3.1) (2024-08-21)
 
 
@@ -31,15 +40,6 @@
 ### Features
 
 * print further actions at the end of script execution ([#58](https://github.com/software-mansion-labs/react-native-ci-cli/issues/58)) ([3e6393b](https://github.com/software-mansion-labs/react-native-ci-cli/commit/3e6393b98901345f76e4839e4b4df5f58016ab67))
-
-
-
-## [0.1.1](https://github.com/software-mansion-labs/react-native-ci-cli/compare/v0.1.0...v0.1.1) (2024-08-19)
-
-
-### Bug Fixes
-
-* fix CI ([4126420](https://github.com/software-mansion-labs/react-native-ci-cli/commit/412642095daed028b59aca8cdf8a2b6b7a92bbcc))
 
 
 
