@@ -10,6 +10,7 @@ export const COLORS = {
   inverse: print.colors.inverse,
   dim: print.colors.dim,
   strikethrough: print.colors.strikethrough,
+  underline: print.colors.underline,
 }
 
 export const S_STEP_WARNING = COLORS.yellow('▲')
