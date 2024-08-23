@@ -1,4 +1,3 @@
-import { terminalHyperlink } from './utils/terminalHyperlink'
 import { print } from 'gluegun'
 
 export const COLORS = {
@@ -42,9 +41,4 @@ export const LOCK_FILE_TO_MANAGER = {
 
 const REPOSITORY_URL =
   'https://github.com/software-mansion-labs/react-native-ci-cli'
-const REPOSITORY_SECRETS_HELP_URL = `${REPOSITORY_URL}?tab=readme-ov-file#-repository-secrets`
-
-export const REPOSITORY_SECRETS_HELP_LINK = terminalHyperlink(
-  'Repository secrets readme',
-  REPOSITORY_SECRETS_HELP_URL
-)
+export const REPOSITORY_SECRETS_HELP_URL = `${REPOSITORY_URL}?tab=readme-ov-file#-repository-secrets`

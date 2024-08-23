@@ -1,4 +1,4 @@
-import { REPOSITORY_SECRETS_HELP_LINK } from '../constants'
+import { REPOSITORY_SECRETS_HELP_URL } from '../constants'
 import { CycliRecipe, CycliToolbox, ProjectContext, RunResult } from '../types'
 import { createReleaseBuildWorkflows } from './build-release'
 import { join } from 'path'
@@ -118,10 +118,10 @@ const createDetoxWorkflows = async (
   toolbox.interactive.step('Created Detox workflow.')
 
   toolbox.interactive.warning(
-    `Remember to create GH_TOKEN repository secret to make Detox workflow work.For more information check ${REPOSITORY_SECRETS_HELP_LINK} `
+    `Remember to create GH_TOKEN repository secret to make Detox workflow work.For more information check ${REPOSITORY_SECRETS_HELP_URL} `
   )
   toolbox.furtherActions.push(
-    `Create GH_TOKEN repository secret.More info at ${REPOSITORY_SECRETS_HELP_LINK} `
+    `Create GH_TOKEN repository secret.More info at ${REPOSITORY_SECRETS_HELP_URL} `
   )
 }
 

@@ -11,15 +11,10 @@ import { CycliToolbox, ProjectContext } from '../types'
 import messageFromError from '../utils/messageFromError'
 import { addTerminatingNewline } from '../utils/addTerminatingNewline'
 import { HELP_FLAG, PRESET_FLAG } from '../constants'
-import { terminalHyperlink } from '../utils/terminalHyperlink'
 
 const COMMAND = 'react-native-ci-cli'
 const SKIP_GIT_CHECK_FLAG = 'skip-git-check'
 const DETOX_BARE_PROJECT_CONFIG_URL = `https://wix.github.io/Detox/docs/next/introduction/project-setup/#step-4-additional-android-configuration`
-const DETOX_BARE_PROJECT_CONFIG_LINK = terminalHyperlink(
-  'Setup project for Detox',
-  DETOX_BARE_PROJECT_CONFIG_URL
-)
 
 type Option = { flag: string; description: string }
 
@@ -87,14 +82,14 @@ const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
     context.selectedOptions.includes(detox.meta.flag)
   ) {
     toolbox.furtherActions.push(
-      `Follow Step 4 of ${DETOX_BARE_PROJECT_CONFIG_LINK} to patch native code for Detox.`
+      `Follow Step 4 of ${DETOX_BARE_PROJECT_CONFIG_URL} to patch native code for Detox.`
     )
     await toolbox.interactive.actionPrompt(
       [
         'You have chosen to setup Detox for a non-expo project.',
         'To make the setup work properly, you need to manually patch native code for Detox.',
         'Please follow the instructions in Step 4 of',
-        `${DETOX_BARE_PROJECT_CONFIG_LINK}.`,
+        `${DETOX_BARE_PROJECT_CONFIG_URL}.`,
         'You can do it now or after the script finishes.\n',
       ].join('\n')
     )
