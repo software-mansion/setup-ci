@@ -1,4 +1,35 @@
 import { terminalHyperlink } from './utils/terminalHyperlink'
+import { print } from 'gluegun'
+
+export const COLORS = {
+  bold: print.colors.bold,
+  cyan: print.colors.cyan,
+  magenta: print.colors.magenta,
+  green: print.colors.green,
+  yellow: print.colors.yellow,
+  gray: print.colors.gray,
+  red: print.colors.red,
+  inverse: print.colors.inverse,
+  dim: print.colors.dim,
+  strikethrough: print.colors.strikethrough,
+}
+
+export const S_STEP_WARNING = COLORS.yellow('▲')
+export const S_STEP_ERROR = COLORS.red('■')
+export const S_STEP_SUCCESS = COLORS.green('◇')
+export const S_SELECT = COLORS.cyan('◆')
+export const S_CONFIRM = COLORS.magenta('◆')
+export const S_ACTION = COLORS.cyan('▼')
+export const S_ACTION_BULLET = COLORS.cyan('►')
+export const S_BAR = '│'
+export const S_VBAR = '─'
+export const S_UL = '╭'
+export const S_DL = '╰'
+export const S_UR = '╮'
+export const S_DR = '╯'
+export const S_BAR_END = '└'
+export const S_RADIO_ACTIVE = '●'
+export const S_RADIO_INACTIVE = '○'
 
 export const HELP_FLAG = 'help'
 export const PRESET_FLAG = 'preset'

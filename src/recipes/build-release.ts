@@ -86,6 +86,12 @@ export const createReleaseBuildWorkflows = async (
       'Failed to obtain iOS app name. Perhaps your ios/ directory is missing .xcworkspace file.'
     )
   }
+  toolbox.print.info('⚙️ Running expo prebuild to setup app.json properly.')
+  await toolbox.interactive.spawnSubprocess(
+    'Expo prebuild',
+    `npx expo prebuild --${context.packageManager}`,
+    { alwaysPrintStderr: true }
+  )
 
   if (platforms.includes('android')) {
     await createReleaseBuildWorkflowAndroid(toolbox, context, { expo })
