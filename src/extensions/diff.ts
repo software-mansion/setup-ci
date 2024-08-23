@@ -3,6 +3,7 @@ import { createHash } from 'crypto'
 import { createReadStream } from 'fs'
 import { join, sep } from 'path'
 import { expandDirectory } from '../utils/expandDirectory'
+import { S_ACTION } from '../constants'
 
 const prettyTree = require('pretty-file-tree')
 
@@ -119,7 +120,7 @@ module.exports = (toolbox: CycliToolbox) => {
     }
 
     toolbox.interactive.info(
-      'The following files have been added or modified:',
+      `${S_ACTION} The following files have been added or modified:`,
       'cyan'
     )
     toolbox.interactive.vspace()

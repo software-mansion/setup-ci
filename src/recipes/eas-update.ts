@@ -13,16 +13,18 @@ const execute =
         'Detected eas.json, skipping EAS Build configuration.'
       )
     } else {
-      await toolbox.system.spawn('eas build:configure -p all', {
-        stdio: 'inherit',
-      })
+      await toolbox.interactive.spawnSubprocess(
+        'EAS Build configuration',
+        'eas build:configure -p all'
+      )
 
       toolbox.interactive.step('Created default EAS Build configuration.')
     }
 
-    await toolbox.system.spawn('eas update:configure', {
-      stdio: 'inherit',
-    })
+    await toolbox.interactive.spawnSubprocess(
+      'EAS Update configuration',
+      'eas update:configure'
+    )
 
     await toolbox.workflows.generate(join('eas', 'eas-update.ejf'), context)
 
