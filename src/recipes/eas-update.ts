@@ -1,4 +1,4 @@
-import { REPOSITORY_SECRETS_HELP_URL } from '../constants'
+import { REPOSITORY_SECRETS_HELP_LINK } from '../constants'
 import { CycliRecipe, CycliToolbox, ProjectContext, RunResult } from '../types'
 import { join } from 'path'
 
@@ -29,10 +29,10 @@ const execute =
     toolbox.interactive.step('Created EAS Update workflow.')
 
     toolbox.interactive.warning(
-      `Remember to create repository secret EXPO_TOKEN for EAS Update workflow to work properly. For more information check ${REPOSITORY_SECRETS_HELP_URL}`
+      `Remember to create repository secret EXPO_TOKEN for EAS Update workflow to work properly. For more information check ${REPOSITORY_SECRETS_HELP_LINK}`
     )
     toolbox.furtherActions.push(
-      `Create EXPO_TOKEN repository secret. More info at ${REPOSITORY_SECRETS_HELP_URL}`
+      `Create EXPO_TOKEN repository secret. More info at ${REPOSITORY_SECRETS_HELP_LINK}`
     )
 
     return `--${FLAG}`
