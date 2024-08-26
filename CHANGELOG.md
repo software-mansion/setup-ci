@@ -1,3 +1,12 @@
+## [0.4.7](https://github.com/software-mansion-labs/react-native-ci-cli/compare/v0.4.6...v0.4.7) (2024-08-26)
+
+
+### Bug Fixes
+
+* add repository url ([621c19a](https://github.com/software-mansion-labs/react-native-ci-cli/commit/621c19af3ac0fc63785b79f22c012ec4ae6bbb9b))
+
+
+
 ## [0.4.6](https://github.com/software-mansion-labs/react-native-ci-cli/compare/v0.4.5...v0.4.6) (2024-08-26)
 
 
@@ -35,15 +44,6 @@
 ### Bug Fixes
 
 * update command in readme and demo gif ([#75](https://github.com/software-mansion-labs/react-native-ci-cli/issues/75)) ([91ad4b1](https://github.com/software-mansion-labs/react-native-ci-cli/commit/91ad4b1a650c156e31ea0bf383a68ca5bc0e503b))
-
-
-
-## [0.4.2](https://github.com/software-mansion-labs/react-native-ci-cli/compare/v0.4.1...v0.4.2) (2024-08-26)
-
-
-### Bug Fixes
-
-* add header before starting each recipe ([#73](https://github.com/software-mansion-labs/react-native-ci-cli/issues/73)) ([3891802](https://github.com/software-mansion-labs/react-native-ci-cli/commit/389180265d8b4460c57a0bcc3c3b525802062a07))
 
 
 
