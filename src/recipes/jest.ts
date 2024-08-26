@@ -5,7 +5,7 @@ const FLAG = 'jest'
 
 const existsJestConfiguration = (toolbox: CycliToolbox): boolean =>
   Boolean(toolbox.projectConfig.packageJson().jest) ||
-  Boolean(toolbox.filesystem.list()?.some((f) => f.includes('jest.config.')))
+  Boolean(toolbox.filesystem.list()?.some((f) => f.startsWith('jest.config.')))
 
 const execute =
   () => async (toolbox: CycliToolbox, context: ProjectContext) => {
@@ -14,7 +14,7 @@ const execute =
 
     await toolbox.dependencies.addDev('jest', context)
 
-    await toolbox.scripts.add('test', 'jest')
+    await toolbox.scripts.add('test', 'jest --passWithNoTests')
 
     if (!existsJestConfiguration(toolbox)) {
       await toolbox.template.generate({

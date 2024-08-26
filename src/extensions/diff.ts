@@ -54,9 +54,11 @@ module.exports = (toolbox: CycliToolbox) => {
     let expandedPathsList: [Status, string][] = []
 
     for (const [status, path] of pathsList) {
-      const expandedPaths = await expandDirectory(
-        context.path.absFromRepoRoot(path)
-      )
+      const expandedPaths =
+        status === 'deleted'
+          ? [context.path.absFromRepoRoot(path)]
+          : await expandDirectory(context.path.absFromRepoRoot(path))
+
       expandedPathsList = expandedPathsList.concat(
         expandedPaths.map((expandedPath) => [status, expandedPath])
       )
@@ -65,7 +67,8 @@ module.exports = (toolbox: CycliToolbox) => {
     return await Promise.all(
       expandedPathsList.map(async ([status, path]: [Status, string]) => ({
         path,
-        checksum: await generateFileChecksum(path),
+        checksum:
+          status === 'deleted' ? undefined : await generateFileChecksum(path),
         status,
       }))
     ).then(
@@ -146,7 +149,7 @@ module.exports = (toolbox: CycliToolbox) => {
 
 type Status = 'added' | 'modified' | 'deleted'
 
-type Snapshot = Map<string, { checksum: string; status: Status }>
+type Snapshot = Map<string, { checksum?: string; status: Status }>
 
 type Diff = Map<
   string,
