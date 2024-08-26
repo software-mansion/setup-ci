@@ -1,6 +1,6 @@
 {
   "name": "react-native-ci-cli",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "React Native CI CLI is meant to simplify CI/CD setup in your React Native project.",
   "types": "build/types/types.d.ts",
   "bin": {
