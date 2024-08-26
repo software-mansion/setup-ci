@@ -8,7 +8,9 @@ React Native CI CLI is meant to simplify CI/CD setup in your React Native projec
 
 Simply go to your project root directory and run:
 
-```
+```bash
+npx setup-ci
+#or 
 npx react-native-ci-cli
 ```
 
@@ -22,7 +24,7 @@ Let's try to use `react-native-ci-cli` to do the heavy lifting and generate all 
 <p align="center">
   <img 
     style="width: 80%;"
-    src="https://s10.gifyu.com/images/S59js.gif"/>
+    src="https://s12.gifyu.com/images/SonNQ.gif"/>
 </p>
 
 Alternatively, we can go fully automatic by passing flags `--preset --lint --jest` to avoid all interaction with the script. You can check the section below for more information about available flags!
