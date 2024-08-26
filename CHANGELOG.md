@@ -1,3 +1,13 @@
+## [0.4.6](https://github.com/software-mansion-labs/react-native-ci-cli/compare/v0.4.5...v0.4.6) (2024-08-26)
+
+
+### Bug Fixes
+
+* add token back ([a789a31](https://github.com/software-mansion-labs/react-native-ci-cli/commit/a789a315f947191572b47be70531b7e17329f45e))
+* remove unused token ([ca2d93c](https://github.com/software-mansion-labs/react-native-ci-cli/commit/ca2d93c138714c3e8bba9009ded175b6af56de1d))
+
+
+
 ## [0.4.5](https://github.com/software-mansion-labs/react-native-ci-cli/compare/v0.4.4...v0.4.5) (2024-08-26)
 
 
@@ -34,15 +44,6 @@
 ### Bug Fixes
 
 * add header before starting each recipe ([#73](https://github.com/software-mansion-labs/react-native-ci-cli/issues/73)) ([3891802](https://github.com/software-mansion-labs/react-native-ci-cli/commit/389180265d8b4460c57a0bcc3c3b525802062a07))
-
-
-
-## [0.4.1](https://github.com/software-mansion-labs/react-native-ci-cli/compare/v0.4.0...v0.4.1) (2024-08-26)
-
-
-### Bug Fixes
-
-* make survey questions cleaner ([#74](https://github.com/software-mansion-labs/react-native-ci-cli/issues/74)) ([79e4c49](https://github.com/software-mansion-labs/react-native-ci-cli/commit/79e4c492f73f1122b1d9f0d35d246e7669c650ef))
 
 
 
