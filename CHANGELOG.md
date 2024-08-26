@@ -1,3 +1,12 @@
+# [0.4.0](https://github.com/software-mansion-labs/react-native-ci-cli/compare/v0.3.4...v0.4.0) (2024-08-26)
+
+
+### Features
+
+* support detox in bare react native projects ([#66](https://github.com/software-mansion-labs/react-native-ci-cli/issues/66)) ([a9319c3](https://github.com/software-mansion-labs/react-native-ci-cli/commit/a9319c36058c249d72db3da702162582f2511f48))
+
+
+
 ## [0.3.4](https://github.com/software-mansion-labs/react-native-ci-cli/compare/v0.3.1...v0.3.4) (2024-08-23)
 
 
@@ -31,15 +40,6 @@
 ### Bug Fixes
 
 * test CI ([dbe8299](https://github.com/software-mansion-labs/react-native-ci-cli/commit/dbe8299da8cb7bd1ad91bb63d005ace49b88ef83))
-
-
-
-# [0.2.0](https://github.com/software-mansion-labs/react-native-ci-cli/compare/v0.1.1...v0.2.0) (2024-08-20)
-
-
-### Features
-
-* print further actions at the end of script execution ([#58](https://github.com/software-mansion-labs/react-native-ci-cli/issues/58)) ([3e6393b](https://github.com/software-mansion-labs/react-native-ci-cli/commit/3e6393b98901345f76e4839e4b4df5f58016ab67))
 
 
 
