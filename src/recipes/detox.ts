@@ -44,7 +44,8 @@ const createDetoxWorkflows = async (
   context: ProjectContext,
   { expo }: { expo: boolean }
 ) => {
-  toolbox.interactive.info('⚙️ Setting up app release build for Detox.')
+  toolbox.interactive.vspace()
+  toolbox.interactive.sectionHeader('Genereating Detox workflow')
 
   await createReleaseBuildWorkflows(toolbox, context, {
     platforms: ['android', 'ios'],
@@ -116,7 +117,7 @@ const createDetoxWorkflows = async (
 
   await toolbox.workflows.generate(join('detox', 'test-detox-ios.ejf'), context)
 
-  toolbox.interactive.step('Created Detox workflow.')
+  toolbox.interactive.success('Created Detox workflow.')
 
   toolbox.interactive.warning(
     `Remember to create GH_TOKEN repository secret to make Detox workflow work.For more information check ${REPOSITORY_SECRETS_HELP_URL} `

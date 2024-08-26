@@ -17,6 +17,7 @@ export const COLORS = {
 export const S_STEP_WARNING = COLORS.yellow('▲')
 export const S_STEP_ERROR = COLORS.red('■')
 export const S_STEP_SUCCESS = COLORS.green('◇')
+export const S_SUCCESS = COLORS.green('◆')
 export const S_CONFIRM = COLORS.magenta('◆')
 export const S_ACTION = COLORS.cyan('▼')
 export const S_ACTION_BULLET = COLORS.cyan('►')

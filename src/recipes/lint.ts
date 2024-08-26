@@ -22,6 +22,9 @@ const existsEslintConfiguration = (toolbox: CycliToolbox): boolean =>
 
 const execute =
   () => async (toolbox: CycliToolbox, context: ProjectContext) => {
+    toolbox.interactive.vspace()
+    toolbox.interactive.sectionHeader('Genereating ESLint workflow')
+
     // eslint@9 introduces new configuration format that is not supported by widely used plugins yet,
     // so we stick to ^8 for now.
     await toolbox.dependencies.addDev('eslint', context, { version: '^8' })
@@ -55,7 +58,7 @@ const execute =
 
     await toolbox.workflows.generate(join('lint', 'lint.ejf'), context)
 
-    toolbox.interactive.step('Created ESLint workflow.')
+    toolbox.interactive.success('Created ESLint workflow.')
 
     return `--${FLAG}`
   }

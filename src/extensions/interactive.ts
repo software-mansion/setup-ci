@@ -21,6 +21,7 @@ import {
   S_STEP_ERROR,
   S_STEP_SUCCESS,
   S_STEP_WARNING,
+  S_SUCCESS,
   S_UL,
   S_UR,
   S_VBAR,
@@ -33,8 +34,17 @@ interface Spinner {
 const DEFAULT_HEADER_WIDTH = 80
 
 module.exports = (toolbox: CycliToolbox) => {
-  const { bold, cyan, magenta, yellow, gray, inverse, dim, strikethrough } =
-    COLORS
+  const {
+    bold,
+    cyan,
+    magenta,
+    yellow,
+    gray,
+    green,
+    inverse,
+    dim,
+    strikethrough,
+  } = COLORS
 
   const withNewlinePrefix = (message: string, prefix: string): string =>
     message.split('\n').join(`\n${prefix}  `)
@@ -222,7 +232,7 @@ module.exports = (toolbox: CycliToolbox) => {
   }
 
   const success = (message: string) => {
-    print.success(message)
+    print.info(`${S_SUCCESS} ${green(message)}`)
   }
 
   const warning = (message: string) => {
@@ -271,7 +281,7 @@ module.exports = (toolbox: CycliToolbox) => {
   ): Promise<void> => {
     return new Promise((resolve, reject) => {
       vspace()
-      sectionHeader(`Running ${processName}...`)
+      sectionHeader(`Running ${processName}...`, { color: 'dim' })
 
       const subprocess = spawn(command, {
         stdio: ['inherit', 'inherit', alwaysPrintStderr ? 'inherit' : 'pipe'],
@@ -299,7 +309,7 @@ module.exports = (toolbox: CycliToolbox) => {
           step(`Finished running ${processName}.`)
         }
 
-        sectionFooter()
+        sectionFooter({ color: 'dim' })
         vspace()
 
         if (code !== 0) {

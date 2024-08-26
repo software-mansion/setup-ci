@@ -6,6 +6,11 @@ const FLAG = 'eas-update'
 
 const execute =
   () => async (toolbox: CycliToolbox, context: ProjectContext) => {
+    toolbox.interactive.vspace()
+    toolbox.interactive.sectionHeader(
+      'Genereating EAS Update and Preview workflow'
+    )
+
     toolbox.dependencies.add('expo', context)
 
     if (toolbox.filesystem.exists('eas.json')) {
@@ -28,7 +33,7 @@ const execute =
 
     await toolbox.workflows.generate(join('eas', 'eas-update.ejf'), context)
 
-    toolbox.interactive.step('Created EAS Update workflow.')
+    toolbox.interactive.success('Created EAS Update and Preview workflow.')
 
     toolbox.interactive.warning(
       `Remember to create repository secret EXPO_TOKEN for EAS Update workflow to work properly. For more information check ${REPOSITORY_SECRETS_HELP_URL}`
