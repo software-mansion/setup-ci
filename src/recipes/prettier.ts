@@ -66,7 +66,7 @@ const run = async (
   }
 
   const proceed = await toolbox.interactive.confirm(
-    'Do you want to run Prettier check on your project on every PR?',
+    'Do you want to run Prettier check on every PR?',
     { type: 'normal' }
   )
 
