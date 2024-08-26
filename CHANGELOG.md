@@ -1,3 +1,13 @@
+## [0.4.4](https://github.com/software-mansion-labs/react-native-ci-cli/compare/v0.4.3...v0.4.4) (2024-08-26)
+
+
+### Bug Fixes
+
+* handle peer dependency conflicts ([#78](https://github.com/software-mansion-labs/react-native-ci-cli/issues/78)) ([2e5dae5](https://github.com/software-mansion-labs/react-native-ci-cli/commit/2e5dae554dd89fe0c84d8c6be760a666b8bdebd0))
+* handle removed files in git status ([#77](https://github.com/software-mansion-labs/react-native-ci-cli/issues/77)) ([d3a6367](https://github.com/software-mansion-labs/react-native-ci-cli/commit/d3a63673cb1794c29445c7e420d83b5437cca6d7))
+
+
+
 ## [0.4.3](https://github.com/software-mansion-labs/react-native-ci-cli/compare/v0.4.2...v0.4.3) (2024-08-26)
 
 
@@ -31,15 +41,6 @@
 ### Features
 
 * support detox in bare react native projects ([#66](https://github.com/software-mansion-labs/react-native-ci-cli/issues/66)) ([a9319c3](https://github.com/software-mansion-labs/react-native-ci-cli/commit/a9319c36058c249d72db3da702162582f2511f48))
-
-
-
-## [0.3.4](https://github.com/software-mansion-labs/react-native-ci-cli/compare/v0.3.1...v0.3.4) (2024-08-23)
-
-
-### Bug Fixes
-
-* remove unnecessary warning about existing script if it is the same ([#70](https://github.com/software-mansion-labs/react-native-ci-cli/issues/70)) ([4552010](https://github.com/software-mansion-labs/react-native-ci-cli/commit/455201006984c1a40b75ba8d8eeaba54f6230eb7))
 
 
 
