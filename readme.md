@@ -8,7 +8,7 @@ React Native CI CLI is meant to simplify CI/CD setup in your React Native projec
 
 Simply go to your project root directory and run:
 
-```bash
+```
 npx setup-ci
 ```
 
