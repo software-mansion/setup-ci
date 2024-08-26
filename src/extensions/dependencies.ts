@@ -1,4 +1,7 @@
+import { COLORS, CYCLI_COMMAND, REPOSITORY_ISSUES_URL } from '../constants'
 import { CycliToolbox, ProjectContext } from '../types'
+import messageFromError from '../utils/messageFromError'
+import { join, sep } from 'path'
 
 module.exports = (toolbox: CycliToolbox) => {
   const { packageManager } = toolbox
@@ -8,6 +11,55 @@ module.exports = (toolbox: CycliToolbox) => {
 
   const existsDev = (name: string): boolean =>
     Boolean(toolbox.projectConfig.packageJson().devDependencies?.[name])
+
+  const install = async (
+    fullName: string,
+    context: ProjectContext,
+    { dev }: { dev: boolean }
+  ) => {
+    const type = dev ? 'devDependency' : 'dependency'
+
+    const spinner = toolbox.interactive.spin(
+      `📦 Installing ${fullName} as ${type}...`
+    )
+
+    try {
+      await packageManager.add(fullName, {
+        dev: true,
+        force: context.packageManager,
+      })
+    } catch (error: unknown) {
+      spinner.stop()
+
+      const errorMessage = messageFromError(error)
+      const logFilePath = `${sep}${join(
+        'tmp',
+        `setup-ci-error.${Date.now()}.log`
+      )}`
+      toolbox.filesystem.write(logFilePath, errorMessage)
+
+      toolbox.interactive.vspace()
+      await toolbox.interactive.actionPrompt(
+        [
+          `${CYCLI_COMMAND} was unable to add ${fullName} as ${type}.`,
+          'This is most likely caused by conflicts with packages already installed in your project.',
+          `${COLORS.underline(
+            'Please add it manually'
+          )}. You can do it now or after the script finishes.`,
+          `You can find detailed logs in ${COLORS.underline(logFilePath)}.`,
+          'If the error looks like a bug with the script itself, please file a report at',
+          `${REPOSITORY_ISSUES_URL}.\n`,
+        ].join('\n')
+      )
+      toolbox.interactive.vspace()
+
+      toolbox.furtherActions.push(`Add ${fullName} as ${type} manually.`)
+    }
+
+    spinner.stop()
+
+    toolbox.interactive.step(`Installed ${fullName} as ${type}.`)
+  }
 
   const add = async (
     name: string,
@@ -20,8 +72,6 @@ module.exports = (toolbox: CycliToolbox) => {
       skipInstalledCheck: false,
     }
   ) => {
-    const fullName = version ? [name, version].join('@') : name
-
     if (!skipInstalledCheck && exists(name)) {
       toolbox.interactive.step(
         `Dependency ${name} is already installed, skipping adding dependency.`
@@ -29,16 +79,9 @@ module.exports = (toolbox: CycliToolbox) => {
       return
     }
 
-    const spinner = toolbox.interactive.spin(
-      `📦 Installing ${fullName} as dependency...`
-    )
-    await packageManager.add(fullName, {
-      dev: false,
-      force: context.packageManager,
-    })
-    spinner.stop()
+    const fullName = version ? [name, version].join('@') : name
 
-    toolbox.interactive.step(`Installed ${fullName} as dependency.`)
+    await install(fullName, context, { dev: false })
   }
 
   const addDev = async (
@@ -60,8 +103,6 @@ module.exports = (toolbox: CycliToolbox) => {
       return
     }
 
-    const fullName = version ? [name, version].join('@') : name
-
     if (!skipInstalledCheck && existsDev(name)) {
       toolbox.interactive.step(
         `Dev dependency ${name} is already installed, skipping adding dependency.`
@@ -69,16 +110,9 @@ module.exports = (toolbox: CycliToolbox) => {
       return
     }
 
-    const spinner = toolbox.interactive.spin(
-      `📦 Installing ${fullName} as devDependency...`
-    )
-    await packageManager.add(fullName, {
-      dev: true,
-      force: context.packageManager,
-    })
-    spinner.stop()
+    const fullName = version ? [name, version].join('@') : name
 
-    toolbox.interactive.step(`Installed ${fullName} as devDependency.`)
+    await install(fullName, context, { dev: true })
   }
 
   toolbox.dependencies = {
