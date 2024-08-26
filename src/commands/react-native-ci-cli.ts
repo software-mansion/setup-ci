@@ -110,6 +110,7 @@ const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
 
   const usedFlags = executorResults.join(' ')
 
+  toolbox.interactive.vspace()
   toolbox.interactive.success(`We're all set 🎉`)
 
   if (!toolbox.options.isPreset()) {

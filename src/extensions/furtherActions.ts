@@ -19,7 +19,6 @@ module.exports = (toolbox: CycliToolbox) => {
         toolbox.interactive.info(`${S_ACTION_BULLET} ${action}`, 'cyan')
       })
       toolbox.interactive.sectionFooter({ color: 'cyan' })
-      toolbox.interactive.vspace()
     }
   }
 

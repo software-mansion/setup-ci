@@ -3,7 +3,11 @@ import { join } from 'path'
 
 export const FLAG = 'prettier'
 
-const PRETTIER_CONFIGURATION_FILES = ['.prettierrc', 'prettier.config.js']
+const PRETTIER_CONFIGURATION_FILES = [
+  '.prettierrc',
+  'prettierrc.json',
+  'prettier.config.js',
+]
 
 const existsPrettierConfiguration = (toolbox: CycliToolbox): boolean =>
   Boolean(toolbox.projectConfig.packageJson().prettier) ||

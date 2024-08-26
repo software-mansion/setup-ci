@@ -14,7 +14,7 @@ const execute =
 
     await toolbox.dependencies.addDev('jest', context)
 
-    await toolbox.scripts.add('test', 'jest')
+    await toolbox.scripts.add('test', 'jest --passWithNoTests')
 
     if (!existsJestConfiguration(toolbox)) {
       await toolbox.template.generate({

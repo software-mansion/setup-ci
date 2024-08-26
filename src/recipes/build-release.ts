@@ -6,8 +6,12 @@ const createReleaseBuildWorkflowAndroid = async (
   context: ProjectContext,
   { expo }: { expo: boolean }
 ) => {
-  let script =
-    'cd android && ./gradlew assembleRelease assembleAndroidTest -DtestBuildType=release'
+  let script = [
+    'cd android &&',
+    './gradlew assembleRelease assembleAndroidTest',
+    '-DtestBuildType=release',
+    '-Dorg.gradle.jvmargs=-Xmx4g',
+  ].join(' ')
 
   if (expo) {
     script = `npx expo prebuild --${context.packageManager} && ${script}`
