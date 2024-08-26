@@ -90,9 +90,7 @@ const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
     return
   }
 
-  toolbox.interactive.outro("Let's roll")
-
-  toolbox.interactive.step(
+  toolbox.interactive.surveyStep(
     `Detected ${context.packageManager} as your package manager.`
   )
 
@@ -112,7 +110,6 @@ const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
 
   const usedFlags = executorResults.join(' ')
 
-  toolbox.interactive.vspace()
   toolbox.interactive.success(`We're all set 🎉`)
 
   if (!toolbox.options.isPreset()) {

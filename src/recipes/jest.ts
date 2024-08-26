@@ -9,6 +9,9 @@ const existsJestConfiguration = (toolbox: CycliToolbox): boolean =>
 
 const execute =
   () => async (toolbox: CycliToolbox, context: ProjectContext) => {
+    toolbox.interactive.vspace()
+    toolbox.interactive.sectionHeader('Genereating Jest workflow')
+
     await toolbox.dependencies.addDev('jest', context)
 
     await toolbox.scripts.add('test', 'jest')
@@ -26,7 +29,7 @@ const execute =
 
     await toolbox.workflows.generate(join('jest', 'jest.ejf'), context)
 
-    toolbox.interactive.step('Created Jest workflow.')
+    toolbox.interactive.success('Created Jest workflow.')
 
     return `--${FLAG}`
   }

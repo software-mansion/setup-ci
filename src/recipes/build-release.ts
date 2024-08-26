@@ -20,7 +20,7 @@ const createReleaseBuildWorkflowAndroid = async (
     context
   )
 
-  toolbox.interactive.step('Created Android release build workflow.')
+  toolbox.interactive.success('Created Android release build workflow.')
 }
 
 const createReleaseBuildWorkflowIOs = async (
@@ -55,7 +55,7 @@ const createReleaseBuildWorkflowIOs = async (
     }
   )
 
-  toolbox.interactive.step('Created iOS release build workflow.')
+  toolbox.interactive.success('Created iOS release build workflow.')
 }
 
 export const createReleaseBuildWorkflows = async (
@@ -68,11 +68,10 @@ export const createReleaseBuildWorkflows = async (
 
   if (expo) {
     toolbox.print.info('⚙️ Running expo prebuild to setup app.json properly.')
-    await toolbox.system.spawn(
+    await toolbox.interactive.spawnSubprocess(
+      'Expo prebuild',
       `npx expo prebuild --${context.packageManager}`,
-      {
-        stdio: 'inherit',
-      }
+      { alwaysPrintStderr: true }
     )
   }
 
@@ -86,12 +85,6 @@ export const createReleaseBuildWorkflows = async (
       'Failed to obtain iOS app name. Perhaps your ios/ directory is missing .xcworkspace file.'
     )
   }
-  toolbox.print.info('⚙️ Running expo prebuild to setup app.json properly.')
-  await toolbox.interactive.spawnSubprocess(
-    'Expo prebuild',
-    `npx expo prebuild --${context.packageManager}`,
-    { alwaysPrintStderr: true }
-  )
 
   if (platforms.includes('android')) {
     await createReleaseBuildWorkflowAndroid(toolbox, context, { expo })

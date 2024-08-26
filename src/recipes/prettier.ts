@@ -15,6 +15,9 @@ const existsPrettierConfiguration = (toolbox: CycliToolbox): boolean =>
 
 const execute =
   () => async (toolbox: CycliToolbox, context: ProjectContext) => {
+    toolbox.interactive.vspace()
+    toolbox.interactive.sectionHeader('Genereating Prettier check workflow')
+
     await toolbox.dependencies.addDev('prettier', context)
 
     await toolbox.scripts.add(
@@ -47,7 +50,7 @@ const execute =
       toolbox.interactive.step('Created default .prettierignore file.')
     }
 
-    toolbox.interactive.step('Created Prettier check workflow.')
+    toolbox.interactive.success('Created Prettier check workflow.')
 
     return `--${FLAG}`
   }
