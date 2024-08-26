@@ -1,3 +1,12 @@
+## [0.4.1](https://github.com/software-mansion-labs/react-native-ci-cli/compare/v0.4.0...v0.4.1) (2024-08-26)
+
+
+### Bug Fixes
+
+* make survey questions cleaner ([#74](https://github.com/software-mansion-labs/react-native-ci-cli/issues/74)) ([79e4c49](https://github.com/software-mansion-labs/react-native-ci-cli/commit/79e4c492f73f1122b1d9f0d35d246e7669c650ef))
+
+
+
 # [0.4.0](https://github.com/software-mansion-labs/react-native-ci-cli/compare/v0.3.4...v0.4.0) (2024-08-26)
 
 
@@ -31,15 +40,6 @@
 ### Features
 
 * handle app.config.js ([#59](https://github.com/software-mansion-labs/react-native-ci-cli/issues/59)) ([f2fa46f](https://github.com/software-mansion-labs/react-native-ci-cli/commit/f2fa46ff6f63f8f5a225284abb9c99593c9f625a))
-
-
-
-## [0.2.1](https://github.com/software-mansion-labs/react-native-ci-cli/compare/v0.2.0...v0.2.1) (2024-08-20)
-
-
-### Bug Fixes
-
-* test CI ([dbe8299](https://github.com/software-mansion-labs/react-native-ci-cli/commit/dbe8299da8cb7bd1ad91bb63d005ace49b88ef83))
 
 
 
