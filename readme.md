@@ -19,6 +19,8 @@ If your project has monorepo structure, run the script from the root directory o
 Say we want to setup GitHub actions that run ESLint check and Jest tests on our project every time we create or push to an existing Pull Request.
 Let's try to use `react-native-ci-cli` to do the heavy lifting and generate all the necessary configuration.
 
+TEST 
+
 <p align="center">
   <img 
     style="width: 80%;"
