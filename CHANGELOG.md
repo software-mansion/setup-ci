@@ -1,3 +1,14 @@
+## [0.4.5](https://github.com/software-mansion-labs/react-native-ci-cli/compare/v0.4.4...v0.4.5) (2024-08-26)
+
+
+### Bug Fixes
+
+* add token to checkout action ([acedcaa](https://github.com/software-mansion-labs/react-native-ci-cli/commit/acedcaacb74db392b99757354a815c7eb4fca3e5))
+* fix token ([3d720dc](https://github.com/software-mansion-labs/react-native-ci-cli/commit/3d720dc90a9229e2c4acf6c0ef721a2920c1bf20))
+* remove code owners ([d22623f](https://github.com/software-mansion-labs/react-native-ci-cli/commit/d22623f6179a1fc6b66af892c4e50d4547133f12))
+
+
+
 ## [0.4.4](https://github.com/software-mansion-labs/react-native-ci-cli/compare/v0.4.3...v0.4.4) (2024-08-26)
 
 
@@ -32,15 +43,6 @@
 ### Bug Fixes
 
 * make survey questions cleaner ([#74](https://github.com/software-mansion-labs/react-native-ci-cli/issues/74)) ([79e4c49](https://github.com/software-mansion-labs/react-native-ci-cli/commit/79e4c492f73f1122b1d9f0d35d246e7669c650ef))
-
-
-
-# [0.4.0](https://github.com/software-mansion-labs/react-native-ci-cli/compare/v0.3.4...v0.4.0) (2024-08-26)
-
-
-### Features
-
-* support detox in bare react native projects ([#66](https://github.com/software-mansion-labs/react-native-ci-cli/issues/66)) ([a9319c3](https://github.com/software-mansion-labs/react-native-ci-cli/commit/a9319c36058c249d72db3da702162582f2511f48))
 
 
 
