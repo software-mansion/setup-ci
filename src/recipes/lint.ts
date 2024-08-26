@@ -74,7 +74,7 @@ const run = async (
   }
 
   const proceed = await toolbox.interactive.confirm(
-    'Do you want to run ESLint on your project on every PR?',
+    'Do you want to run ESLint check on every PR?',
     { type: 'normal' }
   )
 

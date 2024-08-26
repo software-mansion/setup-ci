@@ -50,7 +50,7 @@ const run = async (
     runRecipe = true
   } else if (!toolbox.options.isPreset()) {
     runRecipe = await toolbox.interactive.confirm(
-      'Do you want to run EAS Update on your project on every PR? (Expo projects only)',
+      'Do you want to generate preview with EAS Update on every PR? (Expo projects only)',
       { type: 'normal' }
     )
   }

@@ -145,7 +145,7 @@ const run = async (
     runRecipe = true
   } else if (!toolbox.options.isPreset()) {
     runRecipe = await toolbox.interactive.confirm(
-      'Do you want to run Detox e2e tests on every PR?',
+      'Do you want to run e2e tests with Detox on every PR?',
       { type: 'normal' }
     )
   }
