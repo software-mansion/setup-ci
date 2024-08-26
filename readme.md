@@ -80,7 +80,7 @@ The following are **feature flags** that can be used with `--preset` flag (they 
   </tr>
   <tr>
     <td style="vertical-align: middle;">--detox</td>
-    <td style="vertical-align: middle;">Generate workflow to run Detox e2e tests on every PR (Expo projects only)</td>
+    <td style="vertical-align: middle;">Generate workflow to run Detox e2e tests on every PR</td>
   </tr>
 </table>
 

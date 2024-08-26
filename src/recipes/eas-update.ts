@@ -44,25 +44,29 @@ const run = async (
   toolbox: CycliToolbox,
   context: ProjectContext
 ): Promise<RunResult> => {
+  let runRecipe = false
+
   if (toolbox.options.isRecipeSelected(FLAG)) {
+    runRecipe = true
+  } else if (!toolbox.options.isPreset()) {
+    runRecipe = await toolbox.interactive.confirm(
+      'Do you want to run EAS Update on your project on every PR? (Expo projects only)',
+      { type: 'normal' }
+    )
+  }
+
+  if (runRecipe) {
+    // EAS Update recipes is currently supported only for Expo projects
+    if (!toolbox.projectConfig.isExpo()) {
+      throw Error('EAS Update workflow is supported only for Expo projects.')
+    }
+
     context.selectedOptions.push(FLAG)
+
     return execute()
   }
 
-  if (toolbox.options.isPreset()) {
-    return null
-  }
-
-  const proceed = await toolbox.interactive.confirm(
-    'Do you want to run EAS Update on your project on every PR? (Expo projects only)'
-  )
-
-  if (!proceed) {
-    return null
-  }
-
-  context.selectedOptions.push(FLAG)
-  return execute()
+  return null
 }
 
 export const recipe: CycliRecipe = {

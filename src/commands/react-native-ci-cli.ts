@@ -47,9 +47,9 @@ const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
         [
           `It is advised to commit all your changes before running ${COMMAND}.`,
           'Running the script with uncommitted changes may have destructive consequences.',
-          'Do you want to proceed anyway?',
+          'Do you want to proceed anyway?\n',
         ].join('\n'),
-        'warning'
+        { type: 'warning' }
       )
 
       if (!proceed) {
@@ -75,17 +75,6 @@ const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
   const prettierExecutor = await prettierCheck.run(toolbox, context)
   const easUpdateExecutor = await easUpdate.run(toolbox, context)
   const detoxExecutor = await detox.run(toolbox, context)
-
-  // Detox and EAS Update recipes are currently supported only for Expo projects
-  if (
-    !toolbox.projectConfig.isExpo() &&
-    (context.selectedOptions.includes(detox.meta.flag) ||
-      context.selectedOptions.includes(easUpdate.meta.flag))
-  ) {
-    throw Error(
-      'Detox and EAS Update workflows are supported only for Expo projects.'
-    )
-  }
 
   const executors = [
     lintExecutor,

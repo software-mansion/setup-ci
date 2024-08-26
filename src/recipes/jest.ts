@@ -45,7 +45,8 @@ const run = async (
   }
 
   const proceed = await toolbox.interactive.confirm(
-    'Do you want to run Jest on your project on every PR?'
+    'Do you want to run Jest on your project on every PR?',
+    { type: 'normal' }
   )
 
   if (!proceed) {

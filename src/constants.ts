@@ -3,6 +3,7 @@ import { print } from 'gluegun'
 export const COLORS = {
   bold: print.colors.bold,
   cyan: print.colors.cyan,
+  magenta: print.colors.magenta,
   green: print.colors.green,
   yellow: print.colors.yellow,
   gray: print.colors.gray,
@@ -16,7 +17,7 @@ export const COLORS = {
 export const S_STEP_WARNING = COLORS.yellow('▲')
 export const S_STEP_ERROR = COLORS.red('■')
 export const S_STEP_SUCCESS = COLORS.green('◇')
-export const S_SELECT = COLORS.cyan('◆')
+export const S_CONFIRM = COLORS.magenta('◆')
 export const S_ACTION = COLORS.cyan('▼')
 export const S_ACTION_BULLET = COLORS.cyan('►')
 export const S_BAR = '│'
