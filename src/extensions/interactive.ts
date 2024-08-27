@@ -321,7 +321,7 @@ module.exports = (toolbox: CycliToolbox) => {
             const footer = this.error
               .split('\n')
               .map((ln, i) =>
-                i === 0 ? `${S_STEP_CANCEL} ${yellow(ln)} ` : `   ${ln} `
+                i === 0 ? `${S_STEP_WARNING} ${yellow(ln)} ` : `   ${ln} `
               )
               .join('\n')
 
