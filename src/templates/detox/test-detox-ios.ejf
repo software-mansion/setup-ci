@@ -23,6 +23,8 @@ jobs:
   test-detox-ios:
     runs-on: macos-latest
     timeout-minutes: 60
+    permissions:
+      checks: read
     steps:
       - name: ⌛ Wait for build to finish
         uses: poseidon/wait-for-status-checks@v0.5.0
