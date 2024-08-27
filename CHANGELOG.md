@@ -1,3 +1,12 @@
+## [0.4.8](https://github.com/software-mansion-labs/react-native-ci-cli/compare/v0.4.7...v0.4.8) (2024-08-27)
+
+
+### Bug Fixes
+
+* add check read permissions to detox workflows ([#82](https://github.com/software-mansion-labs/react-native-ci-cli/issues/82)) ([6aa5079](https://github.com/software-mansion-labs/react-native-ci-cli/commit/6aa5079824fd0b5612b59150346ac0c6f564d564))
+
+
+
 ## [0.4.7](https://github.com/software-mansion-labs/react-native-ci-cli/compare/v0.4.6...v0.4.7) (2024-08-26)
 
 
@@ -35,15 +44,6 @@
 
 * handle peer dependency conflicts ([#78](https://github.com/software-mansion-labs/react-native-ci-cli/issues/78)) ([2e5dae5](https://github.com/software-mansion-labs/react-native-ci-cli/commit/2e5dae554dd89fe0c84d8c6be760a666b8bdebd0))
 * handle removed files in git status ([#77](https://github.com/software-mansion-labs/react-native-ci-cli/issues/77)) ([d3a6367](https://github.com/software-mansion-labs/react-native-ci-cli/commit/d3a63673cb1794c29445c7e420d83b5437cca6d7))
-
-
-
-## [0.4.3](https://github.com/software-mansion-labs/react-native-ci-cli/compare/v0.4.2...v0.4.3) (2024-08-26)
-
-
-### Bug Fixes
-
-* update command in readme and demo gif ([#75](https://github.com/software-mansion-labs/react-native-ci-cli/issues/75)) ([91ad4b1](https://github.com/software-mansion-labs/react-native-ci-cli/commit/91ad4b1a650c156e31ea0bf383a68ca5bc0e503b))
 
 
 
