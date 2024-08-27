@@ -12,12 +12,12 @@ Simply go to your project root directory and run:
 npx setup-ci
 ```
 
-If your project has monorepo structure, run the script from the root directory of the app for which you want to setup workflows.
+If your project has a monorepo structure, run the script from the root directory of the app for which you want to set up workflows.
 
 ## 💡 Demo
 
-Say we want to setup GitHub actions that run ESLint check and Jest tests on our project every time we create or push to an existing Pull Request.
-Let's try to use `react-native-ci-cli` to do the heavy lifting and generate all the necessary configuration.
+Say we want to set up GitHub actions that run ESLint check and Jest tests on our project every time we create or push to an existing Pull Request.
+Let's try to use `react-native-ci-cli` to do the heavy lifting and generate all the necessary configurations.
 
 <p align="center">
   <img 
@@ -29,9 +29,9 @@ Alternatively, we can go fully automatic by passing flags `--preset --lint --jes
 
 ## ⚙️ Features
 
-- **Currently only GitHub actions are supported as your CI.**
-- **npm** and **yarn** are supported as package managers and they will be detected automatically.
-- Monorepo structure is supported, but make sure you run the script from app directory,
+- **Currently, only GitHub actions are supported as your CI.**
+- **npm** and **yarn** are supported as package managers, and they will be detected automatically.
+- Monorepo structure is supported, but make sure you run the script from the app directory,
   not the monorepo root.
 
 When using `react-native-ci-cli`, you can provide additional flags to modify its default behavior.
@@ -47,7 +47,7 @@ When using `react-native-ci-cli`, you can provide additional flags to modify its
   </tr>
   <tr>
     <td style="vertical-align: middle;">--skip-git-check</td>
-    <td style="vertical-align: middle;">By default, the script will prompt the user if there are uncommitted changes in working repository. Use this flag to proceed without asking.</td>
+    <td style="vertical-align: middle;">By default, the script will prompt the user if there are uncommitted changes in the working repository. Use this flag to proceed without asking.</td>
   </tr>
 </table>
 
@@ -102,7 +102,7 @@ as you will always be prompted to create secrets if necessary. The following tab
 
 ## 💬 Your feedback
 
-This tool is supposed to be helpful to as many developers as possible - and therefore we are open for your ideas and general feedback! If you want to share your opinion about `react-native-ci-cli` or
+This tool is supposed to be helpful to as many developers as possible - and therefore we are open to your ideas and general feedback! If you want to share your opinion about `react-native-ci-cli` or
 have some thoughts about how it could be further developed, don't hesitate to create an issue or contact
 the maintainers directly.
 
@@ -116,4 +116,15 @@ the maintainers directly.
 
 ## 📋 License
 
-MIT - see LICENSE
+React Native CI CLI is licensed under [The MIT License](LICENSE).
+
+## 💸 Credits
+
+This project has been built and is maintained thanks to the support from [Software Mansion](https://swmansion.com)
+
+[![swm](https://logo.swmansion.com/logo?color=white&variant=desktop&width=150&tag=react-native-reanimated-github 'Software Mansion')](https://swmansion.com)
+
+
+## React Native CI CLI is created by Software Mansion
+
+Since 2012 [Software Mansion](https://swmansion.com) is a software agency with experience in building web and mobile apps. We are Core React Native Contributors and experts in dealing with all kinds of React Native issues. We can help you build your next dream product – [Hire us](https://swmansion.com/contact/projects?utm_source=reanimated&utm_medium=readme).
