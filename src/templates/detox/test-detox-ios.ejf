@@ -25,6 +25,7 @@ jobs:
     timeout-minutes: 60
     permissions:
       checks: read
+      contents: read
     steps:
       - name: ⌛ Wait for build to finish
         uses: poseidon/wait-for-status-checks@v0.5.0

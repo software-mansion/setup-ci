@@ -25,6 +25,7 @@ jobs:
     timeout-minutes: 60
     permissions:
       checks: read
+      contents: read
     env:
       API_LEVEL: 34
     steps:
