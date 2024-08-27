@@ -90,6 +90,14 @@ const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
         }))
       )
 
+  // EAS Update recipe is currently supported only for Expo projects
+  if (
+    !toolbox.projectConfig.isExpo() &&
+    selectedFeatureFlags.includes(easUpdate.meta.flag)
+  ) {
+    throw Error('EAS Update workflow is supported only for Expo projects.')
+  }
+
   context.selectedOptions = selectedFeatureFlags
 
   const executors = RECIPES.filter((recipe: CycliRecipe) =>

@@ -13,11 +13,6 @@ const execute = async (
     'Genereating EAS Update and Preview workflow'
   )
 
-  // EAS Update recipes is currently supported only for Expo projects
-  if (!toolbox.projectConfig.isExpo()) {
-    throw Error('EAS Update workflow is supported only for Expo projects.')
-  }
-
   toolbox.dependencies.add('expo', context)
 
   if (toolbox.filesystem.exists('eas.json')) {

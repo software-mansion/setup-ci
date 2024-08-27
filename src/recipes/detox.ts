@@ -47,7 +47,7 @@ const execute = async (toolbox: CycliToolbox, context: ProjectContext) => {
 
   const expo = toolbox.projectConfig.isExpo()
 
-  if (expo) {
+  if (!expo) {
     await toolbox.interactive.actionPrompt(
       [
         'You have chosen to setup Detox for a non-expo project.',
