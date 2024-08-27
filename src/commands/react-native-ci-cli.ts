@@ -90,17 +90,6 @@ const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
         }))
       )
 
-  // Detox and EAS Update recipes are currently supported only for Expo projects
-  if (
-    !toolbox.projectConfig.isExpo() &&
-    (selectedFeatureFlags.includes(detox.meta.flag) ||
-      selectedFeatureFlags.includes(easUpdate.meta.flag))
-  ) {
-    throw Error(
-      'Detox and EAS Update workflows are supported only for Expo projects.'
-    )
-  }
-
   context.selectedOptions = selectedFeatureFlags
 
   const executors = RECIPES.filter((recipe: CycliRecipe) =>
