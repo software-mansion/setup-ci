@@ -18,9 +18,13 @@ const execute = async (
   toolbox: CycliToolbox,
   context: ProjectContext
 ): Promise<void> => {
+  toolbox.interactive.vspace()
+  toolbox.interactive.sectionHeader('Genereating ESLint workflow')
+
   // eslint@9 introduces new configuration format that is not supported by widely used plugins yet,
   // so we stick to ^8 for now.
   await toolbox.dependencies.addDev('eslint', context, { version: '^8' })
+  await toolbox.dependencies.addDev('@react-native/eslint-config', context)
 
   const withPrettier =
     context.selectedOptions.includes(PRETTIER_FLAG) ||
@@ -50,7 +54,7 @@ const execute = async (
 
   await toolbox.workflows.generate(join('lint', 'lint.ejf'), context)
 
-  toolbox.interactive.step('Created ESLint workflow.')
+  toolbox.interactive.success('Created ESLint workflow.')
 }
 
 export const recipe: CycliRecipe = {
@@ -58,7 +62,7 @@ export const recipe: CycliRecipe = {
     name: 'ESLint',
     flag: FLAG,
     description: 'Generate ESLint workflow to run on every PR',
-    selectHint: 'check your code style with linter',
+    selectHint: 'check code style with linter',
   },
   execute,
 }

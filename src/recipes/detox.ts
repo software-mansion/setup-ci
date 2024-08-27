@@ -1,6 +1,6 @@
-import { REPOSITORY_SECRETS_HELP_URL } from '../constants'
 import { CycliRecipe, CycliToolbox, ProjectContext } from '../types'
-import { createReleaseBuildWorkflowsForExpo } from './build-release'
+import { addTerminatingNewline } from '../utils/addTerminatingNewline'
+import { createReleaseBuildWorkflows } from './build-release'
 import { join } from 'path'
 
 const DETOX_BARE_PROJECT_CONFIG_URL = `https://wix.github.io/Detox/docs/next/introduction/project-setup/#step-4-additional-android-configuration`
@@ -42,7 +42,25 @@ const addDetoxExpoPlugin = async (toolbox: CycliToolbox) => {
 }
 
 const execute = async (toolbox: CycliToolbox, context: ProjectContext) => {
-  toolbox.interactive.info('⚙️ Setting up app release build for Detox.')
+  toolbox.interactive.vspace()
+  toolbox.interactive.sectionHeader('Genereating Detox workflow')
+
+  const expo = toolbox.projectConfig.isExpo()
+
+  if (expo) {
+    await toolbox.interactive.actionPrompt(
+      [
+        'You have chosen to setup Detox for a non-expo project.',
+        'To make the setup work properly, you need to manually patch native code for Detox.',
+        'Please follow the instructions in Step 4 of',
+        `${DETOX_BARE_PROJECT_CONFIG_URL}.`,
+        'You can do it now or after the script finishes.\n',
+      ].join('\n')
+    )
+    toolbox.furtherActions.push(
+      `Follow Step 4 of ${DETOX_BARE_PROJECT_CONFIG_URL} to patch native code for Detox.`
+    )
+  }
 
   await createReleaseBuildWorkflows(toolbox, context, {
     platforms: ['android', 'ios'],

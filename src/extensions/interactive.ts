@@ -5,8 +5,7 @@ import {
   isCancel,
   log as clackLog,
 } from '@clack/prompts'
-import { CycliToolbox, MessageColor } from '../types'
-import { ConfirmPrompt, SelectPrompt, MultiSelectPrompt } from '@clack/core'
+import { ConfirmPrompt, MultiSelectPrompt, SelectPrompt } from '@clack/core'
 import { spawn } from 'child_process'
 import {
   COLORS,
@@ -16,9 +15,11 @@ import {
   S_CONFIRM,
   S_DL,
   S_DR,
+  S_MULTISELECT_MESSAGE,
+  S_R_ARROW,
   S_RADIO_ACTIVE,
   S_RADIO_INACTIVE,
-  S_STEP_ERROR,
+  S_STEP_CANCEL,
   S_STEP_SUCCESS,
   S_STEP_WARNING,
   S_SUCCESS,
@@ -26,27 +27,13 @@ import {
   S_UR,
   S_VBAR,
 } from '../constants'
+import { CycliToolbox, MessageColor } from '../types'
+
+const DEFAULT_HEADER_WIDTH = 80
 
 interface Spinner {
   stop: () => void
 }
-
-const COLORS = {
-  blue: print.colors.blue,
-  bgWhite: print.colors.bgWhite,
-  bold: print.colors.bold,
-  cyan: print.colors.cyan,
-  dim: print.colors.dim,
-  gray: print.colors.gray,
-  green: print.colors.green,
-  inverse: print.colors.inverse,
-  red: print.colors.red,
-  reset: print.colors.reset,
-  strikethrough: print.colors.strikethrough,
-  yellow: print.colors.yellow,
-}
-
-type MessageColor = keyof typeof COLORS
 
 module.exports = (toolbox: CycliToolbox) => {
   const {
@@ -57,21 +44,82 @@ module.exports = (toolbox: CycliToolbox) => {
     dim,
     gray,
     inverse,
-    red,
     reset,
     strikethrough,
     yellow,
+    magenta,
+    green,
   } = COLORS
 
-  const S_STEP_ERROR = yellow('▲')
-  const S_SUCCESS = cyan('◆')
-  const S_STEP_CANCEL = red('■')
-  const S_MULTISELECT_MESSAGE = blue('◆')
-  const S_R_ARROW = '►'
-  const S_BAR = '│'
-  const S_BAR_END = '└'
-  const S_RADIO_ACTIVE = '●'
-  const S_RADIO_INACTIVE = '○'
+  const withNewlinePrefix = (message: string, prefix: string): string =>
+    message.split('\n').join(`\n${prefix}  `)
+
+  const actionPrompt = async (message: string): Promise<void> => {
+    const opt = (
+      option: { value: string; label?: string; hint?: string },
+      state: 'inactive' | 'active' | 'selected' | 'cancelled'
+    ) => {
+      const label = option.label ?? String(option.value)
+      switch (state) {
+        case 'selected':
+          return `${dim(label)}`
+        case 'active':
+          return `${cyan(S_RADIO_ACTIVE)} ${label} ${
+            option.hint ? dim(`(${option.hint})`) : ''
+          }`
+        case 'cancelled':
+          return `${strikethrough(dim(label))}`
+        default:
+          return `${dim(S_RADIO_INACTIVE)} ${dim(label)}`
+      }
+    }
+
+    const title = `${gray(S_BAR)}\n${S_ACTION}  ${cyan(
+      withNewlinePrefix(message, S_BAR)
+    )}\n`
+
+    const titleSubmitted = `${gray(S_BAR)}\n${S_ACTION}  ${withNewlinePrefix(
+      message
+        .split('\n')
+        .map((line) => cyan(line))
+        .join('\n'),
+      dim(S_BAR)
+    )}\n`
+
+    const confirmed = await new SelectPrompt({
+      options: [
+        {
+          value: 'continue',
+          label: 'Press enter to continue...',
+        },
+      ],
+      initialValue: 'continue',
+      render() {
+        switch (this.state) {
+          case 'submit':
+            return `${titleSubmitted}${gray(S_BAR)}  ${opt(
+              this.options[0],
+              'selected'
+            )}`
+          case 'cancel':
+            return `${titleSubmitted}${gray(S_BAR)}  ${opt(
+              this.options[0],
+              'cancelled'
+            )}\n${gray(S_BAR)}`
+          default: {
+            return `${title}${cyan(S_BAR)}  ${opt(
+              this.options[0],
+              'active'
+            )}\n${cyan(S_BAR_END)}`
+          }
+        }
+      },
+    }).prompt()
+
+    if (isCancel(confirmed)) {
+      throw Error('The script execution has been canceled by the user.')
+    }
+  }
 
   const confirm = async (
     message: string,
@@ -112,7 +160,7 @@ module.exports = (toolbox: CycliToolbox) => {
     const titleCancelled = () => {
       switch (type) {
         case 'normal':
-          return `${gray(S_BAR)} \n${S_STEP_ERROR}  ${message
+          return `${gray(S_BAR)} \n${S_STEP_CANCEL}  ${message
             .split('\n')
             .join(`\n${gray(S_BAR)}  `)}\n`
         case 'warning':
@@ -273,7 +321,7 @@ module.exports = (toolbox: CycliToolbox) => {
             const footer = this.error
               .split('\n')
               .map((ln, i) =>
-                i === 0 ? `${S_STEP_ERROR} ${yellow(ln)} ` : `   ${ln} `
+                i === 0 ? `${S_STEP_CANCEL} ${yellow(ln)} ` : `   ${ln} `
               )
               .join('\n')
 
@@ -319,7 +367,7 @@ module.exports = (toolbox: CycliToolbox) => {
   }
 
   const error = (message: string) => {
-    print.error(`${S_STEP_ERROR} ${message} `)
+    print.error(`${S_STEP_CANCEL} ${message} `)
   }
 
   const success = (message: string) => {
@@ -448,7 +496,10 @@ export interface InteractiveExtension {
       hint: string,
       options: { label: string; value: string; hint: string }[]
     ) => Promise<string[]>
-    confirm: (message: string, type?: 'normal' | 'warning') => Promise<boolean>
+    confirm: (
+      message: string,
+      options: { type: 'normal' | 'warning' }
+    ) => Promise<boolean>
     actionPrompt: (message: string) => Promise<void>
     surveyStep: (message: string) => void
     surveyWarning: (message: string) => void

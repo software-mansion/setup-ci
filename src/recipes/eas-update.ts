@@ -8,37 +8,55 @@ const execute = async (
   toolbox: CycliToolbox,
   context: ProjectContext
 ): Promise<void> => {
+  toolbox.interactive.vspace()
+  toolbox.interactive.sectionHeader(
+    'Genereating EAS Update and Preview workflow'
+  )
+
+  // EAS Update recipes is currently supported only for Expo projects
+  if (!toolbox.projectConfig.isExpo()) {
+    throw Error('EAS Update workflow is supported only for Expo projects.')
+  }
+
+  toolbox.dependencies.add('expo', context)
+
   if (toolbox.filesystem.exists('eas.json')) {
     toolbox.interactive.step(
       'Detected eas.json, skipping EAS Build configuration.'
     )
   } else {
-    await toolbox.system.spawn('eas build:configure -p all', {
-      stdio: 'inherit',
-    })
+    await toolbox.interactive.spawnSubprocess(
+      'EAS Build configuration',
+      'eas build:configure -p all'
+    )
 
     toolbox.interactive.step('Created default EAS Build configuration.')
   }
 
-  await toolbox.system.spawn('eas update:configure', {
-    stdio: 'inherit',
-  })
+  await toolbox.interactive.spawnSubprocess(
+    'EAS Update configuration',
+    'eas update:configure'
+  )
 
   await toolbox.workflows.generate(join('eas', 'eas-update.ejf'), context)
 
-  toolbox.interactive.step('Created EAS Update workflow.')
+  toolbox.interactive.success('Created EAS Update and Preview workflow.')
 
   toolbox.interactive.warning(
     `Remember to create repository secret EXPO_TOKEN for EAS Update workflow to work properly. For more information check ${REPOSITORY_SECRETS_HELP_URL}`
+  )
+  toolbox.furtherActions.push(
+    `Create EXPO_TOKEN repository secret. More info at ${REPOSITORY_SECRETS_HELP_URL}`
   )
 }
 
 export const recipe: CycliRecipe = {
   meta: {
-    name: 'EAS Preview',
+    name: 'EAS Update and Preview',
     flag: FLAG,
-    description: 'Generate EAS Update and preview workflow to run on every PR',
-    selectHint: 'run EAS Update and generate preview with QR code',
+    description:
+      'Generate EAS Update and preview workflow to run on every PR (Expo projects only)',
+    selectHint: 'generate preview with EAS Update',
   },
   execute,
 }

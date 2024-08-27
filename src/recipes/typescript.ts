@@ -7,6 +7,9 @@ const execute = async (
   toolbox: CycliToolbox,
   context: ProjectContext
 ): Promise<void> => {
+  toolbox.interactive.vspace()
+  toolbox.interactive.sectionHeader('Genereating Typescript check workflow')
+
   await toolbox.dependencies.addDev('typescript', context)
 
   await toolbox.scripts.add('ts:check', 'tsc -p . --noEmit')
@@ -27,15 +30,15 @@ const execute = async (
     )
   }
 
-  toolbox.interactive.step('Created Typescript check workflow.')
+  toolbox.interactive.success('Created Typescript check workflow.')
 }
 
 export const recipe: CycliRecipe = {
   meta: {
-    name: 'Typescript',
+    name: 'TS check',
     flag: FLAG,
     description: 'Generate Typescript check workflow to run on every PR',
-    selectHint: 'check your code for compilation errors',
+    selectHint: 'run typescript check to find compilation errors',
   },
   execute,
 }
