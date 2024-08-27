@@ -3,6 +3,7 @@ import { CycliRecipe, CycliToolbox, ProjectContext } from '../types'
 import { createReleaseBuildWorkflowsForExpo } from './build-release'
 import { join } from 'path'
 
+const DETOX_BARE_PROJECT_CONFIG_URL = `https://wix.github.io/Detox/docs/next/introduction/project-setup/#step-4-additional-android-configuration`
 const DETOX_EXPO_PLUGIN = '@config-plugins/detox'
 const FLAG = 'detox'
 
@@ -33,6 +34,8 @@ const addDetoxExpoPlugin = async (toolbox: CycliToolbox) => {
         return config
       })
 
+      addTerminatingNewline(appJsonFile)
+
       toolbox.interactive.step(`Added ${DETOX_EXPO_PLUGIN} plugin to app.json`)
     }
   }
@@ -41,7 +44,10 @@ const addDetoxExpoPlugin = async (toolbox: CycliToolbox) => {
 const execute = async (toolbox: CycliToolbox, context: ProjectContext) => {
   toolbox.interactive.info('⚙️ Setting up app release build for Detox.')
 
-  await createReleaseBuildWorkflowsForExpo(toolbox, context, ['android', 'ios'])
+  await createReleaseBuildWorkflows(toolbox, context, {
+    platforms: ['android', 'ios'],
+    expo,
+  })
 
   await toolbox.dependencies.addDev('detox', context)
   // >=29 because of https://wix.github.io/Detox/docs/introduction/project-setup#step-1-bootstrap
@@ -49,11 +55,14 @@ const execute = async (toolbox: CycliToolbox, context: ProjectContext) => {
     version: '">=29"',
     skipInstalledCheck: true,
   })
+  await toolbox.dependencies.addDev('typescript', context)
   await toolbox.dependencies.addDev('ts-jest', context)
   await toolbox.dependencies.addDev('@types/jest', context)
-  await toolbox.dependencies.addDev(DETOX_EXPO_PLUGIN, context)
 
-  await addDetoxExpoPlugin(toolbox)
+  if (expo) {
+    await toolbox.dependencies.addDev(DETOX_EXPO_PLUGIN, context)
+    await addDetoxExpoPlugin(toolbox)
+  }
 
   await toolbox.scripts.add(
     'detox:test:android',
@@ -105,14 +114,7 @@ const execute = async (toolbox: CycliToolbox, context: ProjectContext) => {
 
   await toolbox.workflows.generate(join('detox', 'test-detox-ios.ejf'), context)
 
-  toolbox.interactive.step('Created Detox workflow for Expo.')
-
-  toolbox.interactive.warning(
-    `Remember to create GH_TOKEN repository secret to make Detox workflow work. For more information check ${REPOSITORY_SECRETS_HELP_URL}`
-  )
-  toolbox.furtherActions.push(
-    `Create GH_TOKEN repository secret. More info at ${REPOSITORY_SECRETS_HELP_URL}`
-  )
+  toolbox.interactive.success('Created Detox workflow.')
 }
 
 export const recipe: CycliRecipe = {

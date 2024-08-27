@@ -4,20 +4,14 @@ import { FLAG as PRETTIER_FLAG } from './prettier'
 
 const FLAG = 'lint'
 
-const ESLINT_CONFIGURATION_FILES = [
-  '.eslintrc.js',
-  '.eslintrc.json',
-  'eslint.config.js',
-  'eslint.config.mjs',
-  'eslint.config.cjs',
-]
-
 const existsEslintConfiguration = (toolbox: CycliToolbox): boolean =>
   Boolean(toolbox.projectConfig.packageJson().eslintConfig) ||
   Boolean(
     toolbox.filesystem
       .list()
-      ?.some((f) => ESLINT_CONFIGURATION_FILES.includes(f))
+      ?.some(
+        (f) => f.startsWith('.eslintrc.') || f.startsWith('eslint.config.')
+      )
   )
 
 const execute = async (

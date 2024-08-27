@@ -1,45 +1,48 @@
-## [0.3.1](https://github.com/software-mansion-labs/react-native-ci-cli/compare/v0.3.0...v0.3.1) (2024-08-21)
+## [0.4.9](https://github.com/software-mansion-labs/react-native-ci-cli/compare/v0.4.8...v0.4.9) (2024-08-27)
 
 
 ### Bug Fixes
 
-* several bug fixes and adjustments after manual testing ([#63](https://github.com/software-mansion-labs/react-native-ci-cli/issues/63)) ([4d7cd9f](https://github.com/software-mansion-labs/react-native-ci-cli/commit/4d7cd9f8d12980d961f7dedc2a7c8257272cf385))
+* add contents read permissions to detox workflows ([#83](https://github.com/software-mansion-labs/react-native-ci-cli/issues/83)) ([f6ab340](https://github.com/software-mansion-labs/react-native-ci-cli/commit/f6ab340ef66cda33727044e700c05a19f6ba2af9))
 
 
 
-# [0.3.0](https://github.com/software-mansion-labs/react-native-ci-cli/compare/v0.2.1...v0.3.0) (2024-08-20)
-
-
-### Features
-
-* handle app.config.js ([#59](https://github.com/software-mansion-labs/react-native-ci-cli/issues/59)) ([f2fa46f](https://github.com/software-mansion-labs/react-native-ci-cli/commit/f2fa46ff6f63f8f5a225284abb9c99593c9f625a))
-
-
-
-## [0.2.1](https://github.com/software-mansion-labs/react-native-ci-cli/compare/v0.2.0...v0.2.1) (2024-08-20)
+## [0.4.8](https://github.com/software-mansion-labs/react-native-ci-cli/compare/v0.4.7...v0.4.8) (2024-08-27)
 
 
 ### Bug Fixes
 
-* test CI ([dbe8299](https://github.com/software-mansion-labs/react-native-ci-cli/commit/dbe8299da8cb7bd1ad91bb63d005ace49b88ef83))
+* add check read permissions to detox workflows ([#82](https://github.com/software-mansion-labs/react-native-ci-cli/issues/82)) ([6aa5079](https://github.com/software-mansion-labs/react-native-ci-cli/commit/6aa5079824fd0b5612b59150346ac0c6f564d564))
 
 
 
-# [0.2.0](https://github.com/software-mansion-labs/react-native-ci-cli/compare/v0.1.1...v0.2.0) (2024-08-20)
-
-
-### Features
-
-* print further actions at the end of script execution ([#58](https://github.com/software-mansion-labs/react-native-ci-cli/issues/58)) ([3e6393b](https://github.com/software-mansion-labs/react-native-ci-cli/commit/3e6393b98901345f76e4839e4b4df5f58016ab67))
-
-
-
-## [0.1.1](https://github.com/software-mansion-labs/react-native-ci-cli/compare/v0.1.0...v0.1.1) (2024-08-19)
+## [0.4.7](https://github.com/software-mansion-labs/react-native-ci-cli/compare/v0.4.6...v0.4.7) (2024-08-26)
 
 
 ### Bug Fixes
 
-* fix CI ([4126420](https://github.com/software-mansion-labs/react-native-ci-cli/commit/412642095daed028b59aca8cdf8a2b6b7a92bbcc))
+* add repository url ([621c19a](https://github.com/software-mansion-labs/react-native-ci-cli/commit/621c19af3ac0fc63785b79f22c012ec4ae6bbb9b))
+
+
+
+## [0.4.6](https://github.com/software-mansion-labs/react-native-ci-cli/compare/v0.4.5...v0.4.6) (2024-08-26)
+
+
+### Bug Fixes
+
+* add token back ([a789a31](https://github.com/software-mansion-labs/react-native-ci-cli/commit/a789a315f947191572b47be70531b7e17329f45e))
+* remove unused token ([ca2d93c](https://github.com/software-mansion-labs/react-native-ci-cli/commit/ca2d93c138714c3e8bba9009ded175b6af56de1d))
+
+
+
+## [0.4.5](https://github.com/software-mansion-labs/react-native-ci-cli/compare/v0.4.4...v0.4.5) (2024-08-26)
+
+
+### Bug Fixes
+
+* add token to checkout action ([acedcaa](https://github.com/software-mansion-labs/react-native-ci-cli/commit/acedcaacb74db392b99757354a815c7eb4fca3e5))
+* fix token ([3d720dc](https://github.com/software-mansion-labs/react-native-ci-cli/commit/3d720dc90a9229e2c4acf6c0ef721a2920c1bf20))
+* remove code owners ([d22623f](https://github.com/software-mansion-labs/react-native-ci-cli/commit/d22623f6179a1fc6b66af892c4e50d4547133f12))
 
 
 

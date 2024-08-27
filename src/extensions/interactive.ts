@@ -5,8 +5,27 @@ import {
   isCancel,
   log as clackLog,
 } from '@clack/prompts'
-import { CycliToolbox } from '../types'
-import { ConfirmPrompt, MultiSelectPrompt } from '@clack/core'
+import { CycliToolbox, MessageColor } from '../types'
+import { ConfirmPrompt, SelectPrompt, MultiSelectPrompt } from '@clack/core'
+import { spawn } from 'child_process'
+import {
+  COLORS,
+  S_ACTION,
+  S_BAR,
+  S_BAR_END,
+  S_CONFIRM,
+  S_DL,
+  S_DR,
+  S_RADIO_ACTIVE,
+  S_RADIO_INACTIVE,
+  S_STEP_ERROR,
+  S_STEP_SUCCESS,
+  S_STEP_WARNING,
+  S_SUCCESS,
+  S_UL,
+  S_UR,
+  S_VBAR,
+} from '../constants'
 
 interface Spinner {
   stop: () => void
@@ -56,7 +75,7 @@ module.exports = (toolbox: CycliToolbox) => {
 
   const confirm = async (
     message: string,
-    type: 'normal' | 'warning' = 'normal'
+    { type }: { type: 'normal' | 'warning' }
   ): Promise<boolean> => {
     const active = 'Yes'
     const inactive = 'No'
@@ -64,11 +83,11 @@ module.exports = (toolbox: CycliToolbox) => {
     const title = () => {
       switch (type) {
         case 'normal':
-          return `${gray(S_BAR)}\n${S_SUCCESS}  ${message
+          return `${gray(S_BAR)}\n${S_CONFIRM}  ${message
             .split('\n')
             .join(`\n${S_BAR}  `)}\n`
         case 'warning':
-          return `${gray(S_BAR)} \n${S_STEP_ERROR}  ${yellow(
+          return `${gray(S_BAR)} \n${S_STEP_WARNING}  ${yellow(
             message.split('\n').join(`\n${S_BAR}  `)
           )}\n`
       }
@@ -76,22 +95,24 @@ module.exports = (toolbox: CycliToolbox) => {
 
     const titleSubmitted = () => {
       switch (type) {
-        case 'normal':
-          return `${gray(S_BAR)} \n${S_SUCCESS}  ${message
+        case 'normal': {
+          return `${gray(S_BAR)} \n${S_CONFIRM}  ${message
             .split('\n')
             .join(`\n${gray(S_BAR)}  `)}\n`
-        case 'warning':
-          return `${gray(S_BAR)} \n${S_STEP_ERROR}  ${message
+        }
+        case 'warning': {
+          return `${gray(S_BAR)} \n${S_STEP_WARNING}  ${message
             .split('\n')
             .map((line) => yellow(line))
             .join(`\n${gray(S_BAR)}  `)}\n`
+        }
       }
     }
 
     const titleCancelled = () => {
       switch (type) {
         case 'normal':
-          return `${gray(S_BAR)} \n${S_STEP_CANCEL}  ${message
+          return `${gray(S_BAR)} \n${S_STEP_ERROR}  ${message
             .split('\n')
             .join(`\n${gray(S_BAR)}  `)}\n`
         case 'warning':
@@ -102,7 +123,7 @@ module.exports = (toolbox: CycliToolbox) => {
     const typeColor = (msg: string): string => {
       switch (type) {
         case 'normal':
-          return cyan(msg)
+          return magenta(msg)
         case 'warning':
           return yellow(msg)
       }
@@ -294,19 +315,19 @@ module.exports = (toolbox: CycliToolbox) => {
   const vspace = () => info('')
 
   const step = (message: string) => {
-    print.info(`${COLORS.green('✔')} ${message} `)
+    print.info(`${S_STEP_SUCCESS} ${message} `)
   }
 
   const error = (message: string) => {
-    print.error(`❗ ${message} `)
+    print.error(`${S_STEP_ERROR} ${message} `)
   }
 
   const success = (message: string) => {
-    print.success(message)
+    print.info(`${S_SUCCESS} ${green(message)}`)
   }
 
   const warning = (message: string) => {
-    print.warning(`⚠ ${message} `)
+    print.warning(`${S_STEP_WARNING} ${message} `)
   }
 
   const spin = (message: string): Spinner => {
@@ -321,7 +342,86 @@ module.exports = (toolbox: CycliToolbox) => {
     clackOutro(message)
   }
 
+  const sectionHeader = (
+    title: string,
+    {
+      width = DEFAULT_HEADER_WIDTH,
+      color,
+    }: { width?: number; color?: MessageColor } = {}
+  ) => {
+    const headerMessage = `${S_UL}${S_VBAR.repeat(
+      Math.floor((width - title.length - 3) / 2)
+    )} ${bold(title)} ${S_VBAR.repeat(
+      Math.ceil((width - title.length - 3) / 2)
+    )}`
+    info(headerMessage, color)
+    info(`${S_DR}`, color)
+  }
+
+  const sectionFooter = ({
+    width = DEFAULT_HEADER_WIDTH,
+    color,
+  }: { width?: number; color?: MessageColor } = {}) => {
+    info(`${S_UR}\n${S_DL}${S_VBAR.repeat(width - 1)}`, color)
+  }
+
+  const spawnSubprocess = async (
+    processName: string,
+    command: string,
+    { alwaysPrintStderr = false }: { alwaysPrintStderr?: boolean } = {}
+  ): Promise<void> => {
+    return new Promise((resolve, reject) => {
+      vspace()
+      sectionHeader(`Running ${processName}...`, { color: 'dim' })
+
+      const subprocess = spawn(command, {
+        stdio: ['inherit', 'inherit', alwaysPrintStderr ? 'inherit' : 'pipe'],
+        shell: true,
+      })
+
+      step(`Started ${processName}.`)
+
+      let stderr = ''
+
+      if (!alwaysPrintStderr) {
+        subprocess.stderr?.on('data', (data) => {
+          stderr += data.toString()
+        })
+      }
+
+      subprocess.on('close', (code) => {
+        if (code !== 0) {
+          error(`${processName} exited with code ${code}.`)
+
+          if (!alwaysPrintStderr && stderr) {
+            info(`\nstderr: ${stderr}`, 'red')
+          }
+        } else {
+          step(`Finished running ${processName}.`)
+        }
+
+        sectionFooter({ color: 'dim' })
+        vspace()
+
+        if (code !== 0) {
+          reject(
+            new Error(
+              `Failed to execute ${command}. The subprocess exited with code ${code}.`
+            )
+          )
+        } else {
+          resolve()
+        }
+      })
+
+      subprocess.on('error', (err) => {
+        reject(err)
+      })
+    })
+  }
+
   toolbox.interactive = {
+    actionPrompt,
     confirm,
     multiselect,
     surveyStep,
@@ -335,6 +435,9 @@ module.exports = (toolbox: CycliToolbox) => {
     spin,
     intro,
     outro,
+    sectionHeader,
+    sectionFooter,
+    spawnSubprocess,
   }
 }
 
@@ -346,6 +449,7 @@ export interface InteractiveExtension {
       options: { label: string; value: string; hint: string }[]
     ) => Promise<string[]>
     confirm: (message: string, type?: 'normal' | 'warning') => Promise<boolean>
+    actionPrompt: (message: string) => Promise<void>
     surveyStep: (message: string) => void
     surveyWarning: (message: string) => void
     info: (message: string, color?: MessageColor) => void
@@ -357,5 +461,15 @@ export interface InteractiveExtension {
     spin: (message: string) => Spinner
     intro: (message: string) => void
     outro: (message: string) => void
+    sectionHeader: (
+      title: string,
+      options?: { width?: number; color?: MessageColor }
+    ) => void
+    sectionFooter: (options?: { width?: number; color?: MessageColor }) => void
+    spawnSubprocess: (
+      processName: string,
+      command: string,
+      options?: { alwaysPrintStderr?: boolean }
+    ) => Promise<void>
   }
 }

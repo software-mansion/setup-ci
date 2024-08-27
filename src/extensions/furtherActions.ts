@@ -1,6 +1,5 @@
+import { S_ACTION_BULLET } from '../constants'
 import { CycliToolbox } from '../types'
-
-const box = require('ascii-box').box
 
 module.exports = (toolbox: CycliToolbox) => {
   const furtherActions: string[] = []
@@ -12,17 +11,14 @@ module.exports = (toolbox: CycliToolbox) => {
   const print = () => {
     if (furtherActions.length > 0) {
       toolbox.interactive.vspace()
-
-      toolbox.interactive.info(
-        `${box(
-          `=== What next?\n\n${furtherActions
-            .map((action) => `● ${action}`)
-            .join('\n\n')}`,
-          { border: 'round', maxWidth: 90 }
-        )}
-  `,
-        'cyan'
-      )
+      toolbox.interactive.sectionHeader('What next?', { color: 'cyan' })
+      furtherActions.forEach((action, index) => {
+        if (index > 0) {
+          toolbox.interactive.vspace()
+        }
+        toolbox.interactive.info(`${S_ACTION_BULLET} ${action}`, 'cyan')
+      })
+      toolbox.interactive.sectionFooter({ color: 'cyan' })
     }
   }
 

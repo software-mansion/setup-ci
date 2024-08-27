@@ -9,7 +9,7 @@ React Native CI CLI is meant to simplify CI/CD setup in your React Native projec
 Simply go to your project root directory and run:
 
 ```
-npx react-native-ci-cli
+npx setup-ci
 ```
 
 If your project has monorepo structure, run the script from the root directory of the app for which you want to setup workflows.
@@ -22,7 +22,7 @@ Let's try to use `react-native-ci-cli` to do the heavy lifting and generate all 
 <p align="center">
   <img 
     style="width: 80%;"
-    src="https://s10.gifyu.com/images/S59js.gif"/>
+    src="https://s12.gifyu.com/images/SonNQ.gif"/>
 </p>
 
 Alternatively, we can go fully automatic by passing flags `--preset --lint --jest` to avoid all interaction with the script. You can check the section below for more information about available flags!
@@ -80,7 +80,7 @@ The following are **feature flags** that can be used with `--preset` flag (they 
   </tr>
   <tr>
     <td style="vertical-align: middle;">--detox</td>
-    <td style="vertical-align: middle;">Generate workflow to run Detox e2e tests on every PR (Expo projects only)</td>
+    <td style="vertical-align: middle;">Generate workflow to run Detox e2e tests on every PR</td>
   </tr>
 </table>
 
@@ -97,14 +97,6 @@ as you will always be prompted to create secrets if necessary. The following tab
   <tr>
     <td style="vertical-align: middle;">EXPO_TOKEN</td>
     <td style="vertical-align: middle;">Used for authentication in workflows using your Expo account. Learn more at <a href=https://docs.expo.dev/eas-update/github-actions>Expo with GitHub actions</a>.</td>
-  </tr>
-  <tr>
-    <td style="vertical-align: middle;">GH_TOKEN</td>
-    <td style="vertical-align: middle;">
-      Used by workflows reading status of other GitHub actions. You can learn how to generate the token at 
-      <a href=https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens>Managing your personal access tokens</a>. 
-      Make sure that your generated token has <ins>read access to actions</ins>. 
-    </td>
   </tr>
 </table>
 

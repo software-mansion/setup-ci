@@ -16,8 +16,8 @@ import {
   PRESET_FLAG,
   REPOSITORY_FEATURES_HELP_URL,
 } from '../constants'
+import { CYCLI_COMMAND, HELP_FLAG, PRESET_FLAG } from '../constants'
 
-const COMMAND = 'react-native-ci-cli'
 const SKIP_GIT_CHECK_FLAG = 'skip-git-check'
 
 type Option = { flag: string; description: string }
@@ -52,11 +52,11 @@ const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
 
       const proceed = await toolbox.interactive.confirm(
         [
-          `It is advised to commit all your changes before running ${COMMAND}.`,
+          `It is advised to commit all your changes before running ${CYCLI_COMMAND}.`,
           'Running the script with uncommitted changes may have destructive consequences.',
-          'Do you want to proceed anyway?',
+          'Do you want to proceed anyway?\n',
         ].join('\n'),
-        'warning'
+        { type: 'warning' }
       )
 
       if (!proceed) {
@@ -114,9 +114,7 @@ const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
     return
   }
 
-  toolbox.interactive.outro("Let's roll")
-
-  toolbox.interactive.step(
+  toolbox.interactive.surveyStep(
     `Detected ${context.packageManager} as your package manager.`
   )
 
@@ -142,7 +140,7 @@ const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
 
   if (!toolbox.options.isPreset()) {
     toolbox.interactive.success(
-      `Next time you can specify a preset to reproduce this run using npx ${COMMAND} --${PRESET_FLAG} ${usedFlags}.`
+      `Next time you can specify a preset to reproduce this run using npx ${CYCLI_COMMAND} --${PRESET_FLAG} ${usedFlags}.`
     )
   }
 }
@@ -153,7 +151,7 @@ const run = async (toolbox: GluegunToolbox) => {
   } catch (error: unknown) {
     const errMessage = messageFromError(error)
     toolbox.interactive.error(
-      `Failed to execute ${COMMAND} with following error:\n${errMessage}`
+      `Failed to execute ${CYCLI_COMMAND} with following error:\n${errMessage}`
     )
   } finally {
     process.exit()
@@ -168,7 +166,7 @@ const getFeatureOptions = (): Option[] => {
 }
 
 const command: CycliCommand = {
-  name: COMMAND,
+  name: CYCLI_COMMAND,
   description: 'Quickly setup CI workflows for your React Native app',
   options: [
     { flag: HELP_FLAG, description: 'Print help message' },

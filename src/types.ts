@@ -5,10 +5,12 @@ import { ProjectContextExtension } from './extensions/projectContext'
 import { ScriptsExtension } from './extensions/scripts'
 import { WorkflowsExtension } from './extensions/workflows'
 import { ProjectConfigExtension } from './extensions/projectConfig'
-import { LOCK_FILE_TO_MANAGER } from './constants'
+import { COLORS, LOCK_FILE_TO_MANAGER } from './constants'
 import { DiffExtension } from './extensions/diff'
 import { OptionsExtension } from './extensions/options'
 import { FurtherActionsExtension } from './extensions/furtherActions'
+
+export type MessageColor = keyof typeof COLORS
 
 export interface PackageJson {
   name: string

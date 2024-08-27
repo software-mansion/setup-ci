@@ -1,6 +1,6 @@
 {
   "name": "react-native-ci-cli",
-  "version": "0.3.1",
+  "version": "0.4.9",
   "description": "React Native CI CLI is meant to simplify CI/CD setup in your React Native project.",
   "types": "build/types/types.d.ts",
   "bin": {
@@ -37,10 +37,10 @@
     "cli",
     "CD"
   ],
+  "repository": "github:software-mansion-labs/react-native-ci-cli",
   "dependencies": {
     "@clack/core": "^0.3.4",
     "@clack/prompts": "^0.7.0",
-    "ascii-box": "^1.1.2",
     "gluegun": "5.1.6",
     "is-git-dirty": "^2.0.2",
     "lodash": "^4.17.21",
