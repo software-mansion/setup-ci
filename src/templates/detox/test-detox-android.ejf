@@ -41,6 +41,11 @@ jobs:
       - name: 🏗 Checkout repository
         uses: actions/checkout@v4
 
+      <%= if(props.packageManager === "bun") { %>
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v2
+      <%= } %>
+
       - name: 📦 Install dependencies
         run: <%= install[props.packageManager] %>
 

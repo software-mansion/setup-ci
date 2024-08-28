@@ -32,6 +32,11 @@ jobs:
       - name: 🏗 Setup repo
         uses: actions/checkout@v4
 
+      <%= if(props.packageManager === "bun") { %>
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v2
+      <%= } %>
+
       - name: ⚙️ Setup EAS
         uses: expo/expo-github-action@v8
         with:
