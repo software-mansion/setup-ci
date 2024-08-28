@@ -9,7 +9,7 @@ import isGitDirty from 'is-git-dirty'
 import sequentialPromiseMap from '../utils/sequentialPromiseMap'
 import { CycliRecipe, CycliToolbox, ProjectContext } from '../types'
 import messageFromError from '../utils/messageFromError'
-import { intersection } from 'lodash'
+import intersection from 'lodash/intersection'
 import { addTerminatingNewline } from '../utils/addTerminatingNewline'
 import {
   CYCLI_COMMAND,
