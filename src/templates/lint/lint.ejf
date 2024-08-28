@@ -3,12 +3,14 @@ const isMonorepo = props.pathRelativeToRoot !== '.'
 
 const install = {
   yarn: "yarn",
-  npm: "npm install"
+  npm: "npm install",
+  bun: "bun install"
 }
 
 const run = {
   yarn: `yarn ${(isMonorepo) ? `--cwd ${props.pathRelativeToRoot} ` : ""}lint`,
-  npm: `npm run lint ${(isMonorepo) ? `--prefix ${props.pathRelativeToRoot}` : ""}`
+  npm: `npm run lint ${(isMonorepo) ? `--prefix ${props.pathRelativeToRoot}` : ""}`,
+  bun: `bun run ${(isMonorepo) ? `--cwd ${props.pathRelativeToRoot} ` : ""}lint`
 }
 %>
 
@@ -18,7 +20,7 @@ on:
   pull_request: <%= (props.pathRelativeToRoot !== '.') ? `
     paths:
       - ${props.pathRelativeToRoot}/**` : "" %>
- 
+
 jobs:
    eslint:
       name: ESLint

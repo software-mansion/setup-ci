@@ -3,7 +3,8 @@ const isMonorepo = props.pathRelativeToRoot !== '.'
 
 const install = {
   yarn: "yarn",
-  npm: "npm install"
+  npm: "npm install",
+  bun: "bun install"
 }
 %>
 

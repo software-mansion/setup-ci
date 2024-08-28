@@ -3,12 +3,14 @@ const isMonorepo = props.pathRelativeToRoot !== '.'
 
 const install = {
   yarn: "yarn",
-  npm: "npm install"
+  npm: "npm install",
+  bun: "bun install"
 }
 
 const build = {
   yarn: `yarn ${(isMonorepo) ? `--cwd ${props.pathRelativeToRoot} ` : ""}build:release:ios`,
-  npm: `npm run build:release:ios ${(isMonorepo) ? `--prefix ${props.pathRelativeToRoot}` : ""}`
+  npm: `npm run build:release:ios ${(isMonorepo) ? `--prefix ${props.pathRelativeToRoot}` : ""}`,
+  bun: `bun run ${(isMonorepo) ? `--cwd ${props.pathRelativeToRoot} ` : ""}build:release:ios`
 }
 %>
 
@@ -34,7 +36,7 @@ jobs:
           key: ios-release-build-${{ github.event.pull_request.head.sha }}
 
   build-release-ios:
-    needs: lookup-cached-build 
+    needs: lookup-cached-build
     if: needs.lookup-cached-build.outputs.build-exists != 'true'
     runs-on: macos-latest
     steps:
@@ -52,7 +54,7 @@ jobs:
       - name: 🛠️ Build
         run: <%= build[props.packageManager] %>
 
-      - name: 📁 Prepare cache folder 
+      - name: 📁 Prepare cache folder
         run: |
           mkdir ios-release-build
           mv <%= props.pathRelativeToRoot %>/ios/build/Build/Products/Release-iphonesimulator/<%= props.iOSAppName %>.app ios-release-build/ios-release.app

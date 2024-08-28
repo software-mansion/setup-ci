@@ -3,12 +3,14 @@ const isMonorepo = props.pathRelativeToRoot !== '.'
 
 const install = {
   yarn: "yarn",
-  npm: "npm install"
+  npm: "npm install",
+  bun: "bun install"
 }
 
 const runTests = {
   yarn: `yarn ${(isMonorepo) ? `--cwd ${props.pathRelativeToRoot} ` : ""}detox:test:ios`,
-  npm: `npm run detox:test:ios ${(isMonorepo) ? `--prefix ${props.pathRelativeToRoot}` : ""}`
+  npm: `npm run detox:test:ios ${(isMonorepo) ? `--prefix ${props.pathRelativeToRoot}` : ""}`,
+  bun: `bun run ${(isMonorepo) ? `--cwd ${props.pathRelativeToRoot} ` : ""}detox:test:ios`
 }
 %>
 
