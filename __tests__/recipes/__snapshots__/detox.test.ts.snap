@@ -1,0 +1,2113 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`detox recipe rn-setup-ci-create-expo-stack detox 1`] = `
+Object {
+  "dependencies": Object {
+    "react": "",
+    "react-native": "",
+  },
+  "devDependencies": Object {
+    "@babel/core": "",
+    "@babel/preset-env": "",
+    "@babel/runtime": "",
+    "@react-native/babel-preset": "",
+    "@react-native/metro-config": "",
+    "@react-native/typescript-config": "",
+    "@types/jest": "",
+    "@types/react": "",
+    "@types/react-test-renderer": "",
+    "detox": "",
+    "jest": "",
+    "react-test-renderer": "",
+    "ts-jest": "",
+    "typescript": "",
+  },
+  "engines": Object {
+    "node": ">=18",
+  },
+  "name": "RnSetupCiYarnFlat",
+  "packageManager": "yarn@3.6.4",
+  "private": true,
+  "scripts": Object {
+    "android": "react-native run-android",
+    "build:release:android": "cd android && ./gradlew assembleRelease assembleAndroidTest -DtestBuildType=release -Dorg.gradle.jvmargs=-Xmx4g",
+    "build:release:ios": "cd ios && pod install && cd .. && xcodebuild ONLY_ACTIVE_ARCH=YES -workspace ios/RnSetupCiYarnFlat.xcworkspace -UseNewBuildSystem=YES -scheme RnSetupCiYarnFlat -configuration Release -sdk iphonesimulator -derivedDataPath ios/build -quiet",
+    "detox:test:android": "detox test --config-path .detoxrc-ci.js --configuration android.emu.release --cleanup",
+    "detox:test:ios": "detox test --config-path .detoxrc-ci.js --configuration ios.sim.release --cleanup",
+    "ios": "react-native run-ios",
+    "start": "react-native start",
+  },
+  "version": "0.0.1",
+}
+`;
+
+exports[`detox recipe rn-setup-ci-create-expo-stack detox 2`] = `
+"/** @type {Detox.DetoxConfig} */
+module.exports = {
+  testRunner: {
+    args: {
+      $0: 'jest',
+      config: 'e2e/jest.config.js',
+    },
+    jest: {
+      setupTimeout: 300000,
+    },
+  },
+  apps: {
+    'ios.release': {
+      type: 'ios.app',
+      binaryPath: 'ios-release-build/ios-release.app',
+    },
+    'android.release': {
+      type: 'android.apk',
+      binaryPath: 'android-release-build/android-release.apk',
+      testBinaryPath: 'android-release-build/android-release-test.apk',
+    },
+  },
+  devices: {
+    simulator: {
+      type: 'ios.simulator',
+      device: {
+        type: 'iPhone 15 Pro',
+      },
+    },
+    emulator: {
+      type: 'android.emulator',
+      device: {
+        avdName: 'e2e_emulator',
+      },
+    },
+  },
+  configurations: {
+    'ios.sim.release': {
+      device: 'simulator',
+      app: 'ios.release',
+    },
+    'android.emu.release': {
+      device: 'emulator',
+      app: 'android.release',
+    },
+  },
+}
+"
+`;
+
+exports[`detox recipe rn-setup-ci-create-expo-stack detox 3`] = `
+"{
+  \\"expo\\": {
+    \\"name\\": \\"rn-setup-ci-create-expo-stack\\",
+    \\"slug\\": \\"rn-setup-ci-create-expo-stack\\",
+    \\"version\\": \\"1.0.0\\",
+    \\"scheme\\": \\"rn-setup-ci-create-expo-stack\\",
+    \\"web\\": {
+      \\"bundler\\": \\"metro\\",
+      \\"output\\": \\"static\\",
+      \\"favicon\\": \\"./assets/favicon.png\\"
+    },
+    \\"plugins\\": [
+      \\"expo-router\\",
+      \\"@config-plugins/detox\\"
+    ],
+    \\"experiments\\": {
+      \\"typedRoutes\\": true,
+      \\"tsconfigPaths\\": true
+    },
+    \\"orientation\\": \\"portrait\\",
+    \\"icon\\": \\"./assets/icon.png\\",
+    \\"userInterfaceStyle\\": \\"light\\",
+    \\"splash\\": {
+      \\"image\\": \\"./assets/splash.png\\",
+      \\"resizeMode\\": \\"contain\\",
+      \\"backgroundColor\\": \\"#ffffff\\"
+    },
+    \\"assetBundlePatterns\\": [
+      \\"**/*\\"
+    ],
+    \\"ios\\": {
+      \\"supportsTablet\\": true,
+      \\"bundleIdentifier\\": \\"com.kmichno.rnsetupcicreateexpostack\\"
+    },
+    \\"android\\": {
+      \\"adaptiveIcon\\": {
+        \\"foregroundImage\\": \\"./assets/adaptive-icon.png\\",
+        \\"backgroundColor\\": \\"#ffffff\\"
+      },
+      \\"package\\": \\"com.kmichno.rnsetupcicreateexpostack\\"
+    },
+    \\"extra\\": {
+      \\"router\\": {
+        \\"origin\\": false
+      }
+    },
+    \\"runtimeVersion\\": {
+      \\"policy\\": \\"appVersion\\"
+    },
+    \\"updates\\": {
+      \\"url\\": \\"https://u.expo.dev/0a526a84-ef57-452b-82b4-59fd0af9e9b3\\"
+    }
+  }
+}
+"
+`;
+
+exports[`detox recipe rn-setup-ci-create-expo-stack detox 4`] = `
+"/** @type {import('@jest/types').Config.InitialOptions} */
+module.exports = {
+  preset: 'ts-jest',
+  rootDir: '..',
+  testMatch: ['<rootDir>/e2e/**/*.test.ts'],
+  testTimeout: 300000,
+  maxWorkers: 1,
+  globalSetup: 'detox/runners/jest/globalSetup',
+  globalTeardown: 'detox/runners/jest/globalTeardown',
+  reporters: ['detox/runners/jest/reporter'],
+  testEnvironment: 'detox/runners/jest/testEnvironment',
+  verbose: true,
+}
+"
+`;
+
+exports[`detox recipe rn-setup-ci-create-expo-stack detox 5`] = `
+"import { device, by, element, expect } from 'detox'
+
+describe('Example', () => {
+  beforeAll(async () => {
+    await device.launchApp()
+  })
+
+  beforeEach(async () => {
+    await device.reloadReactNative()
+  })
+
+  it('Hello world! to be visible', async () => {
+    await expect(element(by.text('Hello World!'))).toBeVisible()
+  })
+})
+"
+`;
+
+exports[`detox recipe rn-setup-ci-create-expo-stack detox 6`] = `
+"name: Build Android Release App
+
+on:
+  pull_request: 
+
+jobs:
+  lookup-cached-build:
+    runs-on: ubuntu-latest
+    outputs:
+      build-exists: \${{ steps.android-release-restore.outputs.cache-hit }}
+    steps:
+      - name: 🐛 Try to restore build from cache
+        id: android-release-restore
+        uses: actions/cache/restore@v4
+        with:
+          lookup-only: true
+          path: android-release-build/
+          key: android-release-build-\${{ github.event.pull_request.head.sha }}
+
+  build-release-android:
+    needs: lookup-cached-build 
+    if: needs.lookup-cached-build.outputs.build-exists != 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: 💾 Maximize build space
+        uses: AdityaGarg8/remove-unwanted-software@v4.1
+        with:
+          remove-dotnet: \\"true\\"
+          remove-haskell: \\"true\\"
+          remove-codeql: \\"true\\"
+          remove-docker-images: \\"true\\"
+
+      - name: 🏗 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 📦 Install dependencies
+        run: npm install
+
+      - name: ☕ Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'zulu'
+
+      - name: 🐘 Setup Gradle 8.8
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: 8.8
+
+      - name: 🛠️ Build
+        run: npm run build:release:android 
+
+      - name: 📁 Prepare cache folder 
+        run: |
+          mkdir android-release-build
+          mv ./android/app/build/outputs/apk/release/app-release.apk android-release-build/android-release.apk
+          mv ./android/app/build/outputs/apk/androidTest/release/app-release-androidTest.apk android-release-build/android-release-test.apk
+
+      - name: 📡 Store built app in cache
+        id: android-release-save
+        uses: actions/cache/save@v4
+        with:
+          path: android-release-build/
+          key: android-release-build-\${{ github.event.pull_request.head.sha }}
+"
+`;
+
+exports[`detox recipe rn-setup-ci-create-expo-stack detox 7`] = `
+"name: Build iOS Release App
+
+on:
+  pull_request: 
+
+jobs:
+  lookup-cached-build:
+    runs-on: ubuntu-latest
+    outputs:
+      build-exists: \${{ steps.ios-release-restore.outputs.cache-hit }}
+    steps:
+      - name: 🐛 Try to restore build from cache
+        id: ios-release-restore
+        uses: actions/cache/restore@v4
+        with:
+          lookup-only: true
+          path: ios-release-build/
+          key: ios-release-build-\${{ github.event.pull_request.head.sha }}
+
+  build-release-ios:
+    needs: lookup-cached-build 
+    if: needs.lookup-cached-build.outputs.build-exists != 'true'
+    runs-on: macos-latest
+    steps:
+      - name: 🏗 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 📦 Install dependencies
+        run: npm install
+
+      - name: 🔨 Use latest stable Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - name: 🛠️ Build
+        run: npm run build:release:ios 
+
+      - name: 📁 Prepare cache folder 
+        run: |
+          mkdir ios-release-build
+          mv ./ios/build/Build/Products/Release-iphonesimulator/rnsetupcicreateexpostack.app ios-release-build/ios-release.app
+
+      - name: 📡 Store built app in cache
+        id: ios-release-save
+        uses: actions/cache/save@v4
+        with:
+          path: ios-release-build/
+          key: ios-release-build-\${{ github.event.pull_request.head.sha }}
+"
+`;
+
+exports[`detox recipe rn-setup-ci-create-expo-stack detox 8`] = `
+"name: Test Detox Android
+
+on:
+  pull_request: 
+
+jobs:
+  test-detox-android:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      checks: read
+      contents: read
+    env:
+      API_LEVEL: 34
+    steps:
+      - name: ⌛ Wait for build to finish
+        uses: poseidon/wait-for-status-checks@v0.5.0
+        with:
+          token: \${{ secrets.GITHUB_TOKEN }}
+          delay: 20s
+          match_pattern: build-release-android
+
+      - name: 🏗 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 📦 Install dependencies
+        run: npm install
+
+      - name: 📦 Install AVD dependencies
+        run: |
+          sudo apt update
+          sudo apt-get install -y libpulse0 libgl1
+
+      - name: ☕ Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'zulu'
+
+      - name: 🐘 Setup Gradle 8.8
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: 8.8
+
+      - name: 🐛 Try to restore build from cache
+        id: android-release-restore
+        uses: actions/cache/restore@v4
+        with:
+          path: android-release-build/
+          key: android-release-build-\${{ github.event.pull_request.head.sha }}
+
+      - name: 🏎️ Enable KVM
+        run: |
+          echo 'KERNEL==\\"kvm\\", GROUP=\\"kvm\\", MODE=\\"0666\\", OPTIONS+=\\"static_node=kvm\\"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+  
+      - name: 📱 AVD cache
+        uses: actions/cache@v4
+        id: avd-cache
+        with:
+          path: |
+            ~/.android/avd/*
+            ~/.android/adb*
+          key: avd-\${{ env.API_LEVEL }}
+      
+      - name: 📋 Run Detox tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: \${{ env.API_LEVEL }}
+          target: google_apis
+          disable-animations: false
+          emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -camera-front none
+          avd-name: e2e_emulator
+          arch: x86_64
+          script: npm run detox:test:android 
+"
+`;
+
+exports[`detox recipe rn-setup-ci-create-expo-stack detox 9`] = `
+"name: Test Detox iOS
+
+on:
+  pull_request: 
+
+jobs:
+  test-detox-ios:
+    runs-on: macos-latest
+    timeout-minutes: 60
+    permissions:
+      checks: read
+      contents: read
+    steps:
+      - name: ⌛ Wait for build to finish
+        uses: poseidon/wait-for-status-checks@v0.5.0
+        with:
+          token: \${{ secrets.GITHUB_TOKEN }}
+          delay: 20s
+          match_pattern: build-release-ios
+
+      - name: 🏗 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 📦 Install dependencies
+        run: npm install
+
+      - name: 📦 Install macOS dependencies
+        run: |
+          brew tap wix/brew
+          brew install applesimutils
+        env:
+          HOMEBREW_NO_AUTO_UPDATE: 1
+          HOMEBREW_NO_INSTALL_CLEANUP: 1
+
+      - name: 🐛 Try to restore build from cache
+        id: ios-release-restore
+        uses: actions/cache/restore@v4
+        with:
+          path: ios-release-build/
+          key: ios-release-build-\${{ github.event.pull_request.head.sha }}
+
+      - name: 📋 Run Detox tests
+        run: npm run detox:test:ios 
+"
+`;
+
+exports[`detox recipe rn-setup-ci-npm-flat detox 1`] = `
+Object {
+  "dependencies": Object {
+    "react": "",
+    "react-native": "",
+  },
+  "devDependencies": Object {
+    "@babel/core": "",
+    "@babel/preset-env": "",
+    "@babel/runtime": "",
+    "@react-native/babel-preset": "",
+    "@react-native/metro-config": "",
+    "@react-native/typescript-config": "",
+    "@types/jest": "",
+    "@types/react": "",
+    "@types/react-test-renderer": "",
+    "detox": "",
+    "jest": "",
+    "react-test-renderer": "",
+    "ts-jest": "",
+    "typescript": "",
+  },
+  "engines": Object {
+    "node": ">=18",
+  },
+  "name": "RnSetupCiYarnFlat",
+  "packageManager": "yarn@3.6.4",
+  "private": true,
+  "scripts": Object {
+    "android": "react-native run-android",
+    "build:release:android": "cd android && ./gradlew assembleRelease assembleAndroidTest -DtestBuildType=release -Dorg.gradle.jvmargs=-Xmx4g",
+    "build:release:ios": "cd ios && pod install && cd .. && xcodebuild ONLY_ACTIVE_ARCH=YES -workspace ios/RnSetupCiYarnFlat.xcworkspace -UseNewBuildSystem=YES -scheme RnSetupCiYarnFlat -configuration Release -sdk iphonesimulator -derivedDataPath ios/build -quiet",
+    "detox:test:android": "detox test --config-path .detoxrc-ci.js --configuration android.emu.release --cleanup",
+    "detox:test:ios": "detox test --config-path .detoxrc-ci.js --configuration ios.sim.release --cleanup",
+    "ios": "react-native run-ios",
+    "start": "react-native start",
+  },
+  "version": "0.0.1",
+}
+`;
+
+exports[`detox recipe rn-setup-ci-npm-flat detox 2`] = `
+"/** @type {Detox.DetoxConfig} */
+module.exports = {
+  testRunner: {
+    args: {
+      $0: 'jest',
+      config: 'e2e/jest.config.js',
+    },
+    jest: {
+      setupTimeout: 300000,
+    },
+  },
+  apps: {
+    'ios.release': {
+      type: 'ios.app',
+      binaryPath: 'ios-release-build/ios-release.app',
+    },
+    'android.release': {
+      type: 'android.apk',
+      binaryPath: 'android-release-build/android-release.apk',
+      testBinaryPath: 'android-release-build/android-release-test.apk',
+    },
+  },
+  devices: {
+    simulator: {
+      type: 'ios.simulator',
+      device: {
+        type: 'iPhone 15 Pro',
+      },
+    },
+    emulator: {
+      type: 'android.emulator',
+      device: {
+        avdName: 'e2e_emulator',
+      },
+    },
+  },
+  configurations: {
+    'ios.sim.release': {
+      device: 'simulator',
+      app: 'ios.release',
+    },
+    'android.emu.release': {
+      device: 'emulator',
+      app: 'android.release',
+    },
+  },
+}
+"
+`;
+
+exports[`detox recipe rn-setup-ci-npm-flat detox 3`] = `
+"{
+  \\"name\\": \\"RnSetupCiNpmFlat\\",
+  \\"displayName\\": \\"RnSetupCiNpmFlat\\"
+}
+"
+`;
+
+exports[`detox recipe rn-setup-ci-npm-flat detox 4`] = `
+"/** @type {import('@jest/types').Config.InitialOptions} */
+module.exports = {
+  preset: 'ts-jest',
+  rootDir: '..',
+  testMatch: ['<rootDir>/e2e/**/*.test.ts'],
+  testTimeout: 300000,
+  maxWorkers: 1,
+  globalSetup: 'detox/runners/jest/globalSetup',
+  globalTeardown: 'detox/runners/jest/globalTeardown',
+  reporters: ['detox/runners/jest/reporter'],
+  testEnvironment: 'detox/runners/jest/testEnvironment',
+  verbose: true,
+}
+"
+`;
+
+exports[`detox recipe rn-setup-ci-npm-flat detox 5`] = `
+"import { device, by, element, expect } from 'detox'
+
+describe('Example', () => {
+  beforeAll(async () => {
+    await device.launchApp()
+  })
+
+  beforeEach(async () => {
+    await device.reloadReactNative()
+  })
+
+  it('Hello world! to be visible', async () => {
+    await expect(element(by.text('Hello World!'))).toBeVisible()
+  })
+})
+"
+`;
+
+exports[`detox recipe rn-setup-ci-npm-flat detox 6`] = `
+"name: Build Android Release App
+
+on:
+  pull_request: 
+
+jobs:
+  lookup-cached-build:
+    runs-on: ubuntu-latest
+    outputs:
+      build-exists: \${{ steps.android-release-restore.outputs.cache-hit }}
+    steps:
+      - name: 🐛 Try to restore build from cache
+        id: android-release-restore
+        uses: actions/cache/restore@v4
+        with:
+          lookup-only: true
+          path: android-release-build/
+          key: android-release-build-\${{ github.event.pull_request.head.sha }}
+
+  build-release-android:
+    needs: lookup-cached-build 
+    if: needs.lookup-cached-build.outputs.build-exists != 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: 💾 Maximize build space
+        uses: AdityaGarg8/remove-unwanted-software@v4.1
+        with:
+          remove-dotnet: \\"true\\"
+          remove-haskell: \\"true\\"
+          remove-codeql: \\"true\\"
+          remove-docker-images: \\"true\\"
+
+      - name: 🏗 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 📦 Install dependencies
+        run: npm install
+
+      - name: ☕ Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'zulu'
+
+      - name: 🐘 Setup Gradle 8.8
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: 8.8
+
+      - name: 🛠️ Build
+        run: npm run build:release:android 
+
+      - name: 📁 Prepare cache folder 
+        run: |
+          mkdir android-release-build
+          mv ./android/app/build/outputs/apk/release/app-release.apk android-release-build/android-release.apk
+          mv ./android/app/build/outputs/apk/androidTest/release/app-release-androidTest.apk android-release-build/android-release-test.apk
+
+      - name: 📡 Store built app in cache
+        id: android-release-save
+        uses: actions/cache/save@v4
+        with:
+          path: android-release-build/
+          key: android-release-build-\${{ github.event.pull_request.head.sha }}
+"
+`;
+
+exports[`detox recipe rn-setup-ci-npm-flat detox 7`] = `
+"name: Build iOS Release App
+
+on:
+  pull_request: 
+
+jobs:
+  lookup-cached-build:
+    runs-on: ubuntu-latest
+    outputs:
+      build-exists: \${{ steps.ios-release-restore.outputs.cache-hit }}
+    steps:
+      - name: 🐛 Try to restore build from cache
+        id: ios-release-restore
+        uses: actions/cache/restore@v4
+        with:
+          lookup-only: true
+          path: ios-release-build/
+          key: ios-release-build-\${{ github.event.pull_request.head.sha }}
+
+  build-release-ios:
+    needs: lookup-cached-build 
+    if: needs.lookup-cached-build.outputs.build-exists != 'true'
+    runs-on: macos-latest
+    steps:
+      - name: 🏗 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 📦 Install dependencies
+        run: npm install
+
+      - name: 🔨 Use latest stable Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - name: 🛠️ Build
+        run: npm run build:release:ios 
+
+      - name: 📁 Prepare cache folder 
+        run: |
+          mkdir ios-release-build
+          mv ./ios/build/Build/Products/Release-iphonesimulator/RnSetupCiNpmFlat.app ios-release-build/ios-release.app
+
+      - name: 📡 Store built app in cache
+        id: ios-release-save
+        uses: actions/cache/save@v4
+        with:
+          path: ios-release-build/
+          key: ios-release-build-\${{ github.event.pull_request.head.sha }}
+"
+`;
+
+exports[`detox recipe rn-setup-ci-npm-flat detox 8`] = `
+"name: Test Detox Android
+
+on:
+  pull_request: 
+
+jobs:
+  test-detox-android:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      checks: read
+      contents: read
+    env:
+      API_LEVEL: 34
+    steps:
+      - name: ⌛ Wait for build to finish
+        uses: poseidon/wait-for-status-checks@v0.5.0
+        with:
+          token: \${{ secrets.GITHUB_TOKEN }}
+          delay: 20s
+          match_pattern: build-release-android
+
+      - name: 🏗 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 📦 Install dependencies
+        run: npm install
+
+      - name: 📦 Install AVD dependencies
+        run: |
+          sudo apt update
+          sudo apt-get install -y libpulse0 libgl1
+
+      - name: ☕ Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'zulu'
+
+      - name: 🐘 Setup Gradle 8.8
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: 8.8
+
+      - name: 🐛 Try to restore build from cache
+        id: android-release-restore
+        uses: actions/cache/restore@v4
+        with:
+          path: android-release-build/
+          key: android-release-build-\${{ github.event.pull_request.head.sha }}
+
+      - name: 🏎️ Enable KVM
+        run: |
+          echo 'KERNEL==\\"kvm\\", GROUP=\\"kvm\\", MODE=\\"0666\\", OPTIONS+=\\"static_node=kvm\\"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+  
+      - name: 📱 AVD cache
+        uses: actions/cache@v4
+        id: avd-cache
+        with:
+          path: |
+            ~/.android/avd/*
+            ~/.android/adb*
+          key: avd-\${{ env.API_LEVEL }}
+      
+      - name: 📋 Run Detox tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: \${{ env.API_LEVEL }}
+          target: google_apis
+          disable-animations: false
+          emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -camera-front none
+          avd-name: e2e_emulator
+          arch: x86_64
+          script: npm run detox:test:android 
+"
+`;
+
+exports[`detox recipe rn-setup-ci-npm-flat detox 9`] = `
+"name: Test Detox iOS
+
+on:
+  pull_request: 
+
+jobs:
+  test-detox-ios:
+    runs-on: macos-latest
+    timeout-minutes: 60
+    permissions:
+      checks: read
+      contents: read
+    steps:
+      - name: ⌛ Wait for build to finish
+        uses: poseidon/wait-for-status-checks@v0.5.0
+        with:
+          token: \${{ secrets.GITHUB_TOKEN }}
+          delay: 20s
+          match_pattern: build-release-ios
+
+      - name: 🏗 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 📦 Install dependencies
+        run: npm install
+
+      - name: 📦 Install macOS dependencies
+        run: |
+          brew tap wix/brew
+          brew install applesimutils
+        env:
+          HOMEBREW_NO_AUTO_UPDATE: 1
+          HOMEBREW_NO_INSTALL_CLEANUP: 1
+
+      - name: 🐛 Try to restore build from cache
+        id: ios-release-restore
+        uses: actions/cache/restore@v4
+        with:
+          path: ios-release-build/
+          key: ios-release-build-\${{ github.event.pull_request.head.sha }}
+
+      - name: 📋 Run Detox tests
+        run: npm run detox:test:ios 
+"
+`;
+
+exports[`detox recipe rn-setup-ci-npm-monorepo detox 1`] = `
+Object {
+  "dependencies": Object {
+    "@expo/vector-icons": "",
+    "@react-navigation/native": "",
+    "expo": "",
+    "expo-constants": "",
+    "expo-font": "",
+    "expo-linking": "",
+    "expo-router": "",
+    "expo-splash-screen": "",
+    "expo-status-bar": "",
+    "expo-system-ui": "",
+    "expo-updates": "",
+    "expo-web-browser": "",
+    "react": "",
+    "react-dom": "",
+    "react-native": "",
+    "react-native-gesture-handler": "",
+    "react-native-reanimated": "",
+    "react-native-safe-area-context": "",
+    "react-native-screens": "",
+    "react-native-web": "",
+  },
+  "devDependencies": Object {
+    "@babel/core": "",
+    "@config-plugins/detox": "",
+    "@types/jest": "",
+    "@types/react": "",
+    "@types/react-test-renderer": "",
+    "detox": "",
+    "jest": "",
+    "jest-expo": "",
+    "react-test-renderer": "",
+    "ts-jest": "",
+    "typescript": "",
+  },
+  "main": "expo-router/entry",
+  "name": "expo-app",
+  "private": true,
+  "scripts": Object {
+    "android": "expo run:android",
+    "build:release:android": "npx expo prebuild --yarn && cd android && ./gradlew assembleRelease assembleAndroidTest -DtestBuildType=release -Dorg.gradle.jvmargs=-Xmx4g",
+    "build:release:ios": "npx expo prebuild --yarn && xcodebuild ONLY_ACTIVE_ARCH=YES -workspace ios/expoapp.xcworkspace -UseNewBuildSystem=YES -scheme expoapp -configuration Release -sdk iphonesimulator -derivedDataPath ios/build -quiet",
+    "detox:test:android": "detox test --config-path .detoxrc-ci.js --configuration android.emu.release --cleanup",
+    "detox:test:ios": "detox test --config-path .detoxrc-ci.js --configuration ios.sim.release --cleanup",
+    "ios": "expo run:ios",
+    "reset-project": "node ./scripts/reset-project.js",
+    "start": "expo start",
+    "web": "expo start --web",
+  },
+  "version": "1.0.0",
+}
+`;
+
+exports[`detox recipe rn-setup-ci-npm-monorepo detox 2`] = `
+"/** @type {Detox.DetoxConfig} */
+module.exports = {
+  testRunner: {
+    args: {
+      $0: 'jest',
+      config: 'e2e/jest.config.js',
+    },
+    jest: {
+      setupTimeout: 300000,
+    },
+  },
+  apps: {
+    'ios.release': {
+      type: 'ios.app',
+      binaryPath: 'ios-release-build/ios-release.app',
+    },
+    'android.release': {
+      type: 'android.apk',
+      binaryPath: 'android-release-build/android-release.apk',
+      testBinaryPath: 'android-release-build/android-release-test.apk',
+    },
+  },
+  devices: {
+    simulator: {
+      type: 'ios.simulator',
+      device: {
+        type: 'iPhone 15 Pro',
+      },
+    },
+    emulator: {
+      type: 'android.emulator',
+      device: {
+        avdName: 'e2e_emulator',
+      },
+    },
+  },
+  configurations: {
+    'ios.sim.release': {
+      device: 'simulator',
+      app: 'ios.release',
+    },
+    'android.emu.release': {
+      device: 'emulator',
+      app: 'android.release',
+    },
+  },
+}
+"
+`;
+
+exports[`detox recipe rn-setup-ci-npm-monorepo detox 3`] = `
+"{
+  \\"expo\\": {
+    \\"name\\": \\"expo-app\\",
+    \\"slug\\": \\"expo-app\\",
+    \\"version\\": \\"1.0.0\\",
+    \\"orientation\\": \\"portrait\\",
+    \\"icon\\": \\"./assets/images/icon.png\\",
+    \\"scheme\\": \\"myapp\\",
+    \\"userInterfaceStyle\\": \\"automatic\\",
+    \\"splash\\": {
+      \\"image\\": \\"./assets/images/splash.png\\",
+      \\"resizeMode\\": \\"contain\\",
+      \\"backgroundColor\\": \\"#ffffff\\"
+    },
+    \\"ios\\": {
+      \\"supportsTablet\\": true,
+      \\"bundleIdentifier\\": \\"com.kmichno.expoapp\\"
+    },
+    \\"android\\": {
+      \\"adaptiveIcon\\": {
+        \\"foregroundImage\\": \\"./assets/images/adaptive-icon.png\\",
+        \\"backgroundColor\\": \\"#ffffff\\"
+      },
+      \\"package\\": \\"com.kmichno.expoapp\\"
+    },
+    \\"web\\": {
+      \\"bundler\\": \\"metro\\",
+      \\"output\\": \\"static\\",
+      \\"favicon\\": \\"./assets/images/favicon.png\\"
+    },
+    \\"plugins\\": [
+      \\"expo-router\\",
+      \\"@config-plugins/detox\\"
+    ],
+    \\"experiments\\": {
+      \\"typedRoutes\\": true
+    },
+    \\"extra\\": {
+      \\"router\\": {
+        \\"origin\\": false
+      }
+    }
+  }
+}
+"
+`;
+
+exports[`detox recipe rn-setup-ci-npm-monorepo detox 4`] = `
+"/** @type {import('@jest/types').Config.InitialOptions} */
+module.exports = {
+  preset: 'ts-jest',
+  rootDir: '..',
+  testMatch: ['<rootDir>/e2e/**/*.test.ts'],
+  testTimeout: 300000,
+  maxWorkers: 1,
+  globalSetup: 'detox/runners/jest/globalSetup',
+  globalTeardown: 'detox/runners/jest/globalTeardown',
+  reporters: ['detox/runners/jest/reporter'],
+  testEnvironment: 'detox/runners/jest/testEnvironment',
+  verbose: true,
+}
+"
+`;
+
+exports[`detox recipe rn-setup-ci-npm-monorepo detox 5`] = `
+"import { device, by, element, expect } from 'detox'
+
+describe('Example', () => {
+  beforeAll(async () => {
+    await device.launchApp()
+  })
+
+  beforeEach(async () => {
+    await device.reloadReactNative()
+  })
+
+  it('Hello world! to be visible', async () => {
+    await expect(element(by.text('Hello World!'))).toBeVisible()
+  })
+})
+"
+`;
+
+exports[`detox recipe rn-setup-ci-npm-monorepo detox 6`] = `
+"name: Build Android Release App
+
+on:
+  pull_request: 
+    paths:
+      - apps/expo-app/**
+
+jobs:
+  lookup-cached-build:
+    runs-on: ubuntu-latest
+    outputs:
+      build-exists: \${{ steps.android-release-restore.outputs.cache-hit }}
+    steps:
+      - name: 🐛 Try to restore build from cache
+        id: android-release-restore
+        uses: actions/cache/restore@v4
+        with:
+          lookup-only: true
+          path: android-release-build/
+          key: android-release-build-\${{ github.event.pull_request.head.sha }}
+
+  build-release-android:
+    needs: lookup-cached-build 
+    if: needs.lookup-cached-build.outputs.build-exists != 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: 💾 Maximize build space
+        uses: AdityaGarg8/remove-unwanted-software@v4.1
+        with:
+          remove-dotnet: \\"true\\"
+          remove-haskell: \\"true\\"
+          remove-codeql: \\"true\\"
+          remove-docker-images: \\"true\\"
+
+      - name: 🏗 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 📦 Install dependencies
+        run: npm install
+
+      - name: ☕ Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'zulu'
+
+      - name: 🐘 Setup Gradle 8.8
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: 8.8
+
+      - name: 🛠️ Build
+        run: npm run build:release:android --prefix apps/expo-app
+
+      - name: 📁 Prepare cache folder 
+        run: |
+          mkdir android-release-build
+          mv apps/expo-app/android/app/build/outputs/apk/release/app-release.apk android-release-build/android-release.apk
+          mv apps/expo-app/android/app/build/outputs/apk/androidTest/release/app-release-androidTest.apk android-release-build/android-release-test.apk
+
+      - name: 📡 Store built app in cache
+        id: android-release-save
+        uses: actions/cache/save@v4
+        with:
+          path: android-release-build/
+          key: android-release-build-\${{ github.event.pull_request.head.sha }}
+"
+`;
+
+exports[`detox recipe rn-setup-ci-npm-monorepo detox 7`] = `
+"name: Build iOS Release App
+
+on:
+  pull_request: 
+    paths:
+      - apps/expo-app/**
+
+jobs:
+  lookup-cached-build:
+    runs-on: ubuntu-latest
+    outputs:
+      build-exists: \${{ steps.ios-release-restore.outputs.cache-hit }}
+    steps:
+      - name: 🐛 Try to restore build from cache
+        id: ios-release-restore
+        uses: actions/cache/restore@v4
+        with:
+          lookup-only: true
+          path: ios-release-build/
+          key: ios-release-build-\${{ github.event.pull_request.head.sha }}
+
+  build-release-ios:
+    needs: lookup-cached-build 
+    if: needs.lookup-cached-build.outputs.build-exists != 'true'
+    runs-on: macos-latest
+    steps:
+      - name: 🏗 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 📦 Install dependencies
+        run: npm install
+
+      - name: 🔨 Use latest stable Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - name: 🛠️ Build
+        run: npm run build:release:ios --prefix apps/expo-app
+
+      - name: 📁 Prepare cache folder 
+        run: |
+          mkdir ios-release-build
+          mv apps/expo-app/ios/build/Build/Products/Release-iphonesimulator/expoapp.app ios-release-build/ios-release.app
+
+      - name: 📡 Store built app in cache
+        id: ios-release-save
+        uses: actions/cache/save@v4
+        with:
+          path: ios-release-build/
+          key: ios-release-build-\${{ github.event.pull_request.head.sha }}
+"
+`;
+
+exports[`detox recipe rn-setup-ci-npm-monorepo detox 8`] = `
+"name: Test Detox Android
+
+on:
+  pull_request: 
+    paths:
+      - apps/expo-app/**
+
+jobs:
+  test-detox-android:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      checks: read
+      contents: read
+    env:
+      API_LEVEL: 34
+    steps:
+      - name: ⌛ Wait for build to finish
+        uses: poseidon/wait-for-status-checks@v0.5.0
+        with:
+          token: \${{ secrets.GITHUB_TOKEN }}
+          delay: 20s
+          match_pattern: build-release-android
+
+      - name: 🏗 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 📦 Install dependencies
+        run: npm install
+
+      - name: 📦 Install AVD dependencies
+        run: |
+          sudo apt update
+          sudo apt-get install -y libpulse0 libgl1
+
+      - name: ☕ Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'zulu'
+
+      - name: 🐘 Setup Gradle 8.8
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: 8.8
+
+      - name: 🐛 Try to restore build from cache
+        id: android-release-restore
+        uses: actions/cache/restore@v4
+        with:
+          path: android-release-build/
+          key: android-release-build-\${{ github.event.pull_request.head.sha }}
+
+      - name: 📁 Move build to app root directory
+        run: mv android-release-build apps/expo-app/android-release-build
+
+      - name: 🏎️ Enable KVM
+        run: |
+          echo 'KERNEL==\\"kvm\\", GROUP=\\"kvm\\", MODE=\\"0666\\", OPTIONS+=\\"static_node=kvm\\"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+  
+      - name: 📱 AVD cache
+        uses: actions/cache@v4
+        id: avd-cache
+        with:
+          path: |
+            ~/.android/avd/*
+            ~/.android/adb*
+          key: avd-\${{ env.API_LEVEL }}
+      
+      - name: 📋 Run Detox tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: \${{ env.API_LEVEL }}
+          target: google_apis
+          disable-animations: false
+          emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -camera-front none
+          avd-name: e2e_emulator
+          arch: x86_64
+          script: npm run detox:test:android --prefix apps/expo-app
+"
+`;
+
+exports[`detox recipe rn-setup-ci-npm-monorepo detox 9`] = `
+"name: Test Detox iOS
+
+on:
+  pull_request: 
+    paths:
+      - apps/expo-app/**
+
+jobs:
+  test-detox-ios:
+    runs-on: macos-latest
+    timeout-minutes: 60
+    permissions:
+      checks: read
+      contents: read
+    steps:
+      - name: ⌛ Wait for build to finish
+        uses: poseidon/wait-for-status-checks@v0.5.0
+        with:
+          token: \${{ secrets.GITHUB_TOKEN }}
+          delay: 20s
+          match_pattern: build-release-ios
+
+      - name: 🏗 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 📦 Install dependencies
+        run: npm install
+
+      - name: 📦 Install macOS dependencies
+        run: |
+          brew tap wix/brew
+          brew install applesimutils
+        env:
+          HOMEBREW_NO_AUTO_UPDATE: 1
+          HOMEBREW_NO_INSTALL_CLEANUP: 1
+
+      - name: 🐛 Try to restore build from cache
+        id: ios-release-restore
+        uses: actions/cache/restore@v4
+        with:
+          path: ios-release-build/
+          key: ios-release-build-\${{ github.event.pull_request.head.sha }}
+
+      - name: 📁 Move build to app root directory
+        run: mv ios-release-build apps/expo-app/ios-release-build
+
+      - name: 📋 Run Detox tests
+        run: npm run detox:test:ios --prefix apps/expo-app
+"
+`;
+
+exports[`detox recipe rn-setup-ci-yarn-flat detox 1`] = `
+Object {
+  "dependencies": Object {
+    "react": "",
+    "react-native": "",
+  },
+  "devDependencies": Object {
+    "@babel/core": "",
+    "@babel/preset-env": "",
+    "@babel/runtime": "",
+    "@react-native/babel-preset": "",
+    "@react-native/metro-config": "",
+    "@react-native/typescript-config": "",
+    "@types/jest": "",
+    "@types/react": "",
+    "@types/react-test-renderer": "",
+    "detox": "",
+    "jest": "",
+    "react-test-renderer": "",
+    "ts-jest": "",
+    "typescript": "",
+  },
+  "engines": Object {
+    "node": ">=18",
+  },
+  "name": "RnSetupCiYarnFlat",
+  "packageManager": "yarn@3.6.4",
+  "private": true,
+  "scripts": Object {
+    "android": "react-native run-android",
+    "build:release:android": "cd android && ./gradlew assembleRelease assembleAndroidTest -DtestBuildType=release -Dorg.gradle.jvmargs=-Xmx4g",
+    "build:release:ios": "cd ios && pod install && cd .. && xcodebuild ONLY_ACTIVE_ARCH=YES -workspace ios/RnSetupCiYarnFlat.xcworkspace -UseNewBuildSystem=YES -scheme RnSetupCiYarnFlat -configuration Release -sdk iphonesimulator -derivedDataPath ios/build -quiet",
+    "detox:test:android": "detox test --config-path .detoxrc-ci.js --configuration android.emu.release --cleanup",
+    "detox:test:ios": "detox test --config-path .detoxrc-ci.js --configuration ios.sim.release --cleanup",
+    "ios": "react-native run-ios",
+    "start": "react-native start",
+  },
+  "version": "0.0.1",
+}
+`;
+
+exports[`detox recipe rn-setup-ci-yarn-flat detox 2`] = `
+"/** @type {Detox.DetoxConfig} */
+module.exports = {
+  testRunner: {
+    args: {
+      $0: 'jest',
+      config: 'e2e/jest.config.js',
+    },
+    jest: {
+      setupTimeout: 300000,
+    },
+  },
+  apps: {
+    'ios.release': {
+      type: 'ios.app',
+      binaryPath: 'ios-release-build/ios-release.app',
+    },
+    'android.release': {
+      type: 'android.apk',
+      binaryPath: 'android-release-build/android-release.apk',
+      testBinaryPath: 'android-release-build/android-release-test.apk',
+    },
+  },
+  devices: {
+    simulator: {
+      type: 'ios.simulator',
+      device: {
+        type: 'iPhone 15 Pro',
+      },
+    },
+    emulator: {
+      type: 'android.emulator',
+      device: {
+        avdName: 'e2e_emulator',
+      },
+    },
+  },
+  configurations: {
+    'ios.sim.release': {
+      device: 'simulator',
+      app: 'ios.release',
+    },
+    'android.emu.release': {
+      device: 'emulator',
+      app: 'android.release',
+    },
+  },
+}
+"
+`;
+
+exports[`detox recipe rn-setup-ci-yarn-flat detox 3`] = `
+"{
+  \\"name\\": \\"RnSetupCiYarnFlat\\",
+  \\"displayName\\": \\"RnSetupCiYarnFlat\\"
+}
+"
+`;
+
+exports[`detox recipe rn-setup-ci-yarn-flat detox 4`] = `
+"/** @type {import('@jest/types').Config.InitialOptions} */
+module.exports = {
+  preset: 'ts-jest',
+  rootDir: '..',
+  testMatch: ['<rootDir>/e2e/**/*.test.ts'],
+  testTimeout: 300000,
+  maxWorkers: 1,
+  globalSetup: 'detox/runners/jest/globalSetup',
+  globalTeardown: 'detox/runners/jest/globalTeardown',
+  reporters: ['detox/runners/jest/reporter'],
+  testEnvironment: 'detox/runners/jest/testEnvironment',
+  verbose: true,
+}
+"
+`;
+
+exports[`detox recipe rn-setup-ci-yarn-flat detox 5`] = `
+"import { device, by, element, expect } from 'detox'
+
+describe('Example', () => {
+  beforeAll(async () => {
+    await device.launchApp()
+  })
+
+  beforeEach(async () => {
+    await device.reloadReactNative()
+  })
+
+  it('Hello world! to be visible', async () => {
+    await expect(element(by.text('Hello World!'))).toBeVisible()
+  })
+})
+"
+`;
+
+exports[`detox recipe rn-setup-ci-yarn-flat detox 6`] = `
+"name: Build Android Release App
+
+on:
+  pull_request: 
+
+jobs:
+  lookup-cached-build:
+    runs-on: ubuntu-latest
+    outputs:
+      build-exists: \${{ steps.android-release-restore.outputs.cache-hit }}
+    steps:
+      - name: 🐛 Try to restore build from cache
+        id: android-release-restore
+        uses: actions/cache/restore@v4
+        with:
+          lookup-only: true
+          path: android-release-build/
+          key: android-release-build-\${{ github.event.pull_request.head.sha }}
+
+  build-release-android:
+    needs: lookup-cached-build 
+    if: needs.lookup-cached-build.outputs.build-exists != 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: 💾 Maximize build space
+        uses: AdityaGarg8/remove-unwanted-software@v4.1
+        with:
+          remove-dotnet: \\"true\\"
+          remove-haskell: \\"true\\"
+          remove-codeql: \\"true\\"
+          remove-docker-images: \\"true\\"
+
+      - name: 🏗 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 📦 Install dependencies
+        run: yarn
+
+      - name: ☕ Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'zulu'
+
+      - name: 🐘 Setup Gradle 8.8
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: 8.8
+
+      - name: 🛠️ Build
+        run: yarn build:release:android
+
+      - name: 📁 Prepare cache folder 
+        run: |
+          mkdir android-release-build
+          mv ./android/app/build/outputs/apk/release/app-release.apk android-release-build/android-release.apk
+          mv ./android/app/build/outputs/apk/androidTest/release/app-release-androidTest.apk android-release-build/android-release-test.apk
+
+      - name: 📡 Store built app in cache
+        id: android-release-save
+        uses: actions/cache/save@v4
+        with:
+          path: android-release-build/
+          key: android-release-build-\${{ github.event.pull_request.head.sha }}
+"
+`;
+
+exports[`detox recipe rn-setup-ci-yarn-flat detox 7`] = `
+"name: Build iOS Release App
+
+on:
+  pull_request: 
+
+jobs:
+  lookup-cached-build:
+    runs-on: ubuntu-latest
+    outputs:
+      build-exists: \${{ steps.ios-release-restore.outputs.cache-hit }}
+    steps:
+      - name: 🐛 Try to restore build from cache
+        id: ios-release-restore
+        uses: actions/cache/restore@v4
+        with:
+          lookup-only: true
+          path: ios-release-build/
+          key: ios-release-build-\${{ github.event.pull_request.head.sha }}
+
+  build-release-ios:
+    needs: lookup-cached-build 
+    if: needs.lookup-cached-build.outputs.build-exists != 'true'
+    runs-on: macos-latest
+    steps:
+      - name: 🏗 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 📦 Install dependencies
+        run: yarn
+
+      - name: 🔨 Use latest stable Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - name: 🛠️ Build
+        run: yarn build:release:ios
+
+      - name: 📁 Prepare cache folder 
+        run: |
+          mkdir ios-release-build
+          mv ./ios/build/Build/Products/Release-iphonesimulator/RnSetupCiYarnFlat.app ios-release-build/ios-release.app
+
+      - name: 📡 Store built app in cache
+        id: ios-release-save
+        uses: actions/cache/save@v4
+        with:
+          path: ios-release-build/
+          key: ios-release-build-\${{ github.event.pull_request.head.sha }}
+"
+`;
+
+exports[`detox recipe rn-setup-ci-yarn-flat detox 8`] = `
+"name: Test Detox Android
+
+on:
+  pull_request: 
+
+jobs:
+  test-detox-android:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      checks: read
+      contents: read
+    env:
+      API_LEVEL: 34
+    steps:
+      - name: ⌛ Wait for build to finish
+        uses: poseidon/wait-for-status-checks@v0.5.0
+        with:
+          token: \${{ secrets.GITHUB_TOKEN }}
+          delay: 20s
+          match_pattern: build-release-android
+
+      - name: 🏗 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 📦 Install dependencies
+        run: yarn
+
+      - name: 📦 Install AVD dependencies
+        run: |
+          sudo apt update
+          sudo apt-get install -y libpulse0 libgl1
+
+      - name: ☕ Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'zulu'
+
+      - name: 🐘 Setup Gradle 8.8
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: 8.8
+
+      - name: 🐛 Try to restore build from cache
+        id: android-release-restore
+        uses: actions/cache/restore@v4
+        with:
+          path: android-release-build/
+          key: android-release-build-\${{ github.event.pull_request.head.sha }}
+
+      - name: 🏎️ Enable KVM
+        run: |
+          echo 'KERNEL==\\"kvm\\", GROUP=\\"kvm\\", MODE=\\"0666\\", OPTIONS+=\\"static_node=kvm\\"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+  
+      - name: 📱 AVD cache
+        uses: actions/cache@v4
+        id: avd-cache
+        with:
+          path: |
+            ~/.android/avd/*
+            ~/.android/adb*
+          key: avd-\${{ env.API_LEVEL }}
+      
+      - name: 📋 Run Detox tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: \${{ env.API_LEVEL }}
+          target: google_apis
+          disable-animations: false
+          emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -camera-front none
+          avd-name: e2e_emulator
+          arch: x86_64
+          script: yarn detox:test:android
+"
+`;
+
+exports[`detox recipe rn-setup-ci-yarn-flat detox 9`] = `
+"name: Test Detox iOS
+
+on:
+  pull_request: 
+
+jobs:
+  test-detox-ios:
+    runs-on: macos-latest
+    timeout-minutes: 60
+    permissions:
+      checks: read
+      contents: read
+    steps:
+      - name: ⌛ Wait for build to finish
+        uses: poseidon/wait-for-status-checks@v0.5.0
+        with:
+          token: \${{ secrets.GITHUB_TOKEN }}
+          delay: 20s
+          match_pattern: build-release-ios
+
+      - name: 🏗 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 📦 Install dependencies
+        run: yarn
+
+      - name: 📦 Install macOS dependencies
+        run: |
+          brew tap wix/brew
+          brew install applesimutils
+        env:
+          HOMEBREW_NO_AUTO_UPDATE: 1
+          HOMEBREW_NO_INSTALL_CLEANUP: 1
+
+      - name: 🐛 Try to restore build from cache
+        id: ios-release-restore
+        uses: actions/cache/restore@v4
+        with:
+          path: ios-release-build/
+          key: ios-release-build-\${{ github.event.pull_request.head.sha }}
+
+      - name: 📋 Run Detox tests
+        run: yarn detox:test:ios
+"
+`;
+
+exports[`detox recipe rn-setup-ci-yarn-monorepo detox 1`] = `
+Object {
+  "dependencies": Object {
+    "@expo/vector-icons": "",
+    "@react-navigation/native": "",
+    "expo": "",
+    "expo-constants": "",
+    "expo-font": "",
+    "expo-linking": "",
+    "expo-router": "",
+    "expo-splash-screen": "",
+    "expo-status-bar": "",
+    "expo-system-ui": "",
+    "expo-updates": "",
+    "expo-web-browser": "",
+    "react": "",
+    "react-dom": "",
+    "react-native": "",
+    "react-native-gesture-handler": "",
+    "react-native-reanimated": "",
+    "react-native-safe-area-context": "",
+    "react-native-screens": "",
+    "react-native-web": "",
+  },
+  "devDependencies": Object {
+    "@babel/core": "",
+    "@config-plugins/detox": "",
+    "@types/jest": "",
+    "@types/react": "",
+    "@types/react-test-renderer": "",
+    "detox": "",
+    "jest": "",
+    "jest-expo": "",
+    "react-test-renderer": "",
+    "ts-jest": "",
+    "typescript": "",
+  },
+  "main": "expo-router/entry",
+  "name": "expo-app",
+  "private": true,
+  "scripts": Object {
+    "android": "expo run:android",
+    "build:release:android": "npx expo prebuild --yarn && cd android && ./gradlew assembleRelease assembleAndroidTest -DtestBuildType=release -Dorg.gradle.jvmargs=-Xmx4g",
+    "build:release:ios": "npx expo prebuild --yarn && xcodebuild ONLY_ACTIVE_ARCH=YES -workspace ios/expoapp.xcworkspace -UseNewBuildSystem=YES -scheme expoapp -configuration Release -sdk iphonesimulator -derivedDataPath ios/build -quiet",
+    "detox:test:android": "detox test --config-path .detoxrc-ci.js --configuration android.emu.release --cleanup",
+    "detox:test:ios": "detox test --config-path .detoxrc-ci.js --configuration ios.sim.release --cleanup",
+    "ios": "expo run:ios",
+    "reset-project": "node ./scripts/reset-project.js",
+    "start": "expo start",
+    "web": "expo start --web",
+  },
+  "version": "1.0.0",
+}
+`;
+
+exports[`detox recipe rn-setup-ci-yarn-monorepo detox 2`] = `
+"/** @type {Detox.DetoxConfig} */
+module.exports = {
+  testRunner: {
+    args: {
+      $0: 'jest',
+      config: 'e2e/jest.config.js',
+    },
+    jest: {
+      setupTimeout: 300000,
+    },
+  },
+  apps: {
+    'ios.release': {
+      type: 'ios.app',
+      binaryPath: 'ios-release-build/ios-release.app',
+    },
+    'android.release': {
+      type: 'android.apk',
+      binaryPath: 'android-release-build/android-release.apk',
+      testBinaryPath: 'android-release-build/android-release-test.apk',
+    },
+  },
+  devices: {
+    simulator: {
+      type: 'ios.simulator',
+      device: {
+        type: 'iPhone 15 Pro',
+      },
+    },
+    emulator: {
+      type: 'android.emulator',
+      device: {
+        avdName: 'e2e_emulator',
+      },
+    },
+  },
+  configurations: {
+    'ios.sim.release': {
+      device: 'simulator',
+      app: 'ios.release',
+    },
+    'android.emu.release': {
+      device: 'emulator',
+      app: 'android.release',
+    },
+  },
+}
+"
+`;
+
+exports[`detox recipe rn-setup-ci-yarn-monorepo detox 3`] = `
+"{
+  \\"expo\\": {
+    \\"name\\": \\"expo-app\\",
+    \\"slug\\": \\"expo-app\\",
+    \\"version\\": \\"1.0.0\\",
+    \\"orientation\\": \\"portrait\\",
+    \\"icon\\": \\"./assets/images/icon.png\\",
+    \\"scheme\\": \\"myapp\\",
+    \\"userInterfaceStyle\\": \\"automatic\\",
+    \\"splash\\": {
+      \\"image\\": \\"./assets/images/splash.png\\",
+      \\"resizeMode\\": \\"contain\\",
+      \\"backgroundColor\\": \\"#ffffff\\"
+    },
+    \\"ios\\": {
+      \\"supportsTablet\\": true,
+      \\"bundleIdentifier\\": \\"com.kmichno.expoapp\\"
+    },
+    \\"android\\": {
+      \\"adaptiveIcon\\": {
+        \\"foregroundImage\\": \\"./assets/images/adaptive-icon.png\\",
+        \\"backgroundColor\\": \\"#ffffff\\"
+      },
+      \\"package\\": \\"com.kmichno.expoapp\\"
+    },
+    \\"web\\": {
+      \\"bundler\\": \\"metro\\",
+      \\"output\\": \\"static\\",
+      \\"favicon\\": \\"./assets/images/favicon.png\\"
+    },
+    \\"plugins\\": [
+      \\"expo-router\\",
+      \\"@config-plugins/detox\\"
+    ],
+    \\"experiments\\": {
+      \\"typedRoutes\\": true
+    },
+    \\"extra\\": {
+      \\"router\\": {
+        \\"origin\\": false
+      }
+    },
+    \\"runtimeVersion\\": {
+      \\"policy\\": \\"appVersion\\"
+    },
+    \\"updates\\": {
+      \\"url\\": \\"https://u.expo.dev/8d386899-969f-4bc9-b1a5-611be97f4f4f\\"
+    }
+  }
+}
+"
+`;
+
+exports[`detox recipe rn-setup-ci-yarn-monorepo detox 4`] = `
+"/** @type {import('@jest/types').Config.InitialOptions} */
+module.exports = {
+  preset: 'ts-jest',
+  rootDir: '..',
+  testMatch: ['<rootDir>/e2e/**/*.test.ts'],
+  testTimeout: 300000,
+  maxWorkers: 1,
+  globalSetup: 'detox/runners/jest/globalSetup',
+  globalTeardown: 'detox/runners/jest/globalTeardown',
+  reporters: ['detox/runners/jest/reporter'],
+  testEnvironment: 'detox/runners/jest/testEnvironment',
+  verbose: true,
+}
+"
+`;
+
+exports[`detox recipe rn-setup-ci-yarn-monorepo detox 5`] = `
+"import { device, by, element, expect } from 'detox'
+
+describe('Example', () => {
+  beforeAll(async () => {
+    await device.launchApp()
+  })
+
+  beforeEach(async () => {
+    await device.reloadReactNative()
+  })
+
+  it('Hello world! to be visible', async () => {
+    await expect(element(by.text('Hello World!'))).toBeVisible()
+  })
+})
+"
+`;
+
+exports[`detox recipe rn-setup-ci-yarn-monorepo detox 6`] = `
+"name: Build Android Release App
+
+on:
+  pull_request: 
+    paths:
+      - apps/expo-app/**
+
+jobs:
+  lookup-cached-build:
+    runs-on: ubuntu-latest
+    outputs:
+      build-exists: \${{ steps.android-release-restore.outputs.cache-hit }}
+    steps:
+      - name: 🐛 Try to restore build from cache
+        id: android-release-restore
+        uses: actions/cache/restore@v4
+        with:
+          lookup-only: true
+          path: android-release-build/
+          key: android-release-build-\${{ github.event.pull_request.head.sha }}
+
+  build-release-android:
+    needs: lookup-cached-build 
+    if: needs.lookup-cached-build.outputs.build-exists != 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: 💾 Maximize build space
+        uses: AdityaGarg8/remove-unwanted-software@v4.1
+        with:
+          remove-dotnet: \\"true\\"
+          remove-haskell: \\"true\\"
+          remove-codeql: \\"true\\"
+          remove-docker-images: \\"true\\"
+
+      - name: 🏗 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 📦 Install dependencies
+        run: yarn
+
+      - name: ☕ Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'zulu'
+
+      - name: 🐘 Setup Gradle 8.8
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: 8.8
+
+      - name: 🛠️ Build
+        run: yarn --cwd apps/expo-app build:release:android
+
+      - name: 📁 Prepare cache folder 
+        run: |
+          mkdir android-release-build
+          mv apps/expo-app/android/app/build/outputs/apk/release/app-release.apk android-release-build/android-release.apk
+          mv apps/expo-app/android/app/build/outputs/apk/androidTest/release/app-release-androidTest.apk android-release-build/android-release-test.apk
+
+      - name: 📡 Store built app in cache
+        id: android-release-save
+        uses: actions/cache/save@v4
+        with:
+          path: android-release-build/
+          key: android-release-build-\${{ github.event.pull_request.head.sha }}
+"
+`;
+
+exports[`detox recipe rn-setup-ci-yarn-monorepo detox 7`] = `
+"name: Build iOS Release App
+
+on:
+  pull_request: 
+    paths:
+      - apps/expo-app/**
+
+jobs:
+  lookup-cached-build:
+    runs-on: ubuntu-latest
+    outputs:
+      build-exists: \${{ steps.ios-release-restore.outputs.cache-hit }}
+    steps:
+      - name: 🐛 Try to restore build from cache
+        id: ios-release-restore
+        uses: actions/cache/restore@v4
+        with:
+          lookup-only: true
+          path: ios-release-build/
+          key: ios-release-build-\${{ github.event.pull_request.head.sha }}
+
+  build-release-ios:
+    needs: lookup-cached-build 
+    if: needs.lookup-cached-build.outputs.build-exists != 'true'
+    runs-on: macos-latest
+    steps:
+      - name: 🏗 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 📦 Install dependencies
+        run: yarn
+
+      - name: 🔨 Use latest stable Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - name: 🛠️ Build
+        run: yarn --cwd apps/expo-app build:release:ios
+
+      - name: 📁 Prepare cache folder 
+        run: |
+          mkdir ios-release-build
+          mv apps/expo-app/ios/build/Build/Products/Release-iphonesimulator/expoapp.app ios-release-build/ios-release.app
+
+      - name: 📡 Store built app in cache
+        id: ios-release-save
+        uses: actions/cache/save@v4
+        with:
+          path: ios-release-build/
+          key: ios-release-build-\${{ github.event.pull_request.head.sha }}
+"
+`;
+
+exports[`detox recipe rn-setup-ci-yarn-monorepo detox 8`] = `
+"name: Test Detox Android
+
+on:
+  pull_request: 
+    paths:
+      - apps/expo-app/**
+
+jobs:
+  test-detox-android:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      checks: read
+      contents: read
+    env:
+      API_LEVEL: 34
+    steps:
+      - name: ⌛ Wait for build to finish
+        uses: poseidon/wait-for-status-checks@v0.5.0
+        with:
+          token: \${{ secrets.GITHUB_TOKEN }}
+          delay: 20s
+          match_pattern: build-release-android
+
+      - name: 🏗 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 📦 Install dependencies
+        run: yarn
+
+      - name: 📦 Install AVD dependencies
+        run: |
+          sudo apt update
+          sudo apt-get install -y libpulse0 libgl1
+
+      - name: ☕ Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'zulu'
+
+      - name: 🐘 Setup Gradle 8.8
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: 8.8
+
+      - name: 🐛 Try to restore build from cache
+        id: android-release-restore
+        uses: actions/cache/restore@v4
+        with:
+          path: android-release-build/
+          key: android-release-build-\${{ github.event.pull_request.head.sha }}
+
+      - name: 📁 Move build to app root directory
+        run: mv android-release-build apps/expo-app/android-release-build
+
+      - name: 🏎️ Enable KVM
+        run: |
+          echo 'KERNEL==\\"kvm\\", GROUP=\\"kvm\\", MODE=\\"0666\\", OPTIONS+=\\"static_node=kvm\\"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+  
+      - name: 📱 AVD cache
+        uses: actions/cache@v4
+        id: avd-cache
+        with:
+          path: |
+            ~/.android/avd/*
+            ~/.android/adb*
+          key: avd-\${{ env.API_LEVEL }}
+      
+      - name: 📋 Run Detox tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: \${{ env.API_LEVEL }}
+          target: google_apis
+          disable-animations: false
+          emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -camera-front none
+          avd-name: e2e_emulator
+          arch: x86_64
+          script: yarn --cwd apps/expo-app detox:test:android
+"
+`;
+
+exports[`detox recipe rn-setup-ci-yarn-monorepo detox 9`] = `
+"name: Test Detox iOS
+
+on:
+  pull_request: 
+    paths:
+      - apps/expo-app/**
+
+jobs:
+  test-detox-ios:
+    runs-on: macos-latest
+    timeout-minutes: 60
+    permissions:
+      checks: read
+      contents: read
+    steps:
+      - name: ⌛ Wait for build to finish
+        uses: poseidon/wait-for-status-checks@v0.5.0
+        with:
+          token: \${{ secrets.GITHUB_TOKEN }}
+          delay: 20s
+          match_pattern: build-release-ios
+
+      - name: 🏗 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 📦 Install dependencies
+        run: yarn
+
+      - name: 📦 Install macOS dependencies
+        run: |
+          brew tap wix/brew
+          brew install applesimutils
+        env:
+          HOMEBREW_NO_AUTO_UPDATE: 1
+          HOMEBREW_NO_INSTALL_CLEANUP: 1
+
+      - name: 🐛 Try to restore build from cache
+        id: ios-release-restore
+        uses: actions/cache/restore@v4
+        with:
+          path: ios-release-build/
+          key: ios-release-build-\${{ github.event.pull_request.head.sha }}
+
+      - name: 📁 Move build to app root directory
+        run: mv ios-release-build apps/expo-app/ios-release-build
+
+      - name: 📋 Run Detox tests
+        run: yarn --cwd apps/expo-app detox:test:ios
+"
+`;

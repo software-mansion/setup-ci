@@ -1,0 +1,351 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`jest recipe rn-setup-ci-create-expo-stack jest 1`] = `
+Object {
+  "dependencies": Object {
+    "react": "",
+    "react-native": "",
+  },
+  "devDependencies": Object {
+    "@babel/core": "",
+    "@babel/preset-env": "",
+    "@babel/runtime": "",
+    "@react-native/babel-preset": "",
+    "@react-native/metro-config": "",
+    "@react-native/typescript-config": "",
+    "@types/react": "",
+    "@types/react-test-renderer": "",
+    "jest": "",
+    "react-test-renderer": "",
+  },
+  "engines": Object {
+    "node": ">=18",
+  },
+  "name": "RnSetupCiYarnFlat",
+  "packageManager": "yarn@3.6.4",
+  "private": true,
+  "scripts": Object {
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
+    "start": "react-native start",
+    "test": "jest --passWithNoTests",
+  },
+  "version": "0.0.1",
+}
+`;
+
+exports[`jest recipe rn-setup-ci-create-expo-stack jest 2`] = `
+"{
+  \\"preset\\": \\"react-native\\",
+  \\"modulePathIgnorePatterns\\": [\\"e2e\\"]
+}
+"
+`;
+
+exports[`jest recipe rn-setup-ci-create-expo-stack jest 3`] = `
+"name: Run Jest tests
+
+on:
+  pull_request: 
+
+jobs:
+   jest:
+      name: Jest
+      runs-on: ubuntu-latest
+      steps:
+         - name: 🏗 Setup repo
+           uses: actions/checkout@v4
+
+         - name: 📦 Install dependencies
+           run: npm install
+
+         - name: 🎭 Run Jest
+           run: npm run test 
+"
+`;
+
+exports[`jest recipe rn-setup-ci-npm-flat jest 1`] = `
+Object {
+  "dependencies": Object {
+    "react": "",
+    "react-native": "",
+  },
+  "devDependencies": Object {
+    "@babel/core": "",
+    "@babel/preset-env": "",
+    "@babel/runtime": "",
+    "@react-native/babel-preset": "",
+    "@react-native/metro-config": "",
+    "@react-native/typescript-config": "",
+    "@types/react": "",
+    "@types/react-test-renderer": "",
+    "jest": "",
+    "react-test-renderer": "",
+  },
+  "engines": Object {
+    "node": ">=18",
+  },
+  "name": "RnSetupCiYarnFlat",
+  "packageManager": "yarn@3.6.4",
+  "private": true,
+  "scripts": Object {
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
+    "start": "react-native start",
+    "test": "jest --passWithNoTests",
+  },
+  "version": "0.0.1",
+}
+`;
+
+exports[`jest recipe rn-setup-ci-npm-flat jest 2`] = `
+"{
+  \\"preset\\": \\"react-native\\",
+  \\"modulePathIgnorePatterns\\": [\\"e2e\\"]
+}
+"
+`;
+
+exports[`jest recipe rn-setup-ci-npm-flat jest 3`] = `
+"name: Run Jest tests
+
+on:
+  pull_request: 
+
+jobs:
+   jest:
+      name: Jest
+      runs-on: ubuntu-latest
+      steps:
+         - name: 🏗 Setup repo
+           uses: actions/checkout@v4
+
+         - name: 📦 Install dependencies
+           run: npm install
+
+         - name: 🎭 Run Jest
+           run: npm run test 
+"
+`;
+
+exports[`jest recipe rn-setup-ci-npm-monorepo jest 1`] = `
+Object {
+  "dependencies": Object {
+    "@expo/vector-icons": "",
+    "@react-navigation/native": "",
+    "expo": "",
+    "expo-constants": "",
+    "expo-font": "",
+    "expo-linking": "",
+    "expo-router": "",
+    "expo-splash-screen": "",
+    "expo-status-bar": "",
+    "expo-system-ui": "",
+    "expo-updates": "",
+    "expo-web-browser": "",
+    "react": "",
+    "react-dom": "",
+    "react-native": "",
+    "react-native-gesture-handler": "",
+    "react-native-reanimated": "",
+    "react-native-safe-area-context": "",
+    "react-native-screens": "",
+    "react-native-web": "",
+  },
+  "devDependencies": Object {
+    "@babel/core": "",
+    "@types/react": "",
+    "@types/react-test-renderer": "",
+    "jest": "",
+    "jest-expo": "",
+    "react-test-renderer": "",
+  },
+  "main": "expo-router/entry",
+  "name": "expo-app",
+  "private": true,
+  "scripts": Object {
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "reset-project": "node ./scripts/reset-project.js",
+    "start": "expo start",
+    "test": "jest --passWithNoTests",
+    "web": "expo start --web",
+  },
+  "version": "1.0.0",
+}
+`;
+
+exports[`jest recipe rn-setup-ci-npm-monorepo jest 2`] = `
+"{
+  \\"preset\\": \\"react-native\\",
+  \\"modulePathIgnorePatterns\\": [\\"e2e\\"]
+}
+"
+`;
+
+exports[`jest recipe rn-setup-ci-npm-monorepo jest 3`] = `
+"name: Run Jest tests
+
+on:
+  pull_request: 
+    paths:
+      - apps/expo-app/**
+
+jobs:
+   jest:
+      name: Jest
+      runs-on: ubuntu-latest
+      steps:
+         - name: 🏗 Setup repo
+           uses: actions/checkout@v4
+
+         - name: 📦 Install dependencies
+           run: npm install
+
+         - name: 🎭 Run Jest
+           run: npm run test --prefix apps/expo-app
+"
+`;
+
+exports[`jest recipe rn-setup-ci-yarn-flat jest 1`] = `
+Object {
+  "dependencies": Object {
+    "react": "",
+    "react-native": "",
+  },
+  "devDependencies": Object {
+    "@babel/core": "",
+    "@babel/preset-env": "",
+    "@babel/runtime": "",
+    "@react-native/babel-preset": "",
+    "@react-native/metro-config": "",
+    "@react-native/typescript-config": "",
+    "@types/react": "",
+    "@types/react-test-renderer": "",
+    "jest": "",
+    "react-test-renderer": "",
+  },
+  "engines": Object {
+    "node": ">=18",
+  },
+  "name": "RnSetupCiYarnFlat",
+  "packageManager": "yarn@3.6.4",
+  "private": true,
+  "scripts": Object {
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
+    "start": "react-native start",
+    "test": "jest --passWithNoTests",
+  },
+  "version": "0.0.1",
+}
+`;
+
+exports[`jest recipe rn-setup-ci-yarn-flat jest 2`] = `
+"{
+  \\"preset\\": \\"react-native\\",
+  \\"modulePathIgnorePatterns\\": [\\"e2e\\"]
+}
+"
+`;
+
+exports[`jest recipe rn-setup-ci-yarn-flat jest 3`] = `
+"name: Run Jest tests
+
+on:
+  pull_request: 
+
+jobs:
+   jest:
+      name: Jest
+      runs-on: ubuntu-latest
+      steps:
+         - name: 🏗 Setup repo
+           uses: actions/checkout@v4
+
+         - name: 📦 Install dependencies
+           run: yarn
+
+         - name: 🎭 Run Jest
+           run: yarn test
+"
+`;
+
+exports[`jest recipe rn-setup-ci-yarn-monorepo jest 1`] = `
+Object {
+  "dependencies": Object {
+    "@expo/vector-icons": "",
+    "@react-navigation/native": "",
+    "expo": "",
+    "expo-constants": "",
+    "expo-font": "",
+    "expo-linking": "",
+    "expo-router": "",
+    "expo-splash-screen": "",
+    "expo-status-bar": "",
+    "expo-system-ui": "",
+    "expo-updates": "",
+    "expo-web-browser": "",
+    "react": "",
+    "react-dom": "",
+    "react-native": "",
+    "react-native-gesture-handler": "",
+    "react-native-reanimated": "",
+    "react-native-safe-area-context": "",
+    "react-native-screens": "",
+    "react-native-web": "",
+  },
+  "devDependencies": Object {
+    "@babel/core": "",
+    "@types/react": "",
+    "@types/react-test-renderer": "",
+    "jest": "",
+    "jest-expo": "",
+    "react-test-renderer": "",
+  },
+  "main": "expo-router/entry",
+  "name": "expo-app",
+  "private": true,
+  "scripts": Object {
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "reset-project": "node ./scripts/reset-project.js",
+    "start": "expo start",
+    "test": "jest --passWithNoTests",
+    "web": "expo start --web",
+  },
+  "version": "1.0.0",
+}
+`;
+
+exports[`jest recipe rn-setup-ci-yarn-monorepo jest 2`] = `
+"{
+  \\"preset\\": \\"react-native\\",
+  \\"modulePathIgnorePatterns\\": [\\"e2e\\"]
+}
+"
+`;
+
+exports[`jest recipe rn-setup-ci-yarn-monorepo jest 3`] = `
+"name: Run Jest tests
+
+on:
+  pull_request: 
+    paths:
+      - apps/expo-app/**
+
+jobs:
+   jest:
+      name: Jest
+      runs-on: ubuntu-latest
+      steps:
+         - name: 🏗 Setup repo
+           uses: actions/checkout@v4
+
+         - name: 📦 Install dependencies
+           run: yarn
+
+         - name: 🎭 Run Jest
+           run: yarn --cwd apps/expo-app test
+"
+`;

@@ -8,7 +8,7 @@ const execute =
   () => async (toolbox: CycliToolbox, context: ProjectContext) => {
     toolbox.interactive.vspace()
     toolbox.interactive.sectionHeader(
-      'Genereating EAS Update and Preview workflow'
+      'Generating EAS Update and Preview workflow'
     )
 
     toolbox.dependencies.add('expo', context)

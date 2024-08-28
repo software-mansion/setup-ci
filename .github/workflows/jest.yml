@@ -1,10 +1,10 @@
-name: Prettier check
+name: Run Jest
 
 on: pull_request
 
 jobs:
-  prettier-check:
-    name: Prettier check
+  jest:
+    name: Jest
     runs-on: ubuntu-latest
     steps:
       - name: 🏗 Setup repo
@@ -13,5 +13,5 @@ jobs:
       - name: 📦 Install dependencies
         run: yarn
 
-      - name: ✨ Run Prettier check
-        run: yarn prettier:check
+      - name: 🎭 Run Jest
+        run: yarn test

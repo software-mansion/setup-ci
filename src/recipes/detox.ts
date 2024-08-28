@@ -47,7 +47,7 @@ const createDetoxWorkflows = async (
   { expo }: { expo: boolean }
 ) => {
   toolbox.interactive.vspace()
-  toolbox.interactive.sectionHeader('Genereating Detox workflow')
+  toolbox.interactive.sectionHeader('Generating Detox workflow')
 
   await createReleaseBuildWorkflows(toolbox, context, {
     platforms: ['android', 'ios'],

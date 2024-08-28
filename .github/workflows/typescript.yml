@@ -1,14 +1,17 @@
-name: Run Typescript
-on:
-  - pull_request
+name: Typescript check
+
+on: pull_request
+
 jobs:
   test:
-    name: Typescript
+    name: Typescript check
     runs-on: ubuntu-latest
     steps:
       - name: 🏗 Setup repo
         uses: actions/checkout@v4
+
       - name: 📦 Install dependencies
         run: yarn
+
       - name: 🔨 Run Typescript
-        run: yarn --cwd . ts:check
+        run: yarn ts:check

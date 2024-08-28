@@ -1,0 +1,28 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`prints help 1`] = `
+"
+[0m[1m[32mWelcome to react-native-ci-cli ![39m[22m[0m
+
+[0m[90mQuickly setup CI workflows for your React Native app[39m[0m
+
+[0m[1m[4mUsage:[24m[22m react-native-ci-cli [FLAGS][0m
+
+[0m[1m[4mFlags:[24m[22m[0m
+[0m  [36m--help            [39m	Print help message[0m
+[0m  [36m--version         [39m	Print version[0m
+[0m  [36m--skip-git-check  [39m	Skip check for dirty git repository[0m
+[0m  [36m--preset          [39m	Run with preset. Combine with feature flags to specify generated workflows[0m
+
+[0mUse any combination of the following with --preset flag to specify your own set of workflows to generate[0m
+
+[0m[1m[4mFeature flags:[24m[22m[0m
+[0m  [36m--lint            [39m	Generate ESLint workflow to run on every PR[0m
+[0m  [36m--jest            [39m	Generate Jest workflow to run on every PR[0m
+[0m  [36m--ts              [39m	Generate Typescript check workflow to run on every PR[0m
+[0m  [36m--prettier        [39m	Generate Prettier check workflow to run on every PR[0m
+[0m  [36m--eas-update      [39m	Generate EAS Update and preview workflow to run on every PR (Expo projects only)[0m
+[0m  [36m--detox           [39m	Generate workflow to run Detox e2e tests on every PR[0m
+
+"
+`;

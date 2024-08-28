@@ -21,7 +21,8 @@
     "target": "es5",
     "declaration": true,
     "declarationDir": "build/types",
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "resolveJsonModule": true
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules"]
