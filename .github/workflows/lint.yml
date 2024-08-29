@@ -10,6 +10,11 @@ jobs:
       - name: 🏗 Setup repo
         uses: actions/checkout@v4
 
+      - name: Install robotjs dependencies
+        run: |
+          sudo apt update
+          sudo apt-get install libxtst-dev libpng++-dev
+
       - name: 📦 Install dependencies
         run: yarn
 
