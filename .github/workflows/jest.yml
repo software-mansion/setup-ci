@@ -10,6 +10,14 @@ jobs:
       - name: 🏗 Setup repo
         uses: actions/checkout@v4
 
+      - name: 🔑 Generate and use SSH key pair
+        run: |
+          mkdir ~/.ssh
+          ssh-keygen -t rsa -b 4096 -f ~/.ssh/id_rsa -N ""
+          cat ~/.ssh/id_rsa.pub
+          eval "$(ssh-agent -s)"
+          ssh-add ~/.ssh/id_rsa
+
       - name: 🤖 Install robotjs dependencies
         run: |
           sudo apt update
