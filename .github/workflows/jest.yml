@@ -18,6 +18,12 @@ jobs:
           eval "$(ssh-agent -s)"
           ssh-add ~/.ssh/id_rsa
 
+      - name: Setup Github
+        run: |
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+          git config --global user.name "km1chno-swm"
+          git config --global user.email "katzper.michno@swmansion.com"
+
       - name: 🤖 Install robotjs dependencies
         run: |
           sudo apt update
