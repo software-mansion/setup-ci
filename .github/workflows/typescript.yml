@@ -3,7 +3,7 @@ name: Typescript check
 on: pull_request
 
 jobs:
-  test:
+  typescript-check:
     name: Typescript check
     runs-on: ubuntu-latest
     steps:

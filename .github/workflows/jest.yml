@@ -10,20 +10,6 @@ jobs:
       - name: 🏗 Setup repo
         uses: actions/checkout@v4
 
-      - name: 🔑 Generate and use SSH key pair
-        run: |
-          mkdir ~/.ssh
-          ssh-keygen -t rsa -b 4096 -f ~/.ssh/id_rsa -N ""
-          cat ~/.ssh/id_rsa.pub
-          eval "$(ssh-agent -s)"
-          ssh-add ~/.ssh/id_rsa
-
-      - name: Setup Github
-        run: |
-          ssh-keyscan github.com >> ~/.ssh/known_hosts
-          git config --global user.name "km1chno-swm"
-          git config --global user.email "katzper.michno@swmansion.com"
-
       - name: 🤖 Install robotjs dependencies
         run: |
           sudo apt update

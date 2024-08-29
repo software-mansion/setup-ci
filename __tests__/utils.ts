@@ -21,7 +21,7 @@ const INSTALL_DEPENDENCIES_COMMAND = {
 export const TEST_PROJECTS = {
   ['rn-setup-ci-yarn-flat']: {
     packageManager: 'yarn',
-    remoteUrl: 'git@github.com:km1chno-swm/rn-setup-ci-yarn-flat.git',
+    remoteUrl: 'https://github.com/km1chno-swm/rn-setup-ci-yarn-flat.git',
     repoRoot: PATH_TO_TEST_PROJECT,
     appRoot: PATH_TO_TEST_PROJECT,
     workflowNamePrefix: '',
