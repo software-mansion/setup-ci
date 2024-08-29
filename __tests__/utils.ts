@@ -134,10 +134,12 @@ export const setupTestProject = (projectName: string): void => {
         projectName
       )}`
     )
+    console.log(`Cloned test project ${projectName}`)
   }
   execSync(
     `cp -r ${join(PATH_TO_TEST_PROJECTS, projectName)} ${PATH_TO_TEST_PROJECT}`
   )
+  console.log(`Successfuly setup test project ${projectName}`)
 }
 
 export const removeTestProject = (): void => {
