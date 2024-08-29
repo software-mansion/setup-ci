@@ -10,19 +10,6 @@ jobs:
       - name: 🏗 Setup repo
         uses: actions/checkout@v4
 
-      - name: 📡 Fetch test projects
-        run: |
-          git clone https://github.com/km1chno-swm/rn-setup-ci-yarn-flat.git test-projects/rn-setup-ci-yarn-flat
-          git clone https://github.com/km1chno-swm/rn-setup-ci-npm-flat.git test-projects/rn-setup-ci-npm-flat
-          git clone https://github.com/km1chno-swm/rn-setup-ci-yarn-monorepo.git test-projects/rn-setup-ci-yarn-monorepo
-          git clone https://github.com/km1chno-swm/rn-setup-ci-npm-monorepo.git test-projects/rn-setup-ci-npm-monorepo
-          git clone https://github.com/km1chno-swm/rn-setup-ci-create-expo-stack.git test-projects/rn-setup-ci-create-expo-stack
-
-      - name: 🤖 Install robotjs dependencies
-        run: |
-          sudo apt update
-          sudo apt-get install libxtst-dev libpng++-dev
-
       - name: 📦 Install dependencies
         run: yarn
 

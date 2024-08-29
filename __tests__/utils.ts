@@ -1,7 +1,6 @@
 import { execSync, spawn } from 'child_process'
 import { join } from 'path'
 import { existsSync } from 'fs'
-const robot = require('robotjs')
 
 const PATH_TO_BINARY = join(__dirname, '..', 'bin', 'react-native-ci-cli')
 
@@ -11,6 +10,7 @@ const TEST_PROJECT_NAME = 'test-project'
 export const PATH_TO_TEST_PROJECTS = join(__dirname, '..', TEST_PROJECTS_FOLDER)
 const PATH_TO_TEST_PROJECT = join(__dirname, '..', TEST_PROJECT_NAME)
 
+export const NON_INTERACTIVE_FLAG = '--non-interactive'
 export const PRESET_FLAG = '--preset'
 
 const INSTALL_DEPENDENCIES_COMMAND = {
@@ -65,11 +65,7 @@ export const TEST_PROJECTS = {
 // If verbose is set to true, the child stdout will be printed to parent stdout.
 export const cli = async (
   flags: string[] = [],
-  {
-    verbose = false,
-    cwd = '.',
-    input,
-  }: { verbose?: boolean; cwd?: string; input?: Record<string, string[]> } = {
+  { verbose = false, cwd = '.' }: { verbose?: boolean; cwd?: string } = {
     verbose: false,
     cwd: '.',
   }
@@ -87,19 +83,6 @@ export const cli = async (
       if (verbose) {
         process.stdout.write(data)
       }
-
-      if (input) {
-        const dataStr: string = data.toString()
-
-        const actionKey = Object.keys(input)
-          .map((key): [string, number] => [key, dataStr.lastIndexOf(key)])
-          .sort((a, b) => b[1] - a[1])[0]
-
-        if (actionKey[1] !== -1) {
-          input[actionKey[0]].forEach((key) => robot.keyTap(key))
-        }
-      }
-
       output += data.toString()
     })
 

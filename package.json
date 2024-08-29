@@ -13,7 +13,7 @@
     "build": "yarn clean-build && yarn compile && yarn copy-templates",
     "prepublishOnly": "yarn build",
     "format": "eslint \"**/*.{js,jsx,ts,tsx}\" --fix && prettier \"**/*.{js,jsx,ts,tsx,json}\" --write",
-    "test": "jest --verbose",
+    "test": "jest",
     "watch": "jest --watch",
     "build:alias": "sed -i 's/\"name\": \"react-native-ci-cli\"/\"name\": \"setup-ci\"/g' package.json && yarn build",
     "snapupdate": "jest --updateSnapshot",
@@ -58,7 +58,6 @@
     "jest": "^26.6.3",
     "prettier": "^2.2.1",
     "pretty-quick": "^3.1.0",
-    "robotjs": "^0.6.0",
     "ts-jest": "^26.5.3",
     "ts-node": "^10.9.1",
     "typescript": "^5.5.3"

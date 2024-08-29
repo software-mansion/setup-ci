@@ -4,6 +4,7 @@ import {
   cli,
   getPackageJsonWithoutVersions,
   installDependencies,
+  NON_INTERACTIVE_FLAG,
   PRESET_FLAG,
   removeTestProject,
   setupTestProject,
@@ -71,12 +72,13 @@ describe('detox recipe', () => {
       const { packageManager, repoRoot, appRoot, workflowNamePrefix } =
         TEST_PROJECTS[projectName]
 
-      const output = await cli([PRESET_FLAG, `--${FLAG}`], {
-        cwd: appRoot,
-        input: {
-          'Press enter to continue...': ['enter'],
-        },
-      })
+      const output = await cli(
+        [PRESET_FLAG, NON_INTERACTIVE_FLAG, `--${FLAG}`],
+        {
+          cwd: appRoot,
+          verbose: true,
+        }
+      )
 
       for (const message of [
         'You have chosen to setup Detox for a non-expo project.',

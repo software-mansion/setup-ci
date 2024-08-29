@@ -18,11 +18,6 @@ jobs:
           cache: 'yarn'
           registry-url: 'https://registry.npmjs.org'
 
-      - name: 🤖 Install robotjs dependencies
-        run: |
-          sudo apt update
-          sudo apt-get install libxtst-dev libpng++-dev
-
       - name: 📦 Install dependencies
         run: yarn
 
