@@ -8,25 +8,36 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: 🏗 Setup repo
         uses: actions/checkout@v4
-      - name: Setup Node
+
+      - name: 🍀 Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 18
           cache: 'yarn'
           registry-url: 'https://registry.npmjs.org'
-      - name: Install dependencies 🔧
+
+      - name: 🤖 Install robotjs dependencies
+        run: |
+          sudo apt update
+          sudo apt-get install libxtst-dev libpng++-dev
+
+      - name: 📦 Install dependencies
         run: yarn
-      - name: Build 🏗️
+
+      - name: 🛠️ Build
         run: yarn build
-      - name: Publish package on NPM 📦
+
+      - name: 🚀 Publish package to NPM repository
         run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - name: Build for alias 🏗️
+
+      - name: 🛠️ Build for alias
         run: yarn build:alias
-      - name: Publish package on NPM for alias 📦
+
+      - name: 🚀 Publish package to NPM repository for alias
         run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
