@@ -21,35 +21,36 @@ const INSTALL_DEPENDENCIES_COMMAND = {
 export const TEST_PROJECTS = {
   ['rn-setup-ci-yarn-flat']: {
     packageManager: 'yarn',
-    remoteUrl: 'git@github.com:km1chno-swm/rn-setup-ci-yarn-flat.git',
+    remoteUrl: 'https://github.com/km1chno-swm/rn-setup-ci-yarn-flat.git',
     repoRoot: PATH_TO_TEST_PROJECT,
     appRoot: PATH_TO_TEST_PROJECT,
     workflowNamePrefix: '',
   },
   ['rn-setup-ci-npm-flat']: {
     packageManager: 'npm',
-    remoteUrl: 'git@github.com:km1chno-swm/rn-setup-ci-npm-flat.git',
+    remoteUrl: 'https://github.com/km1chno-swm/rn-setup-ci-npm-flat.git',
     repoRoot: PATH_TO_TEST_PROJECT,
     appRoot: PATH_TO_TEST_PROJECT,
     workflowNamePrefix: '',
   },
   ['rn-setup-ci-yarn-monorepo']: {
     packageManager: 'yarn',
-    remoteUrl: 'git@github.com:km1chno-swm/rn-setup-ci-yarn-monorepo.git',
+    remoteUrl: 'https://github.com/km1chno-swm/rn-setup-ci-yarn-monorepo.git',
     repoRoot: PATH_TO_TEST_PROJECT,
     appRoot: join(PATH_TO_TEST_PROJECT, 'apps', 'expo-app'),
     workflowNamePrefix: 'expo-app-',
   },
   ['rn-setup-ci-npm-monorepo']: {
     packageManager: 'npm',
-    remoteUrl: 'git@github.com:km1chno-swm/rn-setup-ci-npm-monorepo.git',
+    remoteUrl: 'https://github.com/km1chno-swm/rn-setup-ci-npm-monorepo.git',
     repoRoot: PATH_TO_TEST_PROJECT,
     appRoot: join(PATH_TO_TEST_PROJECT, 'apps', 'expo-app'),
     workflowNamePrefix: 'expo-app-',
   },
   ['rn-setup-ci-create-expo-stack']: {
     packageManager: 'npm',
-    remoteUrl: 'git@github.com:km1chno-swm/rn-setup-ci-create-expo-stack.git',
+    remoteUrl:
+      'https://github.com/km1chno-swm/rn-setup-ci-create-expo-stack.git',
     repoRoot: PATH_TO_TEST_PROJECT,
     appRoot: PATH_TO_TEST_PROJECT,
     workflowNamePrefix: '',
