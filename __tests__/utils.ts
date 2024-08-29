@@ -1,5 +1,5 @@
 import { execSync, spawn } from 'child_process'
-import { join } from 'path'
+import { join, sep } from 'path'
 import { existsSync } from 'fs'
 const robot = require('robotjs')
 
@@ -8,8 +8,14 @@ const PATH_TO_BINARY = join(__dirname, '..', 'bin', 'react-native-ci-cli')
 const TEST_PROJECTS_FOLDER = 'test-projects'
 const TEST_PROJECT_NAME = 'test-project'
 
-export const PATH_TO_TEST_PROJECTS = join(__dirname, '..', TEST_PROJECTS_FOLDER)
-const PATH_TO_TEST_PROJECT = join(__dirname, '..', TEST_PROJECT_NAME)
+export const PATH_TO_TEST_PROJECTS = `${sep}${join(
+  'tmp',
+  TEST_PROJECTS_FOLDER
+)}`
+const PATH_TO_TEST_PROJECT = `${sep}${join('tmp', TEST_PROJECT_NAME)}`
+
+// export const PATH_TO_TEST_PROJECTS = join(__dirname, '..', TEST_PROJECTS_FOLDER)
+// const PATH_TO_TEST_PROJECT = join(__dirname, '..', TEST_PROJECT_NAME)
 
 export const PRESET_FLAG = '--preset'
 
@@ -28,28 +34,29 @@ export const TEST_PROJECTS = {
   },
   ['rn-setup-ci-npm-flat']: {
     packageManager: 'npm',
-    remoteUrl: 'git@github.com:km1chno-swm/rn-setup-ci-npm-flat.git',
+    remoteUrl: 'https://github.com/km1chno-swm/rn-setup-ci-npm-flat.git',
     repoRoot: PATH_TO_TEST_PROJECT,
     appRoot: PATH_TO_TEST_PROJECT,
     workflowNamePrefix: '',
   },
   ['rn-setup-ci-yarn-monorepo']: {
     packageManager: 'yarn',
-    remoteUrl: 'git@github.com:km1chno-swm/rn-setup-ci-yarn-monorepo.git',
+    remoteUrl: 'https://github.com/km1chno-swm/rn-setup-ci-yarn-monorepo.git',
     repoRoot: PATH_TO_TEST_PROJECT,
     appRoot: join(PATH_TO_TEST_PROJECT, 'apps', 'expo-app'),
     workflowNamePrefix: 'expo-app-',
   },
   ['rn-setup-ci-npm-monorepo']: {
     packageManager: 'npm',
-    remoteUrl: 'git@github.com:km1chno-swm/rn-setup-ci-npm-monorepo.git',
+    remoteUrl: 'https://github.com/km1chno-swm/rn-setup-ci-npm-monorepo.git',
     repoRoot: PATH_TO_TEST_PROJECT,
     appRoot: join(PATH_TO_TEST_PROJECT, 'apps', 'expo-app'),
     workflowNamePrefix: 'expo-app-',
   },
   ['rn-setup-ci-create-expo-stack']: {
     packageManager: 'npm',
-    remoteUrl: 'git@github.com:km1chno-swm/rn-setup-ci-create-expo-stack.git',
+    remoteUrl:
+      'https://github.com/km1chno-swm/rn-setup-ci-create-expo-stack.git',
     repoRoot: PATH_TO_TEST_PROJECT,
     appRoot: PATH_TO_TEST_PROJECT,
     workflowNamePrefix: '',
@@ -126,16 +133,12 @@ export const installDependencies = (
 }
 
 export const setupTestProject = (projectName: string): void => {
-  if (!existsSync(PATH_TO_TEST_PROJECTS)) {
-    execSync(`mkdir -p ${PATH_TO_TEST_PROJECTS}`)
-  }
-
   if (!existsSync(join(PATH_TO_TEST_PROJECTS, projectName))) {
     execSync(
       `git clone ${TEST_PROJECTS[projectName].remoteUrl} ${join(
         PATH_TO_TEST_PROJECTS,
         projectName
-      )} `
+      )}`
     )
   }
   execSync(
