@@ -76,7 +76,6 @@ describe('detox recipe', () => {
         [PRESET_FLAG, NON_INTERACTIVE_FLAG, `--${FLAG}`],
         {
           cwd: appRoot,
-          verbose: true,
         }
       )
 
