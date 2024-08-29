@@ -1,5 +1,5 @@
 import { execSync, spawn } from 'child_process'
-import { join, sep } from 'path'
+import { join } from 'path'
 import { existsSync } from 'fs'
 const robot = require('robotjs')
 
@@ -8,14 +8,8 @@ const PATH_TO_BINARY = join(__dirname, '..', 'bin', 'react-native-ci-cli')
 const TEST_PROJECTS_FOLDER = 'test-projects'
 const TEST_PROJECT_NAME = 'test-project'
 
-export const PATH_TO_TEST_PROJECTS = `${sep}${join(
-  'tmp',
-  TEST_PROJECTS_FOLDER
-)}`
-const PATH_TO_TEST_PROJECT = `${sep}${join('tmp', TEST_PROJECT_NAME)}`
-
-// export const PATH_TO_TEST_PROJECTS = join(__dirname, '..', TEST_PROJECTS_FOLDER)
-// const PATH_TO_TEST_PROJECT = join(__dirname, '..', TEST_PROJECT_NAME)
+export const PATH_TO_TEST_PROJECTS = join(__dirname, '..', TEST_PROJECTS_FOLDER)
+const PATH_TO_TEST_PROJECT = join(__dirname, '..', TEST_PROJECT_NAME)
 
 export const PRESET_FLAG = '--preset'
 
