@@ -13,7 +13,7 @@
     "build": "yarn clean-build && yarn compile && yarn copy-templates",
     "prepublishOnly": "yarn build",
     "format": "eslint \"**/*.{js,jsx,ts,tsx}\" --fix && prettier \"**/*.{js,jsx,ts,tsx,json}\" --write",
-    "test": "jest",
+    "test": "jest --verbose",
     "watch": "jest --watch",
     "build:alias": "sed -i 's/\"name\": \"react-native-ci-cli\"/\"name\": \"setup-ci\"/g' package.json && yarn build",
     "snapupdate": "jest --updateSnapshot",
