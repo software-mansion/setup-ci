@@ -17,14 +17,14 @@ describe('lint recipe', () => {
 
   const PROJECTS = [
     'rn-setup-ci-yarn-flat',
-    // 'rn-setup-ci-npm-flat',
-    // 'rn-setup-ci-yarn-monorepo',
-    // 'rn-setup-ci-npm-monorepo',
-    // 'rn-setup-ci-create-expo-stack',
+    'rn-setup-ci-npm-flat',
+    'rn-setup-ci-yarn-monorepo',
+    'rn-setup-ci-npm-monorepo',
+    'rn-setup-ci-create-expo-stack',
   ]
 
   for (const projectName of PROJECTS) {
-    test.only(`${projectName} lint`, async () => {
+    test(`${projectName} lint`, async () => {
       setupTestProject(projectName)
 
       const {

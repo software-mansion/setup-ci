@@ -126,21 +126,25 @@ export const installDependencies = (
 }
 
 export const setupTestProject = (projectName: string): void => {
+  if (!existsSync(PATH_TO_TEST_PROJECTS)) {
+    execSync(`mkdir -p ${PATH_TO_TEST_PROJECTS}`)
+  }
+
   if (!existsSync(join(PATH_TO_TEST_PROJECTS, projectName))) {
     execSync(
       `git clone ${TEST_PROJECTS[projectName].remoteUrl} ${join(
         PATH_TO_TEST_PROJECTS,
         projectName
-      )}`
+      )} `
     )
   }
   execSync(
-    `cp -r ${join(PATH_TO_TEST_PROJECTS, projectName)} ${PATH_TO_TEST_PROJECT}`
+    `cp -r ${join(PATH_TO_TEST_PROJECTS, projectName)} ${PATH_TO_TEST_PROJECT} `
   )
 }
 
 export const removeTestProject = (): void => {
-  execSync(`rm -rf ${PATH_TO_TEST_PROJECT}`)
+  execSync(`rm -rf ${PATH_TO_TEST_PROJECT} `)
 }
 
 export const getPackageJsonWithoutVersions = async (
