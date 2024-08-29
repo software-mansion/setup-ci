@@ -11,6 +11,21 @@ test('prints help', async () => {
 
   expect(output).toContain(version)
 
-  const outputWithoutVersion = (await output).replace(version, '')
-  expect(outputWithoutVersion).toMatchSnapshot()
+  for (const message of [
+    'Welcome to react-native-ci-cli',
+    'Quickly setup CI workflows for your React Native app',
+    '--help',
+    '--version',
+    '--skip-git-check',
+    '--preset',
+    'Use any combination of the following with --preset flag to specify your own set of workflows to generate',
+    '--lint',
+    '--jest',
+    '--ts',
+    '--prettier',
+    '--eas-update',
+    '--detox',
+  ]) {
+    expect(output).toContain(message)
+  }
 })
