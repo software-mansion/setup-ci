@@ -10,7 +10,7 @@ const execute = async (
 ): Promise<void> => {
   toolbox.interactive.vspace()
   toolbox.interactive.sectionHeader(
-    'Genereating EAS Update and Preview workflow'
+    'Generating Preview with EAS Update workflow'
   )
 
   toolbox.dependencies.add('expo', context)
@@ -45,15 +45,22 @@ const execute = async (
   )
 }
 
+const validate = (toolbox: CycliToolbox): string | undefined => {
+  if (!toolbox.projectConfig.isExpo()) {
+    return 'only supported in expo projects'
+  }
+}
+
 export const recipe: CycliRecipe = {
   meta: {
-    name: 'EAS Update and Preview',
+    name: 'Preview with EAS Update',
     flag: FLAG,
     description:
-      'Generate EAS Update and preview workflow to run on every PR (Expo projects only)',
+      'Generate Preview with EAS Update workflow to run on every PR (Expo projects only)',
     selectHint: 'generate preview with EAS Update',
   },
   execute,
+  validate,
 }
 
 export default recipe

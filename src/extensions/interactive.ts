@@ -48,11 +48,12 @@ module.exports = (toolbox: CycliToolbox) => {
     strikethrough,
     yellow,
     magenta,
+    red,
     green,
   } = COLORS
 
   const withNewlinePrefix = (message: string, prefix: string): string =>
-    message.split('\n').join(`\n${prefix}  `)
+    message.split('\n').join(`\n${prefix} `)
 
   const actionPrompt = async (message: string): Promise<void> => {
     const opt = (
@@ -75,7 +76,7 @@ module.exports = (toolbox: CycliToolbox) => {
     }
 
     const title = `${gray(S_BAR)}\n${S_ACTION}  ${cyan(
-      withNewlinePrefix(message, S_BAR)
+      withNewlinePrefix(message, `${S_BAR} `)
     )}\n`
 
     const titleSubmitted = `${gray(S_BAR)}\n${S_ACTION}  ${withNewlinePrefix(
@@ -83,7 +84,7 @@ module.exports = (toolbox: CycliToolbox) => {
         .split('\n')
         .map((line) => cyan(line))
         .join('\n'),
-      dim(S_BAR)
+      `${dim(S_BAR)} `
     )}\n`
 
     const confirmed = await new SelectPrompt({
@@ -100,7 +101,7 @@ module.exports = (toolbox: CycliToolbox) => {
             return `${titleSubmitted}${gray(S_BAR)}  ${opt(
               this.options[0],
               'selected'
-            )}`
+            )}\n${gray(S_BAR)}`
           case 'cancel':
             return `${titleSubmitted}${gray(S_BAR)}  ${opt(
               this.options[0],
@@ -216,27 +217,32 @@ module.exports = (toolbox: CycliToolbox) => {
   const multiselect = async (
     message: string,
     hint: string,
-    options: { label: string; value: string; hint: string }[]
+    options: { label: string; value: string; hint: string; disabled: boolean }[]
   ): Promise<string[]> => {
     const opt = (
-      option: { label: string; value: string; hint?: string },
+      option: {
+        label: string
+        value: string
+        hint: string
+        disabled: boolean
+      },
       state: 'inactive' | 'active' | 'selected' | 'active-selected'
     ) => {
-      const { label, hint } = option
+      const { label, hint, disabled } = option
+
+      if (disabled) {
+        return dim(`${S_RADIO_ACTIVE} ${label} (${hint})`)
+      }
 
       switch (state) {
         case 'active': {
-          return `${blue(S_RADIO_INACTIVE)} ${bold(label)} ${
-            hint ? dim(`(${hint})`) : ''
-          }`
+          return `${blue(S_RADIO_INACTIVE)} ${bold(label)} ${dim(`(${hint})`)}`
         }
         case 'selected': {
           return `${blue(S_RADIO_ACTIVE)} ${dim(label)}`
         }
         case 'active-selected': {
-          return `${blue(S_RADIO_ACTIVE)} ${label} ${
-            option.hint ? dim(`(${hint})`) : ''
-          }`
+          return `${blue(S_RADIO_ACTIVE)} ${label} ${dim(`(${hint})`)}`
         }
         case 'inactive': {
           return `${dim(blue(S_RADIO_INACTIVE))} ${dim(label)}`
@@ -252,8 +258,10 @@ module.exports = (toolbox: CycliToolbox) => {
       )
     )
 
+    const enabledOptions = options.filter((option) => !option.disabled)
+
     const multiselectPromise = new MultiSelectPrompt({
-      options,
+      options: enabledOptions,
       initialValues: [],
       required: true,
       cursorAt: options[0].value,
@@ -269,7 +277,12 @@ module.exports = (toolbox: CycliToolbox) => {
         }  ${dim(hint)}\n`
 
         const styleOption = (
-          option: { value: string; label: string; hint?: string },
+          option: {
+            value: string
+            label: string
+            hint: string
+            disabled: boolean
+          },
           active: boolean
         ) => {
           const selected = this.value.includes(option.value)
@@ -287,8 +300,14 @@ module.exports = (toolbox: CycliToolbox) => {
           `${blue(S_BAR)}\n` +
           blue(S_BAR) +
           '  ' +
-          this.options
-            .map((option, index) => styleOption(option, this.cursor === index))
+          options
+            .map((option) => {
+              const indexInEnabled = enabledOptions.indexOf(option)
+              if (indexInEnabled === -1) {
+                return styleOption(option, false)
+              }
+              return styleOption(option, this.cursor === indexInEnabled)
+            })
             .join(`\n${blue(S_BAR)}  `) +
           '\n'
 
@@ -367,7 +386,7 @@ module.exports = (toolbox: CycliToolbox) => {
   }
 
   const error = (message: string) => {
-    print.error(`${S_STEP_CANCEL} ${message} `)
+    print.error(`${S_STEP_CANCEL} ${withNewlinePrefix(message, red('│'))}`)
   }
 
   const success = (message: string) => {
@@ -494,7 +513,12 @@ export interface InteractiveExtension {
     multiselect: (
       message: string,
       hint: string,
-      options: { label: string; value: string; hint: string }[]
+      options: {
+        label: string
+        value: string
+        hint: string
+        disabled: boolean
+      }[]
     ) => Promise<string[]>
     confirm: (
       message: string,

@@ -30,6 +30,48 @@ export type CycliCommand = GluegunCommand & {
 
 const RECIPES = [lint, jest, typescriptCheck, prettierCheck, easUpdate, detox]
 
+const getSelectedOptions = async (toolbox: CycliToolbox): Promise<string[]> => {
+  if (toolbox.options.isPreset()) {
+    const featureFlags = RECIPES.map((option) => option.meta.flag)
+
+    const selectedOptions = intersection(
+      featureFlags,
+      Object.keys(toolbox.parameters.options)
+    )
+
+    RECIPES.forEach((recipe: CycliRecipe) => {
+      if (selectedOptions.includes(recipe.meta.flag)) {
+        const validationResult = recipe.validate?.(toolbox)
+        if (validationResult) {
+          throw Error(
+            `Cannot generate ${recipe.meta.name} workflow in your project.\nReason: ${validationResult}`
+          )
+        }
+      }
+    })
+
+    return selectedOptions
+  } else {
+    return await toolbox.interactive.multiselect(
+      'Select workflows you want to run on every PR',
+      `Learn more about PR workflows: ${REPOSITORY_FEATURES_HELP_URL}`,
+      RECIPES.map(
+        ({ validate, meta: { name, flag, selectHint } }: CycliRecipe) => {
+          const validationResult = validate?.(toolbox)
+          const hint = validationResult || selectHint
+          const disabled = Boolean(validationResult)
+          return {
+            label: name,
+            value: flag,
+            hint,
+            disabled,
+          }
+        }
+      )
+    )
+  }
+}
+
 const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
   toolbox.interactive.vspace()
   toolbox.interactive.intro(' Welcome to React Native CI CLI! ')
@@ -76,32 +118,10 @@ const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
     'Created snapshot of project state before execution.'
   )
 
-  const featureFlags = getFeatureOptions().map((option) => option.flag)
-
-  const selectedFeatureFlags = toolbox.options.isPreset()
-    ? intersection(featureFlags, Object.keys(toolbox.parameters.options))
-    : await toolbox.interactive.multiselect(
-        'Select workflows you want to run on every PR',
-        `Learn more about PR workflows: ${REPOSITORY_FEATURES_HELP_URL}`,
-        RECIPES.map((recipe: CycliRecipe) => ({
-          label: recipe.meta.name,
-          value: recipe.meta.flag,
-          hint: recipe.meta.selectHint,
-        }))
-      )
-
-  // EAS Update recipe is currently supported only for Expo projects
-  if (
-    !toolbox.projectConfig.isExpo() &&
-    selectedFeatureFlags.includes(easUpdate.meta.flag)
-  ) {
-    throw Error('EAS Update workflow is supported only for Expo projects.')
-  }
-
-  context.selectedOptions = selectedFeatureFlags
+  context.selectedOptions = await getSelectedOptions(toolbox)
 
   const executors = RECIPES.filter((recipe: CycliRecipe) =>
-    selectedFeatureFlags.includes(recipe.meta.flag)
+    context.selectedOptions.includes(recipe.meta.flag)
   ).map((recipe: CycliRecipe) => recipe.execute)
 
   if (executors.length === 0) {
@@ -126,7 +146,7 @@ const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
 
   toolbox.furtherActions.print()
 
-  const usedFlags = selectedFeatureFlags
+  const usedFlags = context.selectedOptions
     .map((flag: string) => `--${flag}`)
     .join(' ')
 
@@ -145,6 +165,7 @@ const run = async (toolbox: GluegunToolbox) => {
     await runReactNativeCiCli(toolbox as CycliToolbox)
   } catch (error: unknown) {
     const errMessage = messageFromError(error)
+    toolbox.interactive.vspace()
     toolbox.interactive.error(
       `Failed to execute ${CYCLI_COMMAND} with following error:\n${errMessage}`
     )

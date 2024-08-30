@@ -45,6 +45,7 @@ export interface RecipeMeta {
 export interface CycliRecipe {
   meta: RecipeMeta
   execute: (toolbox: CycliToolbox, context: ProjectContext) => Promise<void>
+  validate?: (toolbox: CycliToolbox) => string | undefined
 }
 
 export type Platform = 'android' | 'ios'
