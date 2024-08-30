@@ -41,10 +41,12 @@ const getSelectedOptions = async (toolbox: CycliToolbox): Promise<string[]> => {
 
     RECIPES.forEach((recipe: CycliRecipe) => {
       if (selectedOptions.includes(recipe.meta.flag)) {
-        const validationResult = recipe.validate?.(toolbox)
-        if (validationResult) {
+        try {
+          recipe.validate?.(toolbox)
+        } catch (error: unknown) {
+          const validationError = messageFromError(error)
           throw Error(
-            `Cannot generate ${recipe.meta.name} workflow in your project.\nReason: ${validationResult}`
+            `Cannot generate ${recipe.meta.name} workflow in your project.\nReason: ${validationError}`
           )
         }
       }
@@ -57,9 +59,14 @@ const getSelectedOptions = async (toolbox: CycliToolbox): Promise<string[]> => {
       `Learn more about PR workflows: ${REPOSITORY_FEATURES_HELP_URL}`,
       RECIPES.map(
         ({ validate, meta: { name, flag, selectHint } }: CycliRecipe) => {
-          const validationResult = validate?.(toolbox)
-          const hint = validationResult || selectHint
-          const disabled = Boolean(validationResult)
+          let validationError = ''
+          try {
+            validate?.(toolbox)
+          } catch (error: unknown) {
+            validationError = messageFromError(error)
+          }
+          const hint = validationError || selectHint
+          const disabled = Boolean(validationError)
           return {
             label: name,
             value: flag,

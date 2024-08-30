@@ -45,9 +45,9 @@ const execute = async (
   )
 }
 
-const validate = (toolbox: CycliToolbox): string | undefined => {
+const validate = (toolbox: CycliToolbox): void => {
   if (!toolbox.projectConfig.isExpo()) {
-    return 'only supported in expo projects'
+    throw Error('only supported in expo projects')
   }
 }
 
