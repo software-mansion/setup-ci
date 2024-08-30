@@ -25,7 +25,7 @@ module.exports = (toolbox: CycliToolbox) => {
 
     try {
       await packageManager.add(fullName, {
-        dev: true,
+        dev,
         force: context.packageManager,
       })
     } catch (error: unknown) {

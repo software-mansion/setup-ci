@@ -13,7 +13,7 @@ const execute = async (
     'Generating Preview with EAS Update workflow'
   )
 
-  toolbox.dependencies.add('expo', context)
+  await toolbox.dependencies.add('expo', context)
 
   if (toolbox.filesystem.exists('eas.json')) {
     toolbox.interactive.step(
