@@ -106,8 +106,7 @@ as you will always be prompted to create secrets if necessary. The following tab
   </tr>
   <tr>
     <td style="vertical-align: middle;">EXPO_TOKEN</td>
-    <t
-d style="vertical-align: middle;">Used for authentication in workflows using your Expo account. Learn more at <a href=https://docs.expo.dev/eas-update/github-actions>Expo with GitHub actions</a>.</td>
+    <td style="vertical-align: middle;">Used for authentication in workflows using your Expo account. Learn more at <a href=https://docs.expo.dev/eas-update/github-actions>Expo with GitHub actions</a>.</td>
   </tr>
 </table>
 
