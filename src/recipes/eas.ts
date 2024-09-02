@@ -6,7 +6,10 @@ import { addTerminatingNewline } from '../utils/addTerminatingNewline'
 
 const FLAG = 'eas'
 
-const patchEasJson = async (toolbox: CycliToolbox): Promise<void> => {
+const patchEasJson = async (
+  toolbox: CycliToolbox,
+  withIOSCredentials: boolean
+): Promise<void> => {
   const patch = {
     build: {
       development: {
@@ -15,13 +18,15 @@ const patchEasJson = async (toolbox: CycliToolbox): Promise<void> => {
         android: {
           buildType: 'apk',
         },
-        // TODO: Ask whether to add this (developer apple account needed otherwise)
-        ios: {
-          simulator: true,
-        },
         channel: 'development',
       },
     },
+  }
+
+  if (!withIOSCredentials) {
+    patch.build.development['ios'] = {
+      simulator: true,
+    }
   }
 
   await toolbox.patching.update('eas.json', (config) => {
@@ -81,8 +86,6 @@ const execute = async (
     )
   }
 
-  await patchEasJson(toolbox)
-
   await toolbox.expo.prebuild(context, { cleanAfter: true })
 
   await toolbox.expo.eas.credentialsConfigureBuild({
@@ -90,8 +93,28 @@ const execute = async (
     environment: 'development',
   })
 
+  const withIOSCredentials = await toolbox.interactive.confirm(
+    [
+      'Do you want to configure iOS credentials now?',
+      'You must have paid Apple Developer account to do this.',
+      'If you skip this step, you will only be able to run the iOS app',
+      'built by EAS on an iOS simulator (not physical device).\n',
+    ].join('\n'),
+    {
+      type: 'normal',
+    }
+  )
+
+  if (withIOSCredentials) {
+    await toolbox.expo.eas.credentialsConfigureBuild({
+      platform: 'ios',
+      environment: 'development',
+    })
+  }
+
   await toolbox.expo.eas.updateConfigure()
 
+  await patchEasJson(toolbox, withIOSCredentials)
   await patchAppJson(toolbox)
 
   await toolbox.workflows.generate(join('eas', 'eas.ejf'), context)

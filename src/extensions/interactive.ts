@@ -134,7 +134,7 @@ module.exports = (toolbox: CycliToolbox) => {
         case 'normal':
           return `${gray(S_BAR)}\n${S_CONFIRM}  ${message
             .split('\n')
-            .join(`\n${S_BAR}  `)}\n`
+            .join(`\n${magenta(S_BAR)}  `)}\n`
         case 'warning':
           return `${gray(S_BAR)} \n${S_STEP_WARNING}  ${yellow(
             message.split('\n').join(`\n${S_BAR}  `)
@@ -473,7 +473,7 @@ module.exports = (toolbox: CycliToolbox) => {
         if (code !== 0) {
           reject(
             new Error(
-              `Failed to execute ${command}. The subprocess exited with code ${code}.`
+              `Failed to execute ${command}.\nThe subprocess exited with code ${code}.`
             )
           )
         } else {
