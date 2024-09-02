@@ -123,7 +123,7 @@ export const removeTestProject = (): void => {
 
 export const getPackageJsonWithoutVersions = async (
   packageJsonPath: string
-): Promise<any> => {
+): Promise<unknown> => {
   const pkgJson = await import(packageJsonPath)
 
   return {
