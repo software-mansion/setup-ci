@@ -55,7 +55,7 @@ The following are **feature flags** that can be used with `--preset` flag (they 
 
 <table>
   <tr>
-    <th style="text-align: center; vertical-align: middle;">Flag</th>
+    <th width="160px" style="text-align: center; vertical-align: middle;">Flag</th>
     <th style="text-align: center; vertical-align: middle;">Description</th>
   </tr>
   <tr>
@@ -83,7 +83,7 @@ The following are **feature flags** that can be used with `--preset` flag (they 
       <a href=https://docs.expo.dev/build/introduction/>EAS Build</a>,
       <a href=https://docs.expo.dev/eas-update/introduction/>EAS Update</a>
       and <a href=https://expo.dev/blog/fingerprint-your-native-runtime>Expo fingerprint</a>.
-      </br></br>
+      </br>
       Additionally, a comment will be created in your PR with a link to the build 
       and a QR code to scan and open the app on your device with the latest update.
     </td>
