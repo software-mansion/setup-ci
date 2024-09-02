@@ -1,14 +1,13 @@
 import { execSync, spawn } from 'child_process'
 import { join } from 'path'
-import { existsSync } from 'fs'
 
 const PATH_TO_BINARY = join(__dirname, '..', 'bin', 'react-native-ci-cli')
 
 const TEST_PROJECTS_FOLDER = 'test-projects'
 const TEST_PROJECT_NAME = 'test-project'
 
-export const PATH_TO_TEST_PROJECTS = join(__dirname, '..', TEST_PROJECTS_FOLDER)
-const PATH_TO_TEST_PROJECT = join(__dirname, '..', TEST_PROJECT_NAME)
+export const PATH_TO_TEST_PROJECTS = join(__dirname, TEST_PROJECTS_FOLDER)
+const PATH_TO_TEST_PROJECT = join(__dirname, TEST_PROJECT_NAME)
 
 export const NON_INTERACTIVE_FLAG = '--non-interactive'
 export const PRESET_FLAG = '--preset'
@@ -21,36 +20,30 @@ const INSTALL_DEPENDENCIES_COMMAND = {
 export const TEST_PROJECTS = {
   ['rn-setup-ci-yarn-flat']: {
     packageManager: 'yarn',
-    remoteUrl: 'https://github.com/km1chno-swm/rn-setup-ci-yarn-flat.git',
     repoRoot: PATH_TO_TEST_PROJECT,
     appRoot: PATH_TO_TEST_PROJECT,
     workflowNamePrefix: '',
   },
   ['rn-setup-ci-npm-flat']: {
     packageManager: 'npm',
-    remoteUrl: 'https://github.com/km1chno-swm/rn-setup-ci-npm-flat.git',
     repoRoot: PATH_TO_TEST_PROJECT,
     appRoot: PATH_TO_TEST_PROJECT,
     workflowNamePrefix: '',
   },
   ['rn-setup-ci-yarn-monorepo']: {
     packageManager: 'yarn',
-    remoteUrl: 'https://github.com/km1chno-swm/rn-setup-ci-yarn-monorepo.git',
     repoRoot: PATH_TO_TEST_PROJECT,
     appRoot: join(PATH_TO_TEST_PROJECT, 'apps', 'expo-app'),
     workflowNamePrefix: 'expo-app-',
   },
   ['rn-setup-ci-npm-monorepo']: {
     packageManager: 'npm',
-    remoteUrl: 'https://github.com/km1chno-swm/rn-setup-ci-npm-monorepo.git',
     repoRoot: PATH_TO_TEST_PROJECT,
     appRoot: join(PATH_TO_TEST_PROJECT, 'apps', 'expo-app'),
     workflowNamePrefix: 'expo-app-',
   },
   ['rn-setup-ci-create-expo-stack']: {
     packageManager: 'npm',
-    remoteUrl:
-      'https://github.com/km1chno-swm/rn-setup-ci-create-expo-stack.git',
     repoRoot: PATH_TO_TEST_PROJECT,
     appRoot: PATH_TO_TEST_PROJECT,
     workflowNamePrefix: '',
@@ -110,21 +103,22 @@ export const installDependencies = (
 }
 
 export const setupTestProject = (projectName: string): void => {
-  if (!existsSync(join(PATH_TO_TEST_PROJECTS, projectName))) {
-    execSync(
-      `git clone ${TEST_PROJECTS[projectName].remoteUrl} ${join(
+  execSync(
+    [
+      `cp -r ${join(
         PATH_TO_TEST_PROJECTS,
         projectName
-      )}`
-    )
-  }
-  execSync(
-    `cp -r ${join(PATH_TO_TEST_PROJECTS, projectName)} ${PATH_TO_TEST_PROJECT} `
+      )} ${PATH_TO_TEST_PROJECT}`,
+      `cd ${PATH_TO_TEST_PROJECT}`,
+      'git init',
+      'git add .',
+      'git commit -m "Initial commit"',
+    ].join(' && ')
   )
 }
 
 export const removeTestProject = (): void => {
-  execSync(`rm -rf ${PATH_TO_TEST_PROJECT} `)
+  execSync(`rm -rf ${PATH_TO_TEST_PROJECT}`)
 }
 
 export const getPackageJsonWithoutVersions = async (

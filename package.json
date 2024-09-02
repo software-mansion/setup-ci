@@ -69,7 +69,6 @@
       "<rootDir>/__tests__/**/*.test.ts"
     ],
     "maxWorkers": 1,
-    "testTimeout": 180000,
-    "globalTeardown": "<rootDir>/__tests__/teardown.ts"
+    "testTimeout": 180000
   }
 }
