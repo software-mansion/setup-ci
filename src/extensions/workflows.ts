@@ -16,9 +16,12 @@ module.exports = (toolbox: CycliToolbox) => {
   }
 
   const formatWorkflowString = (workflowString: string): string => {
-    return workflowString
-      .trimStart() // Remove white characters from beginning
-      .replace(/\n([ ]*\n[ ]*)+\n/g, '\n\n') // Replace >=3 consecutive empty lines (possibly containing spaces) with two endlines
+    return (
+      workflowString
+        .trim() // Remove white characters from beginning and end
+        .replace(/\n([ ]*\n[ ]*)+\n/g, '\n\n') + // Replace >=3 consecutive empty lines (possibly containing spaces) with two endlines
+      '\n' // one final newline at the end
+    )
   }
 
   const generate = async (

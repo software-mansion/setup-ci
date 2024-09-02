@@ -7,25 +7,22 @@ const install = {
 }
 %>
 
-name: EAS DevClient Build
+name: Preview with EAS
 
 on:
-  push:
-    branches: [main]
   pull_request: <%= (isMonorepo) ? `
     paths:
       - ${props.pathRelativeToRoot}/**` : "" %>
-    types: [opened, synchronize]
 
 jobs:
-  dev-client-build:
-    name: EAS DevClient Build
+  preview-with-eas:
+    name: Preview with EAS
     runs-on: ubuntu-latest
-    concurrency: fingerprint-${{ github.event_name != 'pull_request' && 'main' || github.run_id }}
+    concurrency: fingerprint-${{ github.run_id }}
     permissions:
+      contents: read
       pull-requests: write
       actions: write
-      contents: read
       packages: write
     steps:
       - name: 🔍 Check for EXPO_TOKEN
@@ -47,8 +44,9 @@ jobs:
       - name: 📦 Install dependencies
         run: <%= install[props.packageManager] %>
 
-      - name: 🛠️ Create DevClient build if needed
-        uses: expo/expo-github-action/preview-build@main
+      - name: 🚀 Create Preview with EAS Build and Update
+        uses: expo/expo-github-action/continuous-deploy-fingerprint@main
         with:
+          profile: development
+          branch: development
           <%= (isMonorepo) ? `working-directory: ${props.pathRelativeToRoot}` : '' %>
-          command: eas build --profile development --platform all

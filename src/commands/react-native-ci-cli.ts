@@ -3,8 +3,7 @@ import lint from '../recipes/lint'
 import jest from '../recipes/jest'
 import typescriptCheck from '../recipes/typescript'
 import prettierCheck from '../recipes/prettier'
-import easUpdate from '../recipes/eas-update'
-import easDevBuild from '../recipes/eas-dev-build'
+import eas from '../recipes/eas'
 import detox from '../recipes/detox'
 import isGitDirty from 'is-git-dirty'
 import sequentialPromiseMap from '../utils/sequentialPromiseMap'
@@ -29,15 +28,7 @@ export type CycliCommand = GluegunCommand & {
   featureOptions: Option[]
 }
 
-const RECIPES = [
-  lint,
-  jest,
-  typescriptCheck,
-  prettierCheck,
-  easUpdate,
-  easDevBuild,
-  detox,
-]
+const RECIPES = [lint, jest, typescriptCheck, prettierCheck, eas, detox]
 
 const getSelectedOptions = async (toolbox: CycliToolbox): Promise<string[]> => {
   if (toolbox.options.isPreset()) {

@@ -71,18 +71,16 @@ export const createReleaseBuildWorkflows = async (
   const existsIOsDir = toolbox.filesystem.exists('ios')
 
   if (expo) {
-    toolbox.print.info('⚙️ Running expo prebuild to setup app.json properly.')
-    await toolbox.interactive.spawnSubprocess(
-      'Expo prebuild',
-      `npx expo prebuild --${context.packageManager}`,
-      { alwaysPrintStderr: true }
-    )
+    toolbox.expo.prebuild(context, { cleanAfter: false })
   }
 
   const iOSAppName = toolbox.filesystem
     .list('ios')
     ?.find((file) => file.endsWith('.xcworkspace'))
     ?.replace('.xcworkspace', '')
+
+  if (!existsAndroidDir) toolbox.filesystem.remove('android')
+  if (!existsIOsDir) toolbox.filesystem.remove('ios')
 
   if (!iOSAppName) {
     throw Error(
@@ -97,7 +95,4 @@ export const createReleaseBuildWorkflows = async (
   if (platforms.includes('ios')) {
     await createReleaseBuildWorkflowIOs(toolbox, context, { iOSAppName, expo })
   }
-
-  if (!existsAndroidDir) toolbox.filesystem.remove('android')
-  if (!existsIOsDir) toolbox.filesystem.remove('ios')
 }
