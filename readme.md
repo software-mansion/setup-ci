@@ -119,7 +119,7 @@ the maintainers directly.
 
 ## 🚸 Roadmap
 
-- [ ] Build Expo DevClient when fingerprint changes
+- [x] Build Expo DevClient when fingerprint changes
 - [ ] Maestro support for E2E tests
 - [ ] Different workflows for different branches (ex. PR, main, release)
 - [ ] Upload source maps to Sentry
