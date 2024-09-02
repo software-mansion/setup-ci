@@ -75,12 +75,18 @@ The following are **feature flags** that can be used with `--preset` flag (they 
     <td style="vertical-align: middle;">Generate Prettier check workflow to run on every PR</td>
   </tr>
   <tr>
-    <td style="vertical-align: middle;">--eas-update</td>
-    <td style="vertical-align: middle;">Generate Preview with EAS Update workflow to run on every PR (Expo projects only)</td>
-  </tr>
-  <tr>
-    <td style="vertical-align: middle;">--eas-dev-build</td>
-    <td style="vertical-align: middle;">Generate EAS DevClient Build workflow to run on every PR (Expo projects only)</td>
+    <td style="vertical-align: middle;">--eas</td>
+    <td style="vertical-align: middle;">Generate Preview with EAS workflow to run on every PR <b>(Expo projects only)</b>. 
+      The workflow uses <a href=https://github.com/expo/expo-github-action/tree/main/continuous-deploy-fingerprint>Expo continuous-deploy-fingerprint action</a>
+      to publish EAS Updates and trigger EAS Builds in development profile 
+      when the fingerprint of the app changes. You can learn more with Expo documentation on
+      <a href=https://docs.expo.dev/build/introduction/>EAS Build</a>,
+      <a href=https://docs.expo.dev/eas-update/introduction/>EAS Update</a>
+      and <a href=https://expo.dev/blog/fingerprint-your-native-runtime>Expo fingerprint</a>.
+      </br></br>
+      Additionally, a comment will be created in your PR with a link to the build 
+      and a QR code to scan and open the app on your device with the latest update.
+    </td>
   </tr>
   <tr>
     <td style="vertical-align: middle;">--detox</td>
@@ -100,7 +106,8 @@ as you will always be prompted to create secrets if necessary. The following tab
   </tr>
   <tr>
     <td style="vertical-align: middle;">EXPO_TOKEN</td>
-    <td style="vertical-align: middle;">Used for authentication in workflows using your Expo account. Learn more at <a href=https://docs.expo.dev/eas-update/github-actions>Expo with GitHub actions</a>.</td>
+    <t
+d style="vertical-align: middle;">Used for authentication in workflows using your Expo account. Learn more at <a href=https://docs.expo.dev/eas-update/github-actions>Expo with GitHub actions</a>.</td>
   </tr>
 </table>
 
