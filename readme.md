@@ -2,7 +2,9 @@
 
 ## 🤔 Why?
 
-React Native CI CLI is meant to simplify CI/CD setup in your React Native project.
+Setting up CI is performed rarely, and is time-consuming, as it needs to be researched every time.
+
+We created a tool that bootstraps CI with the most used features, ready to be tailored in the future. When you run `npx setup-ci` React Native CI CLI effortlessly generates GH workflows for the most popular tasks. 
 
 ## 📖 Usage
 
@@ -12,7 +14,9 @@ Simply go to your project root directory and run:
 npx setup-ci
 ```
 
-If your project has a monorepo structure, run the script from the root directory of the app for which you want to set up workflows.
+then select the setup that suits best your project - React Native CI CLI generates workflows and tries to auto-magically add missing dependencies and configs. 
+
+If your project has monorepo structure, run the script from the root directory of the app for which you want to setup workflows.
 
 ## 💡 Demo
 
