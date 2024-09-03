@@ -46,7 +46,7 @@ const getSelectedOptions = async (toolbox: CycliToolbox): Promise<string[]> => {
         } catch (error: unknown) {
           const validationError = messageFromError(error)
 
-          // Rethrowing error with more informative message
+          // adding context to validation error reason (used in multiselect menu hint)
           throw Error(
             `Cannot generate ${recipe.meta.name} workflow in your project.\nReason: ${validationError}`
           )
