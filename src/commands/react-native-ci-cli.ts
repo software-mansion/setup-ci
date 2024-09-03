@@ -45,6 +45,8 @@ const getSelectedOptions = async (toolbox: CycliToolbox): Promise<string[]> => {
           recipe.validate?.(toolbox)
         } catch (error: unknown) {
           const validationError = messageFromError(error)
+
+          // Rethrowing error with more informative message
           throw Error(
             `Cannot generate ${recipe.meta.name} workflow in your project.\nReason: ${validationError}`
           )
