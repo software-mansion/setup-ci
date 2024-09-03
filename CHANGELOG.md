@@ -1,3 +1,12 @@
+## [0.4.10](https://github.com/software-mansion-labs/react-native-ci-cli/compare/v0.4.9...v0.4.10) (2024-08-27)
+
+
+### Bug Fixes
+
+* add credits and spell check ([#84](https://github.com/software-mansion-labs/react-native-ci-cli/issues/84)) ([91a00e2](https://github.com/software-mansion-labs/react-native-ci-cli/commit/91a00e2a24207ce7535acdb2bbd9d542d9d41479))
+
+
+
 ## [0.4.9](https://github.com/software-mansion-labs/react-native-ci-cli/compare/v0.4.8...v0.4.9) (2024-08-27)
 
 
@@ -32,17 +41,6 @@
 
 * add token back ([a789a31](https://github.com/software-mansion-labs/react-native-ci-cli/commit/a789a315f947191572b47be70531b7e17329f45e))
 * remove unused token ([ca2d93c](https://github.com/software-mansion-labs/react-native-ci-cli/commit/ca2d93c138714c3e8bba9009ded175b6af56de1d))
-
-
-
-## [0.4.5](https://github.com/software-mansion-labs/react-native-ci-cli/compare/v0.4.4...v0.4.5) (2024-08-26)
-
-
-### Bug Fixes
-
-* add token to checkout action ([acedcaa](https://github.com/software-mansion-labs/react-native-ci-cli/commit/acedcaacb74db392b99757354a815c7eb4fca3e5))
-* fix token ([3d720dc](https://github.com/software-mansion-labs/react-native-ci-cli/commit/3d720dc90a9229e2c4acf6c0ef721a2920c1bf20))
-* remove code owners ([d22623f](https://github.com/software-mansion-labs/react-native-ci-cli/commit/d22623f6179a1fc6b66af892c4e50d4547133f12))
 
 
 
