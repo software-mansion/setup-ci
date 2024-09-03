@@ -76,7 +76,7 @@ The following are **feature flags** that can be used with `--preset` flag (they 
   </tr>
   <tr>
     <td style="vertical-align: middle;">--eas-update</td>
-    <td style="vertical-align: middle;">Generate EAS Update and preview workflow to run on every PR (Expo projects only)</td>
+    <td style="vertical-align: middle;">Generate Preview with EAS Update workflow to run on every PR (Expo projects only)</td>
   </tr>
   <tr>
     <td style="vertical-align: middle;">--detox</td>

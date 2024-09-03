@@ -5,8 +5,7 @@ import {
   isCancel,
   log as clackLog,
 } from '@clack/prompts'
-import { CycliToolbox, MessageColor } from '../types'
-import { ConfirmPrompt, SelectPrompt } from '@clack/core'
+import { ConfirmPrompt, MultiSelectPrompt, SelectPrompt } from '@clack/core'
 import { spawn } from 'child_process'
 import {
   COLORS,
@@ -16,9 +15,11 @@ import {
   S_CONFIRM,
   S_DL,
   S_DR,
+  S_MULTISELECT_MESSAGE,
+  S_R_ARROW,
   S_RADIO_ACTIVE,
   S_RADIO_INACTIVE,
-  S_STEP_ERROR,
+  S_STEP_CANCEL,
   S_STEP_SUCCESS,
   S_STEP_WARNING,
   S_SUCCESS,
@@ -26,28 +27,33 @@ import {
   S_UR,
   S_VBAR,
 } from '../constants'
+import { CycliToolbox, MessageColor } from '../types'
+
+const DEFAULT_HEADER_WIDTH = 80
 
 interface Spinner {
   stop: () => void
 }
 
-const DEFAULT_HEADER_WIDTH = 80
-
 module.exports = (toolbox: CycliToolbox) => {
   const {
+    blue,
+    bgWhite,
     bold,
     cyan,
-    magenta,
-    yellow,
-    gray,
-    green,
-    inverse,
     dim,
+    gray,
+    inverse,
+    reset,
     strikethrough,
+    yellow,
+    magenta,
+    red,
+    green,
   } = COLORS
 
   const withNewlinePrefix = (message: string, prefix: string): string =>
-    message.split('\n').join(`\n${prefix}  `)
+    message.split('\n').join(`\n${prefix} `)
 
   const actionPrompt = async (message: string): Promise<void> => {
     const opt = (
@@ -70,7 +76,7 @@ module.exports = (toolbox: CycliToolbox) => {
     }
 
     const title = `${gray(S_BAR)}\n${S_ACTION}  ${cyan(
-      withNewlinePrefix(message, S_BAR)
+      withNewlinePrefix(message, `${S_BAR} `)
     )}\n`
 
     const titleSubmitted = `${gray(S_BAR)}\n${S_ACTION}  ${withNewlinePrefix(
@@ -78,7 +84,7 @@ module.exports = (toolbox: CycliToolbox) => {
         .split('\n')
         .map((line) => cyan(line))
         .join('\n'),
-      dim(S_BAR)
+      `${dim(S_BAR)} `
     )}\n`
 
     const confirmed = await new SelectPrompt({
@@ -95,7 +101,7 @@ module.exports = (toolbox: CycliToolbox) => {
             return `${titleSubmitted}${gray(S_BAR)}  ${opt(
               this.options[0],
               'selected'
-            )}`
+            )}\n${gray(S_BAR)}`
           case 'cancel':
             return `${titleSubmitted}${gray(S_BAR)}  ${opt(
               this.options[0],
@@ -155,7 +161,7 @@ module.exports = (toolbox: CycliToolbox) => {
     const titleCancelled = () => {
       switch (type) {
         case 'normal':
-          return `${gray(S_BAR)} \n${S_STEP_ERROR}  ${message
+          return `${gray(S_BAR)} \n${S_STEP_CANCEL}  ${message
             .split('\n')
             .join(`\n${gray(S_BAR)}  `)}\n`
         case 'warning':
@@ -208,6 +214,158 @@ module.exports = (toolbox: CycliToolbox) => {
     return Boolean(confirmed)
   }
 
+  const multiselect = async (
+    message: string,
+    hint: string,
+    options: { label: string; value: string; hint: string; disabled: boolean }[]
+  ): Promise<string[]> => {
+    const opt = (
+      option: {
+        label: string
+        value: string
+        hint: string
+        disabled: boolean
+      },
+      state: 'inactive' | 'active' | 'selected' | 'active-selected'
+    ) => {
+      const { label, hint, disabled } = option
+
+      if (disabled) {
+        return dim(`${S_RADIO_ACTIVE} ${label} (${hint})`)
+      }
+
+      switch (state) {
+        case 'active': {
+          return `${blue(S_RADIO_INACTIVE)} ${bold(label)} ${dim(`(${hint})`)}`
+        }
+        case 'selected': {
+          return `${blue(S_RADIO_ACTIVE)} ${dim(label)}`
+        }
+        case 'active-selected': {
+          return `${blue(S_RADIO_ACTIVE)} ${label} ${dim(`(${hint})`)}`
+        }
+        case 'inactive': {
+          return `${dim(blue(S_RADIO_INACTIVE))} ${dim(label)}`
+        }
+      }
+    }
+
+    const instruction = reset(
+      dim(
+        `Press ${gray(bgWhite(inverse(' space ')))} to select, ${gray(
+          bgWhite(inverse(' enter '))
+        )} to submit`
+      )
+    )
+
+    const enabledOptions = options.filter((option) => !option.disabled)
+
+    const multiselectPromise = new MultiSelectPrompt({
+      options: enabledOptions,
+      initialValues: [],
+      required: true,
+      cursorAt: options[0].value,
+      validate(selected: string[]) {
+        if (this.required && selected.length === 0)
+          return 'Please select at least one option.'
+      },
+      render() {
+        const title = `${gray(S_BAR)}\n${S_MULTISELECT_MESSAGE}  ${bold(
+          message
+        )}\n${
+          ['submit', 'cancel'].includes(this.state) ? gray(S_BAR) : blue(S_BAR)
+        }  ${dim(hint)}\n`
+
+        const styleOption = (
+          option: {
+            value: string
+            label: string
+            hint: string
+            disabled: boolean
+          },
+          active: boolean
+        ) => {
+          const selected = this.value.includes(option.value)
+          if (active && selected) {
+            return opt(option, 'active-selected')
+          }
+          if (selected) {
+            return opt(option, 'selected')
+          }
+          return opt(option, active ? 'active' : 'inactive')
+        }
+
+        const optionsList =
+          title +
+          `${blue(S_BAR)}\n` +
+          blue(S_BAR) +
+          '  ' +
+          options
+            .map((option) => {
+              const indexInEnabled = enabledOptions.indexOf(option)
+              if (indexInEnabled === -1) {
+                return styleOption(option, false)
+              }
+              return styleOption(option, this.cursor === indexInEnabled)
+            })
+            .join(`\n${blue(S_BAR)}  `) +
+          '\n'
+
+        const selectedOptions = this.options.filter(({ value }) =>
+          this.value.includes(value)
+        )
+
+        const selectedInfo = `${blue(S_R_ARROW)} ${dim(
+          `Selected: ${selectedOptions
+            .map((option) => option.label)
+            .join(', ')}`
+        )}`
+
+        switch (this.state) {
+          case 'submit': {
+            return `${title}${gray(S_BAR)} \n${gray(S_BAR)}  ${selectedInfo} `
+          }
+          case 'cancel': {
+            const strikethroughSelected =
+              selectedOptions.length === 0
+                ? ''
+                : `\n${gray(S_BAR)}  ${strikethrough(
+                    dim(
+                      selectedOptions.map((option) => option.label).join(', ')
+                    )
+                  )}\n${gray(S_BAR)}`
+            return `${title}${gray(S_BAR)}${strikethroughSelected}`
+          }
+          case 'error': {
+            const footer = this.error
+              .split('\n')
+              .map((ln, i) =>
+                i === 0 ? `${S_STEP_WARNING} ${yellow(ln)} ` : `   ${ln} `
+              )
+              .join('\n')
+
+            return `${optionsList}${blue(S_BAR)} \n${blue(
+              S_BAR
+            )}  ${footer} \n${blue(S_BAR_END)} \n${instruction} `
+          }
+          default: {
+            return `${optionsList}${blue(S_BAR)} \n${blue(
+              S_BAR
+            )}  ${selectedInfo} \n${blue(S_BAR_END)} \n${instruction} `
+          }
+        }
+      },
+    }).prompt() as Promise<string[] | symbol>
+
+    const selected = await multiselectPromise
+
+    if (isCancel(selected)) {
+      throw Error('The script execution has been canceled by the user.')
+    }
+
+    return selected as string[]
+  }
+
   const surveyStep = (message: string) => {
     clackLog.step(message)
   }
@@ -217,7 +375,7 @@ module.exports = (toolbox: CycliToolbox) => {
   }
 
   const info = (message: string, color?: MessageColor) => {
-    if (color) print.info(`${COLORS[color](message)}`)
+    if (color) print.info(`${COLORS[color](message)} `)
     else print.info(message)
   }
 
@@ -228,7 +386,7 @@ module.exports = (toolbox: CycliToolbox) => {
   }
 
   const error = (message: string) => {
-    print.error(`${S_STEP_ERROR} ${message} `)
+    print.error(`${S_STEP_CANCEL} ${withNewlinePrefix(message, red('│'))}`)
   }
 
   const success = (message: string) => {
@@ -332,6 +490,7 @@ module.exports = (toolbox: CycliToolbox) => {
   toolbox.interactive = {
     actionPrompt,
     confirm,
+    multiselect,
     surveyStep,
     surveyWarning,
     info,
@@ -351,11 +510,21 @@ module.exports = (toolbox: CycliToolbox) => {
 
 export interface InteractiveExtension {
   interactive: {
-    actionPrompt: (message: string) => Promise<void>
+    multiselect: (
+      message: string,
+      hint: string,
+      options: {
+        label: string
+        value: string
+        hint: string
+        disabled: boolean
+      }[]
+    ) => Promise<string[]>
     confirm: (
       message: string,
       options: { type: 'normal' | 'warning' }
     ) => Promise<boolean>
+    actionPrompt: (message: string) => Promise<void>
     surveyStep: (message: string) => void
     surveyWarning: (message: string) => void
     info: (message: string, color?: MessageColor) => void

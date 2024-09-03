@@ -1,4 +1,4 @@
-import { CycliRecipe, CycliToolbox, ProjectContext, RunResult } from '../types'
+import { CycliRecipe, CycliToolbox, ProjectContext } from '../types'
 import { join } from 'path'
 
 export const FLAG = 'prettier'
@@ -13,80 +13,54 @@ const existsPrettierConfiguration = (toolbox: CycliToolbox): boolean =>
       )
   )
 
-const execute =
-  () => async (toolbox: CycliToolbox, context: ProjectContext) => {
-    toolbox.interactive.vspace()
-    toolbox.interactive.sectionHeader('Genereating Prettier check workflow')
-
-    await toolbox.dependencies.addDev('prettier', context)
-
-    await toolbox.scripts.add(
-      'prettier:check',
-      'prettier --check "**/*.{ts,tsx,js,jsx,json,css,scss,md}"'
-    )
-
-    await toolbox.scripts.add(
-      'prettier:write',
-      'prettier --write "**/*.{ts,tsx,js,jsx,json,css,scss,md}"'
-    )
-
-    await toolbox.workflows.generate(join('prettier', 'prettier.ejf'), context)
-
-    if (!existsPrettierConfiguration(toolbox)) {
-      await toolbox.template.generate({
-        template: join('prettier', '.prettierrc.ejs'),
-        target: '.prettierrc',
-      })
-
-      toolbox.interactive.step(
-        'Created default .prettierrc configuration file.'
-      )
-
-      await toolbox.template.generate({
-        template: join('prettier', '.prettierignore.ejs'),
-        target: '.prettierignore',
-      })
-
-      toolbox.interactive.step('Created default .prettierignore file.')
-    }
-
-    toolbox.interactive.success('Created Prettier check workflow.')
-
-    return `--${FLAG}`
-  }
-
-const run = async (
+const execute = async (
   toolbox: CycliToolbox,
   context: ProjectContext
-): Promise<RunResult> => {
-  if (toolbox.options.isRecipeSelected(FLAG)) {
-    context.selectedOptions.push(FLAG)
-    return execute()
-  }
+): Promise<void> => {
+  toolbox.interactive.vspace()
+  toolbox.interactive.sectionHeader('Genereating Prettier check workflow')
 
-  if (toolbox.options.isPreset()) {
-    return null
-  }
+  await toolbox.dependencies.addDev('prettier', context)
 
-  const proceed = await toolbox.interactive.confirm(
-    'Do you want to run Prettier check on every PR?',
-    { type: 'normal' }
+  await toolbox.scripts.add(
+    'prettier:check',
+    'prettier --check "**/*.{ts,tsx,js,jsx,json,css,scss,md}"'
   )
 
-  if (!proceed) {
-    return null
+  await toolbox.scripts.add(
+    'prettier:write',
+    'prettier --write "**/*.{ts,tsx,js,jsx,json,css,scss,md}"'
+  )
+
+  await toolbox.workflows.generate(join('prettier', 'prettier.ejf'), context)
+
+  if (!existsPrettierConfiguration(toolbox)) {
+    await toolbox.template.generate({
+      template: join('prettier', '.prettierrc.ejs'),
+      target: '.prettierrc',
+    })
+
+    toolbox.interactive.step('Created default .prettierrc configuration file.')
+
+    await toolbox.template.generate({
+      template: join('prettier', '.prettierignore.ejs'),
+      target: '.prettierignore',
+    })
+
+    toolbox.interactive.step('Created default .prettierignore file.')
   }
 
-  context.selectedOptions.push(FLAG)
-  return execute()
+  toolbox.interactive.success('Created Prettier check workflow.')
 }
 
 export const recipe: CycliRecipe = {
   meta: {
+    name: 'Prettier',
     flag: FLAG,
     description: 'Generate Prettier check workflow to run on every PR',
+    selectHint: 'check code format with prettier',
   },
-  run,
+  execute,
 }
 
 export default recipe

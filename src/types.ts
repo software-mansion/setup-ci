@@ -31,18 +31,21 @@ export type LockFile = keyof typeof LOCK_FILE_TO_MANAGER
 export type PackageManager =
   (typeof LOCK_FILE_TO_MANAGER)[keyof typeof LOCK_FILE_TO_MANAGER]
 
-export interface RecipeMeta {
-  flag: string
-  description: string
-}
-
 export type RunResult =
   | ((toolbox: CycliToolbox, context: ProjectContext) => Promise<string>)
   | null
 
+export interface RecipeMeta {
+  name: string
+  flag: string
+  description: string
+  selectHint: string
+}
+
 export interface CycliRecipe {
   meta: RecipeMeta
-  run: (toolbox: CycliToolbox, context: ProjectContext) => Promise<RunResult>
+  execute: (toolbox: CycliToolbox, context: ProjectContext) => Promise<void>
+  validate?: (toolbox: CycliToolbox) => void
 }
 
 export type Platform = 'android' | 'ios'
