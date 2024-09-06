@@ -1,6 +1,6 @@
 import { CycliRecipe, CycliToolbox, ProjectContext } from '../types'
 import { addTerminatingNewline } from '../utils/addTerminatingNewline'
-import { createReleaseBuildWorkflows } from './build-release'
+import { createBuildWorkflows } from './build'
 import { join } from 'path'
 
 const DETOX_BARE_PROJECT_CONFIG_URL = `https://wix.github.io/Detox/docs/next/introduction/project-setup/#step-4-additional-android-configuration`
@@ -62,8 +62,8 @@ const execute = async (toolbox: CycliToolbox, context: ProjectContext) => {
     )
   }
 
-  await createReleaseBuildWorkflows(toolbox, context, {
-    platforms: ['android', 'ios'],
+  await createBuildWorkflows(toolbox, context, {
+    mode: 'release',
     expo,
   })
 

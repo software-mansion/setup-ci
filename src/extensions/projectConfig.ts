@@ -1,4 +1,5 @@
 import { AppJson, CycliToolbox, PackageJson } from '../types'
+import { join } from 'path'
 
 const APP_JSON_FILES = ['app.json', 'app.config.json']
 
@@ -51,12 +52,31 @@ module.exports = (toolbox: CycliToolbox) => {
     return packageJson().name
   }
 
+  const getAppId = (): string | undefined => {
+    let appId = appJson()?.expo?.android?.package
+
+    // If no appId was found in app.json, try to obtain it from native Android code.
+    if (!appId) {
+      const buildGradlePath = join('android', 'app', 'build.gradle')
+      appId = filesystem
+        .read(buildGradlePath)
+        ?.split('\n')
+        .find((line) => line.includes('applicationId'))
+        ?.trim()
+        .split(' ')[1]
+        .replace(/"/g, '')
+    }
+
+    return appId
+  }
+
   toolbox.projectConfig = {
     packageJson,
     appJsonFile,
     appJson,
     isExpo,
     getName,
+    getAppId,
   }
 }
 
@@ -67,5 +87,6 @@ export interface ProjectConfigExtension {
     appJson: () => AppJson | undefined
     isExpo: () => boolean
     getName: () => string
+    getAppId: () => string | undefined
   }
 }
