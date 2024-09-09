@@ -50,8 +50,6 @@ export interface CycliRecipe {
 
 export type Platform = 'android' | 'ios'
 
-export type Mode = 'debug' | 'release'
-
 export interface AppJson {
   expo?: {
     plugins?: string[]

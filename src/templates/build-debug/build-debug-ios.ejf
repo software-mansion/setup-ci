@@ -18,7 +18,7 @@ on:
   workflow_call:
     outputs:
       build-cache-key:
-        description: 'The primary key to used for caching the build'
+        description: 'The primary key used for caching the build'
         value: ios-debug-build-${{ jobs.lookup-cached-build.outputs.fingerprint }}
 
 jobs:

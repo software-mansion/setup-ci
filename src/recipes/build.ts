@@ -1,10 +1,12 @@
-import { CycliToolbox, Mode, Platform, ProjectContext } from '../types'
+import { CycliToolbox, Platform, ProjectContext } from '../types'
 import { join } from 'path'
+
+type BuildMode = 'debug' | 'release'
 
 const createBuildWorkflowForAndroid = async (
   toolbox: CycliToolbox,
   context: ProjectContext,
-  { mode, expo }: { mode: Mode; expo: boolean },
+  { mode, expo }: { mode: BuildMode; expo: boolean },
   workflowProps: Record<string, string> = {}
 ): Promise<string> => {
   const gradleCommands =
@@ -34,10 +36,14 @@ const createBuildWorkflowForAndroid = async (
   return workflowFileName
 }
 
-const createBuildWorkflowForIOs = async (
+const createBuildWorkflowForIOS = async (
   toolbox: CycliToolbox,
   context: ProjectContext,
-  { mode, iOSAppName, expo }: { mode: Mode; iOSAppName: string; expo: boolean },
+  {
+    mode,
+    iOSAppName,
+    expo,
+  }: { mode: BuildMode; iOSAppName: string; expo: boolean },
   workflowProps: Record<string, string> = {}
 ): Promise<string> => {
   const configuration = mode === 'debug' ? 'Debug' : 'Release'
@@ -78,7 +84,7 @@ const createBuildWorkflowForIOs = async (
 export const createBuildWorkflows = async (
   toolbox: CycliToolbox,
   context: ProjectContext,
-  { mode, expo }: { mode: Mode; expo: boolean }
+  { mode, expo }: { mode: BuildMode; expo: boolean }
 ): Promise<{ [key in Platform]: string }> => {
   const existsAndroidDir = toolbox.filesystem.exists('android')
   const existsIOsDir = toolbox.filesystem.exists('ios')
@@ -129,7 +135,7 @@ export const createBuildWorkflows = async (
     { lookupDebugBuildWorkflowFileName }
   )
 
-  const iOSBuildWorkflowFileName = await createBuildWorkflowForIOs(
+  const iOSBuildWorkflowFileName = await createBuildWorkflowForIOS(
     toolbox,
     context,
     {
