@@ -25,12 +25,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: 🏗 Setup repo
-           uses: actions/checkout@v4
+        uses: actions/checkout@v4
 
-      - name: 🌿 Setup Node 20
+      - name: 🌿 Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version-file: '<%= props.nodeVersionFile %>'
           cache: '<%= props.packageManager %>'
 
       - name: 📦 Install dependencies

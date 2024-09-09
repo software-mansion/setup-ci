@@ -30,10 +30,15 @@ module.exports = (toolbox: CycliToolbox) => {
       context.path.packageRoot
     )
 
+    const nodeVersionFile = context.path.relFromRepoRoot(
+      toolbox.projectConfig.nodeVersionFile(context)
+    )
+
     const workflowString = await toolbox.template.generate({
       template,
       props: {
         packageManager: context.packageManager,
+        nodeVersionFile,
         pathRelativeToRoot,
         ...props,
       },

@@ -24,6 +24,12 @@ export interface PackageJson {
   jest?: unknown
   prettier?: unknown
   workspaces?: string[]
+  engines?: {
+    node?: string
+  }
+  volta?: {
+    node?: string
+  }
 }
 
 export type LockFile = keyof typeof LOCK_FILE_TO_MANAGER
