@@ -29,9 +29,9 @@ const patchEasJson = async (
     }
   }
 
-  await toolbox.patching.update('eas.json', (config) => {
-    return recursiveAssign(config, patch)
-  })
+  await toolbox.patching.update('eas.json', (config) =>
+    recursiveAssign(config, patch)
+  )
 
   addTerminatingNewline('eas.json')
 
@@ -57,9 +57,9 @@ const patchAppJson = async (toolbox: CycliToolbox): Promise<void> => {
       `Set "expo.runtimeVersion.policy" to "fingerprint" in app.config.js.`
     )
   } else {
-    await toolbox.patching.update(appJsonFile, (config) => {
-      return recursiveAssign(config, patch)
-    })
+    await toolbox.patching.update(appJsonFile, (config) =>
+      recursiveAssign(config, patch)
+    )
 
     addTerminatingNewline(appJsonFile)
   }

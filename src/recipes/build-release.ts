@@ -67,8 +67,8 @@ export const createReleaseBuildWorkflows = async (
   context: ProjectContext,
   { platforms, expo }: { platforms: Platform[]; expo: boolean }
 ): Promise<void> => {
-  const existsAndroidDir = toolbox.filesystem.exists('android')
-  const existsIOsDir = toolbox.filesystem.exists('ios')
+  const cleanAndroidDirAfterPrebuild = !toolbox.filesystem.exists('android')
+  const cleanIOsDirAfterPrebuild = !toolbox.filesystem.exists('ios')
 
   if (expo) {
     toolbox.expo.prebuild(context, { cleanAfter: false })
@@ -79,8 +79,8 @@ export const createReleaseBuildWorkflows = async (
     ?.find((file) => file.endsWith('.xcworkspace'))
     ?.replace('.xcworkspace', '')
 
-  if (!existsAndroidDir) toolbox.filesystem.remove('android')
-  if (!existsIOsDir) toolbox.filesystem.remove('ios')
+  if (cleanAndroidDirAfterPrebuild) toolbox.filesystem.remove('android')
+  if (cleanIOsDirAfterPrebuild) toolbox.filesystem.remove('ios')
 
   if (!iOSAppName) {
     throw Error(

@@ -25,7 +25,7 @@ module.exports = (toolbox: CycliToolbox) => {
   const buildConfigure = async (): Promise<void> => {
     await toolbox.interactive.spawnSubprocess(
       'EAS Build configuration',
-      'eas build:configure -p all'
+      'npx eas-cli build:configure -p all'
     )
 
     toolbox.interactive.step('Created default EAS Build configuration.')
@@ -34,7 +34,7 @@ module.exports = (toolbox: CycliToolbox) => {
   const updateConfigure = async (): Promise<void> => {
     await toolbox.interactive.spawnSubprocess(
       'EAS Update configuration',
-      'eas update:configure'
+      'npx eas-cli update:configure'
     )
 
     toolbox.interactive.step('Created default EAS Update configuration.')
@@ -51,7 +51,7 @@ module.exports = (toolbox: CycliToolbox) => {
 
     await toolbox.interactive.spawnSubprocess(
       `EAS Credentials configuration for ${platformName}`,
-      `eas credentials:configure-build -p ${platform} -e ${environment}`
+      `npx eas-cli credentials:configure-build -p ${platform} -e ${environment}`
     )
 
     toolbox.interactive.step(`Configured EAS Credentials for ${platformName}.`)
