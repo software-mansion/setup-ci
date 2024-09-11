@@ -1,20 +1,31 @@
 import { CycliToolbox, Platform, ProjectContext } from '../types'
 import { join } from 'path'
 
-type BuildMode = 'debug' | 'release'
+const BuildMode = {
+  Debug: 'debug',
+  Release: 'release',
+} as const
+
+type BuildModeType = (typeof BuildMode)[keyof typeof BuildMode]
 
 const createBuildWorkflowForAndroid = async (
   toolbox: CycliToolbox,
   context: ProjectContext,
-  { mode, expo }: { mode: BuildMode; expo: boolean },
+  { mode, expo }: { mode: BuildModeType; expo: boolean },
   workflowProps: Record<string, string> = {}
 ): Promise<string> => {
-  const gradleCommands =
-    mode === 'debug' ? 'assembleDebug' : 'assembleRelease assembleAndroidTest'
+  const gradleCommands = () => {
+    switch (mode) {
+      case BuildMode.Debug:
+        return 'assembleDebug'
+      case BuildMode.Release:
+        return 'assembleRelease assembleAndroidTest'
+    }
+  }
 
   let script = [
     'cd android &&',
-    `./gradlew ${gradleCommands}`,
+    `./gradlew ${gradleCommands()}`,
     `-DtestBuildType=${mode}`,
     '-Dorg.gradle.jvmargs=-Xmx4g',
   ].join(' ')
@@ -43,17 +54,28 @@ const createBuildWorkflowForIOS = async (
     mode,
     iOSAppName,
     expo,
-  }: { mode: BuildMode; iOSAppName: string; expo: boolean },
+  }: {
+    mode: BuildModeType
+    iOSAppName: string
+    expo: boolean
+  },
   workflowProps: Record<string, string> = {}
 ): Promise<string> => {
-  const configuration = mode === 'debug' ? 'Debug' : 'Release'
+  const configuration = () => {
+    switch (mode) {
+      case BuildMode.Debug:
+        return 'Debug'
+      case BuildMode.Release:
+        return 'Release'
+    }
+  }
 
   let script = [
     'xcodebuild ONLY_ACTIVE_ARCH=YES',
     `-workspace ios/${iOSAppName}.xcworkspace`,
     '-UseNewBuildSystem=YES',
     `-scheme ${iOSAppName}`,
-    `-configuration ${configuration}`,
+    `-configuration ${configuration()}`,
     '-sdk iphonesimulator',
     '-derivedDataPath ios/build',
     '-quiet',
@@ -84,7 +106,7 @@ const createBuildWorkflowForIOS = async (
 export const createBuildWorkflows = async (
   toolbox: CycliToolbox,
   context: ProjectContext,
-  { mode, expo }: { mode: BuildMode; expo: boolean }
+  { mode, expo }: { mode: BuildModeType; expo: boolean }
 ): Promise<{ [key in Platform]: string }> => {
   const existsAndroidDir = toolbox.filesystem.exists('android')
   const existsIOsDir = toolbox.filesystem.exists('ios')
@@ -111,7 +133,7 @@ export const createBuildWorkflows = async (
 
   let lookupDebugBuildWorkflowFileName = ''
 
-  if (mode === 'debug') {
+  if (mode === BuildMode.Debug) {
     lookupDebugBuildWorkflowFileName = await toolbox.workflows.generate(
       join('build-debug', 'lookup-cached-debug-build.ejf'),
       context
