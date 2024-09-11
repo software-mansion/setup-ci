@@ -9,7 +9,7 @@ const existsPrettierConfiguration = (toolbox: CycliToolbox): boolean =>
     toolbox.filesystem
       .list()
       ?.some(
-        (f) => f.startsWith('.prettierrc') || f.startsWith('.prettier.config.')
+        (f) => f.startsWith('.prettierrc') || f.startsWith('prettier.config.')
       )
   )
 

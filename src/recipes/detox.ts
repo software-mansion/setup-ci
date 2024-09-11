@@ -1,5 +1,4 @@
 import { CycliRecipe, CycliToolbox, ProjectContext } from '../types'
-import { addTerminatingNewline } from '../utils/addTerminatingNewline'
 import { createReleaseBuildWorkflows } from './build-release'
 import { join } from 'path'
 
@@ -33,8 +32,6 @@ const addDetoxExpoPlugin = async (toolbox: CycliToolbox) => {
 
         return config
       })
-
-      addTerminatingNewline(appJsonFile)
 
       toolbox.interactive.step(`Added ${DETOX_EXPO_PLUGIN} plugin to app.json`)
     }

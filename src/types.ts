@@ -9,6 +9,7 @@ import { COLORS, LOCK_FILE_TO_MANAGER } from './constants'
 import { DiffExtension } from './extensions/diff'
 import { OptionsExtension } from './extensions/options'
 import { FurtherActionsExtension } from './extensions/furtherActions'
+import { PrettierExtension } from './extensions/prettier'
 
 export type MessageColor = keyof typeof COLORS
 
@@ -80,4 +81,5 @@ export type CycliToolbox = {
   OptionsExtension &
   WorkflowsExtension &
   DiffExtension &
-  FurtherActionsExtension
+  FurtherActionsExtension &
+  PrettierExtension
