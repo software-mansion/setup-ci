@@ -1,0 +1,38 @@
+.featuresContainer {
+  width: 100%;
+  margin-bottom: 12rem;
+}
+
+.featuresContainer h2 {
+  font-family: var(--swm-title-landing-font);
+  font-size: 32px;
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: var(--swm-heading-letter-spacing-bigger);
+
+  margin-bottom: 80px;
+}
+
+@media (max-width: 996px) {
+  .featuresContainer {
+    margin-top: 6rem;
+    padding: 0 4rem 0 4rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .featuresContainer h2 {
+    margin-bottom: 48px;
+  }
+}
+
+@media (max-width: 500px) {
+  .featuresContainer {
+    padding: 0 1rem 0 1rem;
+  }
+}
+
+.featuresContainer h4 {
+  font-size: 24px;
+  font-weight: 600;
+}
