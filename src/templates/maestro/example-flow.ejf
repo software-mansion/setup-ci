@@ -5,4 +5,4 @@ appId: <%= props.appId %>
 - launchApp
 - extendedWaitUntil: 
     visible: "Welcome to React Native"
-    timeout: 120000
+    timeout: 60000

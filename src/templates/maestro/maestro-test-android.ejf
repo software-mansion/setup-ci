@@ -146,7 +146,7 @@ jobs:
             adb install android-debug-build/android-debug.apk
             <%= runTests[props.packageManager] %>
         env:
-          MAESTRO_DRIVER_STARTUP_TIMEOUT: 600000
+          MAESTRO_DRIVER_STARTUP_TIMEOUT: 120000
 
       - name: 📤 Store debug output if failed
         if: failure()

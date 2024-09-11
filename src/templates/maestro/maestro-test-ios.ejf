@@ -127,7 +127,7 @@ jobs:
           xcrun simctl install booted ios-debug-build/ios-debug.app
           <%= runTests[props.packageManager] %>
         env:
-          MAESTRO_DRIVER_STARTUP_TIMEOUT: 600000
+          MAESTRO_DRIVER_STARTUP_TIMEOUT: 120000
 
       - name: 📤 Store debug output if failed
         if: failure()
