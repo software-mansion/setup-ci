@@ -11,7 +11,6 @@ import sequentialPromiseMap from '../utils/sequentialPromiseMap'
 import { CycliRecipe, CycliToolbox, ProjectContext } from '../types'
 import messageFromError from '../utils/messageFromError'
 import intersection from 'lodash/intersection'
-import { addTerminatingNewline } from '../utils/addTerminatingNewline'
 import {
   CYCLI_COMMAND,
   HELP_FLAG,
@@ -155,11 +154,11 @@ const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
     executor(toolbox, context)
   )
 
-  // Sometimes gluegun leaves package.json without eol at the end
-  addTerminatingNewline('package.json')
-
   const snapshotAfter = await toolbox.diff.gitStatus(context)
   const diff = toolbox.diff.compare(snapshotBefore, snapshotAfter)
+
+  toolbox.prettier.formatFiles(Array.from(diff.keys()))
+
   toolbox.diff.print(diff, context)
 
   toolbox.furtherActions.print()
