@@ -63,7 +63,10 @@ module.exports = (toolbox: CycliToolbox) => {
       )
 
       toolbox.furtherActions.push(
-        'Change node version in generated .nvmrc file if neccessary.'
+        [
+          `Couldn't retrieve your project's node version. Generated .nvmrc file with default node version (${DEFAULT_NODE_VERSION}).`,
+          'Please check if it matches your project and update if necessary.',
+        ].join(' ')
       )
 
       return join(packageRoot, '.nvmrc')
