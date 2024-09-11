@@ -56,10 +56,14 @@ module.exports = (toolbox: CycliToolbox) => {
       nodeVersionFileInDirectory(repoRoot)
 
     if (!file) {
-      filesystem.write(join(packageRoot, '.nvmrc'), DEFAULT_NODE_VERSION)
+      filesystem.write(join(packageRoot, '.nvmrc'), DEFAULT_NODE_VERSION + '\n')
 
       toolbox.interactive.warning(
-        'No node version file found. Created .nvmrc with default node version (v20.17.0).'
+        `No node version file found. Created .nvmrc with default node version (${DEFAULT_NODE_VERSION}).`
+      )
+
+      toolbox.furtherActions.push(
+        'Change node version in generated .nvmrc file if neccessary.'
       )
 
       return join(packageRoot, '.nvmrc')
