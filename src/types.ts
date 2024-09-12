@@ -9,6 +9,7 @@ import { COLORS, LOCK_FILE_TO_MANAGER } from './constants'
 import { DiffExtension } from './extensions/diff'
 import { OptionsExtension } from './extensions/options'
 import { FurtherActionsExtension } from './extensions/furtherActions'
+import { PrettierExtension } from './extensions/prettier'
 
 export type MessageColor = keyof typeof COLORS
 
@@ -24,6 +25,12 @@ export interface PackageJson {
   jest?: unknown
   prettier?: unknown
   workspaces?: string[]
+  engines?: {
+    node?: string
+  }
+  volta?: {
+    node?: string
+  }
 }
 
 export type LockFile = keyof typeof LOCK_FILE_TO_MANAGER
@@ -31,18 +38,21 @@ export type LockFile = keyof typeof LOCK_FILE_TO_MANAGER
 export type PackageManager =
   (typeof LOCK_FILE_TO_MANAGER)[keyof typeof LOCK_FILE_TO_MANAGER]
 
-export interface RecipeMeta {
-  flag: string
-  description: string
-}
-
 export type RunResult =
   | ((toolbox: CycliToolbox, context: ProjectContext) => Promise<string>)
   | null
 
+export interface RecipeMeta {
+  name: string
+  flag: string
+  description: string
+  selectHint: string
+}
+
 export interface CycliRecipe {
   meta: RecipeMeta
-  run: (toolbox: CycliToolbox, context: ProjectContext) => Promise<RunResult>
+  execute: (toolbox: CycliToolbox, context: ProjectContext) => Promise<void>
+  validate?: (toolbox: CycliToolbox) => void
 }
 
 export type Platform = 'android' | 'ios'
@@ -77,4 +87,5 @@ export type CycliToolbox = {
   OptionsExtension &
   WorkflowsExtension &
   DiffExtension &
-  FurtherActionsExtension
+  FurtherActionsExtension &
+  PrettierExtension

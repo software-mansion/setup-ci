@@ -18,6 +18,7 @@ Object {
     "@types/react-test-renderer": "",
     "eslint": "",
     "react-test-renderer": "",
+    "typescript": "",
   },
   "engines": Object {
     "node": ">=18",
@@ -39,21 +40,27 @@ exports[`lint recipe rn-setup-ci-create-expo-stack lint 2`] = `
 "name: Check ESLint
 
 on:
-  pull_request: 
- 
+  pull_request:
+
 jobs:
-   eslint:
-      name: ESLint
-      runs-on: ubuntu-latest
-      steps:
-         - name: 🏗 Setup repo
-           uses: actions/checkout@v4
+  eslint:
+    name: ESLint
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🏗 Setup repo
+        uses: actions/checkout@v4
 
-         - name: 📦 Install dependencies
-           run: npm install
+      - name: 🌿 Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
 
-         - name: 🤓 Run ESLint
-           run: npm run lint 
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🤓 Run ESLint
+        run: npm run lint
 "
 `;
 
@@ -75,6 +82,7 @@ Object {
     "@types/react-test-renderer": "",
     "eslint": "",
     "react-test-renderer": "",
+    "typescript": "",
   },
   "engines": Object {
     "node": ">=18",
@@ -96,21 +104,27 @@ exports[`lint recipe rn-setup-ci-npm-flat lint 2`] = `
 "name: Check ESLint
 
 on:
-  pull_request: 
- 
+  pull_request:
+
 jobs:
-   eslint:
-      name: ESLint
-      runs-on: ubuntu-latest
-      steps:
-         - name: 🏗 Setup repo
-           uses: actions/checkout@v4
+  eslint:
+    name: ESLint
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🏗 Setup repo
+        uses: actions/checkout@v4
 
-         - name: 📦 Install dependencies
-           run: npm install
+      - name: 🌿 Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: 'package.json'
+          cache: 'npm'
 
-         - name: 🤓 Run ESLint
-           run: npm run lint 
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🤓 Run ESLint
+        run: npm run lint
 "
 `;
 
@@ -120,10 +134,7 @@ exports[`lint recipe rn-setup-ci-npm-flat lint 3`] = `
     \\"ecmaVersion\\": \\"2020\\",
     \\"sourceType\\": \\"module\\"
   },
-  \\"extends\\": [
-    \\"@react-native\\",
-    \\"eslint:recommended\\"
-  ],
+  \\"extends\\": [\\"@react-native\\", \\"eslint:recommended\\"],
   \\"env\\": {
     \\"browser\\": true,
     \\"node\\": true
@@ -165,6 +176,7 @@ Object {
     "eslint": "",
     "jest-expo": "",
     "react-test-renderer": "",
+    "typescript": "",
   },
   "main": "expo-router/entry",
   "name": "expo-app",
@@ -185,23 +197,29 @@ exports[`lint recipe rn-setup-ci-npm-monorepo lint 2`] = `
 "name: Check ESLint
 
 on:
-  pull_request: 
+  pull_request:
     paths:
       - apps/expo-app/**
- 
+
 jobs:
-   eslint:
-      name: ESLint
-      runs-on: ubuntu-latest
-      steps:
-         - name: 🏗 Setup repo
-           uses: actions/checkout@v4
+  eslint:
+    name: ESLint
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🏗 Setup repo
+        uses: actions/checkout@v4
 
-         - name: 📦 Install dependencies
-           run: npm install
+      - name: 🌿 Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: 'apps/expo-app/.nvmrc'
+          cache: 'npm'
 
-         - name: 🤓 Run ESLint
-           run: npm run lint --prefix apps/expo-app
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🤓 Run ESLint
+        run: npm run lint --prefix apps/expo-app
 "
 `;
 
@@ -211,10 +229,7 @@ exports[`lint recipe rn-setup-ci-npm-monorepo lint 3`] = `
     \\"ecmaVersion\\": \\"2020\\",
     \\"sourceType\\": \\"module\\"
   },
-  \\"extends\\": [
-    \\"@react-native\\",
-    \\"eslint:recommended\\"
-  ],
+  \\"extends\\": [\\"@react-native\\", \\"eslint:recommended\\"],
   \\"env\\": {
     \\"browser\\": true,
     \\"node\\": true
@@ -242,6 +257,7 @@ Object {
     "@types/react-test-renderer": "",
     "eslint": "",
     "react-test-renderer": "",
+    "typescript": "",
   },
   "engines": Object {
     "node": ">=18",
@@ -263,21 +279,27 @@ exports[`lint recipe rn-setup-ci-yarn-flat lint 2`] = `
 "name: Check ESLint
 
 on:
-  pull_request: 
- 
+  pull_request:
+
 jobs:
-   eslint:
-      name: ESLint
-      runs-on: ubuntu-latest
-      steps:
-         - name: 🏗 Setup repo
-           uses: actions/checkout@v4
+  eslint:
+    name: ESLint
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🏗 Setup repo
+        uses: actions/checkout@v4
 
-         - name: 📦 Install dependencies
-           run: yarn
+      - name: 🌿 Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: 'package.json'
+          cache: 'yarn'
 
-         - name: 🤓 Run ESLint
-           run: yarn lint
+      - name: 📦 Install dependencies
+        run: yarn install --immutable
+
+      - name: 🤓 Run ESLint
+        run: yarn lint
 "
 `;
 
@@ -287,10 +309,7 @@ exports[`lint recipe rn-setup-ci-yarn-flat lint 3`] = `
     \\"ecmaVersion\\": \\"2020\\",
     \\"sourceType\\": \\"module\\"
   },
-  \\"extends\\": [
-    \\"@react-native\\",
-    \\"eslint:recommended\\"
-  ],
+  \\"extends\\": [\\"@react-native\\", \\"eslint:recommended\\"],
   \\"env\\": {
     \\"browser\\": true,
     \\"node\\": true
@@ -332,6 +351,7 @@ Object {
     "eslint": "",
     "jest-expo": "",
     "react-test-renderer": "",
+    "typescript": "",
   },
   "main": "expo-router/entry",
   "name": "expo-app",
@@ -352,23 +372,29 @@ exports[`lint recipe rn-setup-ci-yarn-monorepo lint 2`] = `
 "name: Check ESLint
 
 on:
-  pull_request: 
+  pull_request:
     paths:
       - apps/expo-app/**
- 
+
 jobs:
-   eslint:
-      name: ESLint
-      runs-on: ubuntu-latest
-      steps:
-         - name: 🏗 Setup repo
-           uses: actions/checkout@v4
+  eslint:
+    name: ESLint
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🏗 Setup repo
+        uses: actions/checkout@v4
 
-         - name: 📦 Install dependencies
-           run: yarn
+      - name: 🌿 Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: 'apps/expo-app/.nvmrc'
+          cache: 'yarn'
 
-         - name: 🤓 Run ESLint
-           run: yarn --cwd apps/expo-app lint
+      - name: 📦 Install dependencies
+        run: yarn install --immutable
+
+      - name: 🤓 Run ESLint
+        run: yarn --cwd apps/expo-app lint
 "
 `;
 
@@ -378,10 +404,7 @@ exports[`lint recipe rn-setup-ci-yarn-monorepo lint 3`] = `
     \\"ecmaVersion\\": \\"2020\\",
     \\"sourceType\\": \\"module\\"
   },
-  \\"extends\\": [
-    \\"@react-native\\",
-    \\"eslint:recommended\\"
-  ],
+  \\"extends\\": [\\"@react-native\\", \\"eslint:recommended\\"],
   \\"env\\": {
     \\"browser\\": true,
     \\"node\\": true
@@ -409,6 +432,7 @@ Object {
     "@types/react-test-renderer": "",
     "eslint": "",
     "react-test-renderer": "",
+    "typescript": "",
   },
   "engines": Object {
     "node": ">=18",

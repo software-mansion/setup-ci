@@ -2,8 +2,8 @@
 const isMonorepo = props.pathRelativeToRoot !== '.'
 
 const install = {
-  yarn: "yarn",
-  npm: "npm install"
+  yarn: "yarn install --immutable",
+  npm: "npm ci"
 }
 
 const build = {
@@ -40,6 +40,12 @@ jobs:
     steps:
       - name: 🏗 Checkout repository
         uses: actions/checkout@v4
+
+      - name: 🌿 Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '<%= props.nodeVersionFile %>'
+          cache: '<%= props.packageManager %>'
 
       - name: 📦 Install dependencies
         run: <%= install[props.packageManager] %>

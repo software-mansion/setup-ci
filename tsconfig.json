@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
-    "allowSyntheticDefaultImports": false,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
     "lib": [
       "es2015",

@@ -39,21 +39,27 @@ exports[`prettier check recipe rn-setup-ci-create-expo-stack prettier check 2`] 
 "name: Prettier check
 
 on:
-  pull_request: 
+  pull_request:
 
 jobs:
-   prettier-check:
-      name: Prettier check
-      runs-on: ubuntu-latest
-      steps:
-         - name: 🏗 Setup repo
-           uses: actions/checkout@v4
+  prettier-check:
+    name: Prettier check
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🏗 Setup repo
+        uses: actions/checkout@v4
 
-         - name: 📦 Install dependencies
-           run: npm install
+      - name: 🌿 Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
 
-         - name: ✨ Run Prettier check
-           run: npm run prettier:check 
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: ✨ Run Prettier check
+        run: npm run prettier:check
 "
 `;
 
@@ -96,21 +102,27 @@ exports[`prettier check recipe rn-setup-ci-npm-flat prettier check 2`] = `
 "name: Prettier check
 
 on:
-  pull_request: 
+  pull_request:
 
 jobs:
-   prettier-check:
-      name: Prettier check
-      runs-on: ubuntu-latest
-      steps:
-         - name: 🏗 Setup repo
-           uses: actions/checkout@v4
+  prettier-check:
+    name: Prettier check
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🏗 Setup repo
+        uses: actions/checkout@v4
 
-         - name: 📦 Install dependencies
-           run: npm install
+      - name: 🌿 Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: 'package.json'
+          cache: 'npm'
 
-         - name: ✨ Run Prettier check
-           run: npm run prettier:check 
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: ✨ Run Prettier check
+        run: npm run prettier:check
 "
 `;
 
@@ -182,23 +194,29 @@ exports[`prettier check recipe rn-setup-ci-npm-monorepo prettier check 2`] = `
 "name: Prettier check
 
 on:
-  pull_request: 
+  pull_request:
     paths:
       - apps/expo-app/**
 
 jobs:
-   prettier-check:
-      name: Prettier check
-      runs-on: ubuntu-latest
-      steps:
-         - name: 🏗 Setup repo
-           uses: actions/checkout@v4
+  prettier-check:
+    name: Prettier check
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🏗 Setup repo
+        uses: actions/checkout@v4
 
-         - name: 📦 Install dependencies
-           run: npm install
+      - name: 🌿 Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: 'apps/expo-app/.nvmrc'
+          cache: 'npm'
 
-         - name: ✨ Run Prettier check
-           run: npm run prettier:check --prefix apps/expo-app
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: ✨ Run Prettier check
+        run: npm run prettier:check --prefix apps/expo-app
 "
 `;
 
@@ -257,21 +275,27 @@ exports[`prettier check recipe rn-setup-ci-yarn-flat prettier check 2`] = `
 "name: Prettier check
 
 on:
-  pull_request: 
+  pull_request:
 
 jobs:
-   prettier-check:
-      name: Prettier check
-      runs-on: ubuntu-latest
-      steps:
-         - name: 🏗 Setup repo
-           uses: actions/checkout@v4
+  prettier-check:
+    name: Prettier check
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🏗 Setup repo
+        uses: actions/checkout@v4
 
-         - name: 📦 Install dependencies
-           run: yarn
+      - name: 🌿 Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: 'package.json'
+          cache: 'yarn'
 
-         - name: ✨ Run Prettier check
-           run: yarn prettier:check
+      - name: 📦 Install dependencies
+        run: yarn install --immutable
+
+      - name: ✨ Run Prettier check
+        run: yarn prettier:check
 "
 `;
 
@@ -343,23 +367,29 @@ exports[`prettier check recipe rn-setup-ci-yarn-monorepo prettier check 2`] = `
 "name: Prettier check
 
 on:
-  pull_request: 
+  pull_request:
     paths:
       - apps/expo-app/**
 
 jobs:
-   prettier-check:
-      name: Prettier check
-      runs-on: ubuntu-latest
-      steps:
-         - name: 🏗 Setup repo
-           uses: actions/checkout@v4
+  prettier-check:
+    name: Prettier check
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🏗 Setup repo
+        uses: actions/checkout@v4
 
-         - name: 📦 Install dependencies
-           run: yarn
+      - name: 🌿 Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: 'apps/expo-app/.nvmrc'
+          cache: 'yarn'
 
-         - name: ✨ Run Prettier check
-           run: yarn --cwd apps/expo-app prettier:check
+      - name: 📦 Install dependencies
+        run: yarn install --immutable
+
+      - name: ✨ Run Prettier check
+        run: yarn --cwd apps/expo-app prettier:check
 "
 `;
 

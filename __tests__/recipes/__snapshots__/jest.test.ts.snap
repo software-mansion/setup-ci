@@ -46,21 +46,27 @@ exports[`jest recipe rn-setup-ci-create-expo-stack jest 3`] = `
 "name: Run Jest tests
 
 on:
-  pull_request: 
+  pull_request:
 
 jobs:
-   jest:
-      name: Jest
-      runs-on: ubuntu-latest
-      steps:
-         - name: 🏗 Setup repo
-           uses: actions/checkout@v4
+  jest:
+    name: Jest
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🏗 Setup repo
+        uses: actions/checkout@v4
 
-         - name: 📦 Install dependencies
-           run: npm install
+      - name: 🌿 Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
 
-         - name: 🎭 Run Jest
-           run: npm run test 
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🎭 Run Jest
+        run: npm run test
 "
 `;
 
@@ -110,21 +116,27 @@ exports[`jest recipe rn-setup-ci-npm-flat jest 3`] = `
 "name: Run Jest tests
 
 on:
-  pull_request: 
+  pull_request:
 
 jobs:
-   jest:
-      name: Jest
-      runs-on: ubuntu-latest
-      steps:
-         - name: 🏗 Setup repo
-           uses: actions/checkout@v4
+  jest:
+    name: Jest
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🏗 Setup repo
+        uses: actions/checkout@v4
 
-         - name: 📦 Install dependencies
-           run: npm install
+      - name: 🌿 Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: 'package.json'
+          cache: 'npm'
 
-         - name: 🎭 Run Jest
-           run: npm run test 
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🎭 Run Jest
+        run: npm run test
 "
 `;
 
@@ -187,23 +199,29 @@ exports[`jest recipe rn-setup-ci-npm-monorepo jest 3`] = `
 "name: Run Jest tests
 
 on:
-  pull_request: 
+  pull_request:
     paths:
       - apps/expo-app/**
 
 jobs:
-   jest:
-      name: Jest
-      runs-on: ubuntu-latest
-      steps:
-         - name: 🏗 Setup repo
-           uses: actions/checkout@v4
+  jest:
+    name: Jest
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🏗 Setup repo
+        uses: actions/checkout@v4
 
-         - name: 📦 Install dependencies
-           run: npm install
+      - name: 🌿 Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: 'apps/expo-app/.nvmrc'
+          cache: 'npm'
 
-         - name: 🎭 Run Jest
-           run: npm run test --prefix apps/expo-app
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🎭 Run Jest
+        run: npm run test --prefix apps/expo-app
 "
 `;
 
@@ -253,21 +271,27 @@ exports[`jest recipe rn-setup-ci-yarn-flat jest 3`] = `
 "name: Run Jest tests
 
 on:
-  pull_request: 
+  pull_request:
 
 jobs:
-   jest:
-      name: Jest
-      runs-on: ubuntu-latest
-      steps:
-         - name: 🏗 Setup repo
-           uses: actions/checkout@v4
+  jest:
+    name: Jest
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🏗 Setup repo
+        uses: actions/checkout@v4
 
-         - name: 📦 Install dependencies
-           run: yarn
+      - name: 🌿 Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: 'package.json'
+          cache: 'yarn'
 
-         - name: 🎭 Run Jest
-           run: yarn test
+      - name: 📦 Install dependencies
+        run: yarn install --immutable
+
+      - name: 🎭 Run Jest
+        run: yarn test
 "
 `;
 
@@ -330,22 +354,28 @@ exports[`jest recipe rn-setup-ci-yarn-monorepo jest 3`] = `
 "name: Run Jest tests
 
 on:
-  pull_request: 
+  pull_request:
     paths:
       - apps/expo-app/**
 
 jobs:
-   jest:
-      name: Jest
-      runs-on: ubuntu-latest
-      steps:
-         - name: 🏗 Setup repo
-           uses: actions/checkout@v4
+  jest:
+    name: Jest
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🏗 Setup repo
+        uses: actions/checkout@v4
 
-         - name: 📦 Install dependencies
-           run: yarn
+      - name: 🌿 Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: 'apps/expo-app/.nvmrc'
+          cache: 'yarn'
 
-         - name: 🎭 Run Jest
-           run: yarn --cwd apps/expo-app test
+      - name: 📦 Install dependencies
+        run: yarn install --immutable
+
+      - name: 🎭 Run Jest
+        run: yarn --cwd apps/expo-app test
 "
 `;

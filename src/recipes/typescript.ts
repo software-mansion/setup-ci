@@ -1,70 +1,46 @@
-import { CycliRecipe, CycliToolbox, ProjectContext, RunResult } from '../types'
+import { CycliRecipe, CycliToolbox, ProjectContext } from '../types'
 import { join } from 'path'
 
 const FLAG = 'ts'
 
-const execute =
-  () => async (toolbox: CycliToolbox, context: ProjectContext) => {
-    toolbox.interactive.vspace()
-    toolbox.interactive.sectionHeader('Generating Typescript check workflow')
-
-    await toolbox.dependencies.addDev('typescript', context)
-
-    await toolbox.scripts.add('ts:check', 'tsc -p . --noEmit')
-
-    await toolbox.workflows.generate(
-      join('typescript', 'typescript.ejf'),
-      context
-    )
-
-    if (!toolbox.filesystem.exists('tsconfig.json')) {
-      await toolbox.template.generate({
-        template: join('typescript', 'tsconfig.json.ejs'),
-        target: 'tsconfig.json',
-      })
-
-      toolbox.interactive.step(
-        'Created tsconfig.json with default configuration.'
-      )
-    }
-
-    toolbox.interactive.success('Created Typescript check workflow.')
-
-    return `--${FLAG}`
-  }
-
-const run = async (
+const execute = async (
   toolbox: CycliToolbox,
   context: ProjectContext
-): Promise<RunResult> => {
-  if (toolbox.options.isRecipeSelected(FLAG)) {
-    context.selectedOptions.push(FLAG)
-    return execute()
-  }
+): Promise<void> => {
+  toolbox.interactive.vspace()
+  toolbox.interactive.sectionHeader('Generating Typescript check workflow')
 
-  if (toolbox.options.isPreset()) {
-    return null
-  }
+  await toolbox.dependencies.addDev('typescript', context)
 
-  const proceed = await toolbox.interactive.confirm(
-    'Do you want to run TS check on every PR?',
-    { type: 'normal' }
+  await toolbox.scripts.add('ts:check', 'tsc -p . --noEmit')
+
+  await toolbox.workflows.generate(
+    join('typescript', 'typescript.ejf'),
+    context
   )
 
-  if (!proceed) {
-    return null
+  if (!toolbox.filesystem.exists('tsconfig.json')) {
+    await toolbox.template.generate({
+      template: join('typescript', 'tsconfig.json.ejs'),
+      target: 'tsconfig.json',
+    })
+
+    toolbox.interactive.step(
+      'Created tsconfig.json with default configuration.'
+    )
   }
 
-  context.selectedOptions.push(FLAG)
-  return execute()
+  toolbox.interactive.success('Created Typescript check workflow.')
 }
 
 export const recipe: CycliRecipe = {
   meta: {
+    name: 'TS check',
     flag: FLAG,
     description: 'Generate Typescript check workflow to run on every PR',
+    selectHint: 'run typescript check to find compilation errors',
   },
-  run,
+  execute,
 }
 
 export default recipe

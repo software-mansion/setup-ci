@@ -2,7 +2,9 @@
 
 ## 🤔 Why?
 
-React Native CI CLI is meant to simplify CI/CD setup in your React Native project.
+The problem we noticed is that setting up CI is performed once, needs to be researched every time, and is often trial and error driven. The process is repetitive. 
+
+We created a tool that bootstraps CI with the most used features, which are ready for customization in the future. When you run `npx setup-ci` React Native CI CLI generates GitHub workflows for the most popular CI tasks. 
 
 ## 📖 Usage
 
@@ -11,6 +13,8 @@ Simply go to your project root directory and run:
 ```
 npx setup-ci
 ```
+
+then select the setup that matches your project - React Native CI CLI generates workflows and tries to add missing configs and install necessary dependencies.
 
 If your project has a monorepo structure, run the script from the root directory of the app for which you want to set up workflows.
 
@@ -76,7 +80,7 @@ The following are **feature flags** that can be used with `--preset` flag (they 
   </tr>
   <tr>
     <td style="vertical-align: middle;">--eas-update</td>
-    <td style="vertical-align: middle;">Generate EAS Update and preview workflow to run on every PR (Expo projects only)</td>
+    <td style="vertical-align: middle;">Generate Preview with EAS Update workflow to run on every PR (Expo projects only)</td>
   </tr>
   <tr>
     <td style="vertical-align: middle;">--detox</td>

@@ -7,10 +7,15 @@ import easUpdate from '../recipes/eas-update'
 import detox from '../recipes/detox'
 import isGitDirty from 'is-git-dirty'
 import sequentialPromiseMap from '../utils/sequentialPromiseMap'
-import { CycliToolbox, ProjectContext } from '../types'
+import { CycliRecipe, CycliToolbox, ProjectContext } from '../types'
 import messageFromError from '../utils/messageFromError'
-import { addTerminatingNewline } from '../utils/addTerminatingNewline'
-import { CYCLI_COMMAND, HELP_FLAG, PRESET_FLAG } from '../constants'
+import intersection from 'lodash/intersection'
+import {
+  CYCLI_COMMAND,
+  HELP_FLAG,
+  PRESET_FLAG,
+  REPOSITORY_FEATURES_HELP_URL,
+} from '../constants'
 
 const SKIP_GIT_CHECK_FLAG = 'skip-git-check'
 
@@ -20,6 +25,59 @@ export type CycliCommand = GluegunCommand & {
   description: string
   options: Option[]
   featureOptions: Option[]
+}
+
+const RECIPES = [lint, jest, typescriptCheck, prettierCheck, easUpdate, detox]
+
+const getSelectedOptions = async (toolbox: CycliToolbox): Promise<string[]> => {
+  if (toolbox.options.isPreset()) {
+    const featureFlags = RECIPES.map((option) => option.meta.flag)
+
+    const selectedOptions = intersection(
+      featureFlags,
+      Object.keys(toolbox.parameters.options)
+    )
+
+    RECIPES.forEach((recipe: CycliRecipe) => {
+      if (selectedOptions.includes(recipe.meta.flag)) {
+        try {
+          recipe.validate?.(toolbox)
+        } catch (error: unknown) {
+          const validationError = messageFromError(error)
+
+          // adding context to validation error reason (used in multiselect menu hint)
+          throw Error(
+            `Cannot generate ${recipe.meta.name} workflow in your project.\nReason: ${validationError}`
+          )
+        }
+      }
+    })
+
+    return selectedOptions
+  } else {
+    return await toolbox.interactive.multiselect(
+      'Select workflows you want to run on every PR',
+      `Learn more about PR workflows: ${REPOSITORY_FEATURES_HELP_URL}`,
+      RECIPES.map(
+        ({ validate, meta: { name, flag, selectHint } }: CycliRecipe) => {
+          let validationError = ''
+          try {
+            validate?.(toolbox)
+          } catch (error: unknown) {
+            validationError = messageFromError(error)
+          }
+          const hint = validationError || selectHint
+          const disabled = Boolean(validationError)
+          return {
+            label: name,
+            value: flag,
+            hint,
+            disabled,
+          }
+        }
+      )
+    )
+  }
 }
 
 const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
@@ -68,21 +126,11 @@ const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
     'Created snapshot of project state before execution.'
   )
 
-  const lintExecutor = await lint.run(toolbox, context)
-  const jestExecutor = await jest.run(toolbox, context)
-  const typescriptExecutor = await typescriptCheck.run(toolbox, context)
-  const prettierExecutor = await prettierCheck.run(toolbox, context)
-  const easUpdateExecutor = await easUpdate.run(toolbox, context)
-  const detoxExecutor = await detox.run(toolbox, context)
+  context.selectedOptions = await getSelectedOptions(toolbox)
 
-  const executors = [
-    lintExecutor,
-    jestExecutor,
-    typescriptExecutor,
-    prettierExecutor,
-    easUpdateExecutor,
-    detoxExecutor,
-  ].filter((executor) => executor != null)
+  const executors = RECIPES.filter((recipe: CycliRecipe) =>
+    context.selectedOptions.includes(recipe.meta.flag)
+  ).map((recipe: CycliRecipe) => recipe.execute)
 
   if (executors.length === 0) {
     toolbox.interactive.outro('Nothing to do here. Cheers! 🎉')
@@ -93,21 +141,22 @@ const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
     `Detected ${context.packageManager} as your package manager.`
   )
 
-  const executorResults: string[] = await sequentialPromiseMap(
-    executors,
-    (executor) => executor(toolbox, context)
+  await sequentialPromiseMap(executors, (executor) =>
+    executor(toolbox, context)
   )
-
-  // Sometimes gluegun leaves package.json without eol at the end
-  addTerminatingNewline('package.json')
 
   const snapshotAfter = await toolbox.diff.gitStatus(context)
   const diff = toolbox.diff.compare(snapshotBefore, snapshotAfter)
+
+  toolbox.prettier.formatFiles(Array.from(diff.keys()))
+
   toolbox.diff.print(diff, context)
 
   toolbox.furtherActions.print()
 
-  const usedFlags = executorResults.join(' ')
+  const usedFlags = context.selectedOptions
+    .map((flag: string) => `--${flag}`)
+    .join(' ')
 
   toolbox.interactive.vspace()
   toolbox.interactive.success(`We're all set 🎉`)
@@ -124,6 +173,7 @@ const run = async (toolbox: GluegunToolbox) => {
     await runReactNativeCiCli(toolbox as CycliToolbox)
   } catch (error: unknown) {
     const errMessage = messageFromError(error)
+    toolbox.interactive.vspace()
     toolbox.interactive.error(
       `Failed to execute ${CYCLI_COMMAND} with following error:\n${errMessage}`
     )
@@ -132,17 +182,10 @@ const run = async (toolbox: GluegunToolbox) => {
   }
 }
 
-export const getFeatureOptions = (): Option[] => {
-  return [
-    lint.meta,
-    jest.meta,
-    typescriptCheck.meta,
-    prettierCheck.meta,
-    easUpdate.meta,
-    detox.meta,
-  ].map((meta) => ({
-    flag: meta.flag,
-    description: meta.description,
+const getFeatureOptions = (): Option[] => {
+  return RECIPES.map((recipe: CycliRecipe) => ({
+    flag: recipe.meta.flag,
+    description: recipe.meta.description,
   }))
 }
 

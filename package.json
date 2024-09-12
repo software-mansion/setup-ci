@@ -1,7 +1,7 @@
 {
   "name": "react-native-ci-cli",
   "version": "0.4.10",
-  "description": "React Native CI CLI is meant to simplify CI/CD setup in your React Native project.",
+  "description": "Effortlessly generate GitHub workflows for the most popular CI tasks in your React Native project.",
   "types": "build/types/types.d.ts",
   "bin": {
     "react-native-ci-cli": "bin/react-native-ci-cli"
@@ -43,11 +43,13 @@
     "@clack/prompts": "^0.7.0",
     "gluegun": "5.1.6",
     "is-git-dirty": "^2.0.2",
+    "lodash": "^4.17.21",
     "look-it-up": "^2.1.0",
     "pretty-file-tree": "^1.0.1"
   },
   "devDependencies": {
     "@types/jest": "^26.0.20",
+    "@types/lodash": "^4.17.7",
     "@typescript-eslint/eslint-plugin": "^4.17.0",
     "@typescript-eslint/parser": "^4.17.0",
     "copyfiles": "^2.4.1",

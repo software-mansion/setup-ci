@@ -1,5 +1,4 @@
-import { CycliRecipe, CycliToolbox, ProjectContext, RunResult } from '../types'
-import { addTerminatingNewline } from '../utils/addTerminatingNewline'
+import { CycliRecipe, CycliToolbox, ProjectContext } from '../types'
 import { createReleaseBuildWorkflows } from './build-release'
 import { join } from 'path'
 
@@ -34,20 +33,31 @@ const addDetoxExpoPlugin = async (toolbox: CycliToolbox) => {
         return config
       })
 
-      addTerminatingNewline(appJsonFile)
-
       toolbox.interactive.step(`Added ${DETOX_EXPO_PLUGIN} plugin to app.json`)
     }
   }
 }
 
-const createDetoxWorkflows = async (
-  toolbox: CycliToolbox,
-  context: ProjectContext,
-  { expo }: { expo: boolean }
-) => {
+const execute = async (toolbox: CycliToolbox, context: ProjectContext) => {
   toolbox.interactive.vspace()
   toolbox.interactive.sectionHeader('Generating Detox workflow')
+
+  const expo = toolbox.projectConfig.isExpo()
+
+  if (!expo) {
+    await toolbox.interactive.actionPrompt(
+      [
+        'You have chosen to setup Detox for a non-expo project.',
+        'To make the setup work properly, you need to manually patch native code for Detox.',
+        'Please follow the instructions in Step 4 of',
+        `${DETOX_BARE_PROJECT_CONFIG_URL}.`,
+        'You can do it now or after the script finishes.\n',
+      ].join('\n')
+    )
+    toolbox.furtherActions.push(
+      `Follow Step 4 of ${DETOX_BARE_PROJECT_CONFIG_URL} to patch native code for Detox.`
+    )
+  }
 
   await createReleaseBuildWorkflows(toolbox, context, {
     platforms: ['android', 'ios'],
@@ -122,60 +132,14 @@ const createDetoxWorkflows = async (
   toolbox.interactive.success('Created Detox workflow.')
 }
 
-const execute =
-  () => async (toolbox: CycliToolbox, context: ProjectContext) => {
-    await createDetoxWorkflows(toolbox, context, {
-      expo: toolbox.projectConfig.isExpo(),
-    })
-
-    return `--${FLAG} `
-  }
-
-const run = async (
-  toolbox: CycliToolbox,
-  context: ProjectContext
-): Promise<RunResult> => {
-  let runRecipe = false
-
-  if (toolbox.options.isRecipeSelected(FLAG)) {
-    runRecipe = true
-  } else if (!toolbox.options.isPreset()) {
-    runRecipe = await toolbox.interactive.confirm(
-      'Do you want to run e2e tests with Detox on every PR?',
-      { type: 'normal' }
-    )
-  }
-
-  if (runRecipe) {
-    if (!toolbox.projectConfig.isExpo()) {
-      await toolbox.interactive.actionPrompt(
-        [
-          'You have chosen to setup Detox for a non-expo project.',
-          'To make the setup work properly, you need to manually patch native code for Detox.',
-          'Please follow the instructions in Step 4 of',
-          `${DETOX_BARE_PROJECT_CONFIG_URL}.`,
-          'You can do it now or after the script finishes.\n',
-        ].join('\n')
-      )
-      toolbox.furtherActions.push(
-        `Follow Step 4 of ${DETOX_BARE_PROJECT_CONFIG_URL} to patch native code for Detox.`
-      )
-    }
-
-    context.selectedOptions.push(FLAG)
-
-    return execute()
-  }
-
-  return null
-}
-
 export const recipe: CycliRecipe = {
   meta: {
+    name: 'Detox',
     flag: FLAG,
     description: 'Generate workflow to run Detox e2e tests on every PR',
+    selectHint: 'run detox e2e tests suite',
   },
-  run,
+  execute,
 } as const
 
 export default recipe
