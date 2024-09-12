@@ -1,10 +1,10 @@
 {
-  "name": "react-native-ci-cli",
+  "name": "setup-ci",
   "version": "0.4.10",
   "description": "Effortlessly generate GitHub workflows for the most popular CI tasks in your React Native project.",
   "types": "build/types/types.d.ts",
   "bin": {
-    "react-native-ci-cli": "bin/react-native-ci-cli"
+    "setup-ci": "bin/setup-ci"
   },
   "scripts": {
     "clean-build": "rimraf -rf ./build",
@@ -15,7 +15,6 @@
     "format": "eslint \"**/*.{js,jsx,ts,tsx}\" --fix && prettier \"**/*.{js,jsx,ts,tsx,json}\" --write",
     "test": "jest",
     "watch": "jest --watch",
-    "build:alias": "sed -i 's/\"name\": \"react-native-ci-cli\"/\"name\": \"setup-ci\"/g' package.json && yarn build",
     "snapupdate": "jest --updateSnapshot",
     "coverage": "jest --coverage",
     "ts:check": "tsc -p . --noEmit",
@@ -37,7 +36,7 @@
     "cli",
     "CD"
   ],
-  "repository": "github:software-mansion-labs/react-native-ci-cli",
+  "repository": "github:software-mansion/setup-ci",
   "dependencies": {
     "@clack/core": "^0.3.4",
     "@clack/prompts": "^0.7.0",
