@@ -1,7 +1,7 @@
 {
   "name": "react-native-ci-cli",
   "version": "0.4.10",
-  "description": "Effortlessly generate GH workflows for the most popular CI tasks in your React Native project.",
+  "description": "Effortlessly generate GitHub workflows for the most popular CI tasks in your React Native project.",
   "types": "build/types/types.d.ts",
   "bin": {
     "react-native-ci-cli": "bin/react-native-ci-cli"
