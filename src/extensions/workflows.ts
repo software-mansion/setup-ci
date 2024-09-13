@@ -19,7 +19,7 @@ module.exports = (toolbox: CycliToolbox) => {
     template: string,
     context: ProjectContext,
     props: Record<string, string> = {}
-  ) => {
+  ): Promise<string> => {
     const pathRelativeToRoot = context.path.relFromRepoRoot(
       context.path.packageRoot
     )
@@ -48,6 +48,8 @@ module.exports = (toolbox: CycliToolbox) => {
     toolbox.filesystem.write(target, workflowString)
 
     toolbox.interactive.step(`Created ${workflowFileName} workflow file.`)
+
+    return workflowFileName
   }
 
   toolbox.workflows = { generate }
@@ -59,6 +61,6 @@ export interface WorkflowsExtension {
       template: string,
       context: ProjectContext,
       props?: Record<string, string>
-    ) => Promise<void>
+    ) => Promise<string>
   }
 }

@@ -60,6 +60,9 @@ export type Platform = 'android' | 'ios'
 export interface AppJson {
   expo?: {
     plugins?: string[]
+    android?: {
+      package?: string
+    }
   }
 }
 

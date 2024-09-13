@@ -1,0 +1,8 @@
+# example-flow.yaml
+
+appId: <%= props.appId %>
+---
+- launchApp
+- extendedWaitUntil: 
+    visible: "Welcome to React Native"
+    timeout: 60000

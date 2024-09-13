@@ -86,6 +86,10 @@ The following are **feature flags** that can be used with `--preset` flag (they 
     <td style="vertical-align: middle;">--detox</td>
     <td style="vertical-align: middle;">Generate workflow to run Detox e2e tests on every PR</td>
   </tr>
+  <tr>
+    <td style="vertical-align: middle;">--maestro</td>
+    <td style="vertical-align: middle;">Generate workflow to run Maestro e2e tests on every PR</td>
+  </tr>
 </table>
 
 ## 🔐 Repository secrets
@@ -113,7 +117,7 @@ the maintainers directly.
 ## 🚸 Roadmap
 
 - [ ] Build Expo DevClient when fingerprint changes
-- [ ] Maestro support for E2E tests
+- [x] Maestro support for E2E tests
 - [ ] Different workflows for different branches (ex. PR, main, release)
 - [ ] Upload source maps to Sentry
 - [ ] Handle different vendors
@@ -127,7 +131,6 @@ React Native CI CLI is licensed under [The MIT License](LICENSE).
 This project has been built and is maintained thanks to the support from [Software Mansion](https://swmansion.com)
 
 [![swm](https://logo.swmansion.com/logo?color=white&variant=desktop&width=150&tag=react-native-reanimated-github 'Software Mansion')](https://swmansion.com)
-
 
 ## React Native CI CLI is created by Software Mansion
 
