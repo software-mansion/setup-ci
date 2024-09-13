@@ -82,8 +82,8 @@ export interface ProjectContext {
 
 export type CycliToolbox = {
   [K in keyof GluegunToolbox as K extends `${infer _}`
-  ? K
-  : never]: GluegunToolbox[K]
+    ? K
+    : never]: GluegunToolbox[K]
 } & DependenciesExtension &
   InteractiveExtension &
   ProjectConfigExtension &
