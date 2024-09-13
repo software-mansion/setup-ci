@@ -87,6 +87,11 @@ module.exports = (toolbox: CycliToolbox) => {
       `${dim(S_BAR)} `
     )}\n`
 
+    if (toolbox.options.isNonInteractive()) {
+      toolbox.interactive.info(titleSubmitted)
+      return
+    }
+
     const confirmed = await new SelectPrompt({
       options: [
         {

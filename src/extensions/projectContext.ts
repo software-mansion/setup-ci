@@ -16,7 +16,10 @@ module.exports = (toolbox: CycliToolbox) => {
 
     if (lockFiles.length == 0) {
       throw Error(
-        'No lock file found in repository root directory. Are you sure you are in a project directory?'
+        [
+          'No lock file found in repository root directory. Are you sure you are in a project directory?',
+          'Make sure you generated lock file by installing project dependencies.',
+        ].join('\n')
       )
     }
 

@@ -9,7 +9,7 @@ const existsPrettierConfiguration = (toolbox: CycliToolbox): boolean =>
     toolbox.filesystem
       .list()
       ?.some(
-        (f) => f.startsWith('.prettierrc') || f.startsWith('.prettier.config.')
+        (f) => f.startsWith('.prettierrc') || f.startsWith('prettier.config.')
       )
   )
 
@@ -18,7 +18,7 @@ const execute = async (
   context: ProjectContext
 ): Promise<void> => {
   toolbox.interactive.vspace()
-  toolbox.interactive.sectionHeader('Genereating Prettier check workflow')
+  toolbox.interactive.sectionHeader('Generating Prettier check workflow')
 
   await toolbox.dependencies.addDev('prettier', context)
 

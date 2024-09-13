@@ -2,8 +2,8 @@
 const isMonorepo = props.pathRelativeToRoot !== '.'
 
 const install = {
-  yarn: "yarn",
-  npm: "npm install"
+  yarn: "yarn install --immutable",
+  npm: "npm ci"
 }
 %>
 
@@ -31,11 +31,17 @@ jobs:
             echo "You must provide an EXPO_TOKEN secret linked to this project's Expo account in this repo's secrets. Learn more: https://docs.expo.dev/eas-update/github-actions"
             exit 1
           fi
-
+      
       - name: 🏗 Setup repo
         uses: actions/checkout@v4
 
-      - name: ⚙️ Setup EAS
+      - name: 🌿 Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '<%= props.nodeVersionFile %>'
+          cache: '<%= props.packageManager %>'
+
+      - name: Λ Setup EAS
         uses: expo/expo-github-action@v8
         with:
           eas-version: latest

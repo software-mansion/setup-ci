@@ -10,6 +10,7 @@ import { DiffExtension } from './extensions/diff'
 import { OptionsExtension } from './extensions/options'
 import { FurtherActionsExtension } from './extensions/furtherActions'
 import { ExpoExtension } from './extensions/expo'
+import { PrettierExtension } from './extensions/prettier'
 
 export type MessageColor = keyof typeof COLORS
 
@@ -25,6 +26,12 @@ export interface PackageJson {
   jest?: unknown
   prettier?: unknown
   workspaces?: string[]
+  engines?: {
+    node?: string
+  }
+  volta?: {
+    node?: string
+  }
 }
 
 export type LockFile = keyof typeof LOCK_FILE_TO_MANAGER
@@ -55,6 +62,9 @@ export type Environment = 'development'
 export interface AppJson {
   expo?: {
     plugins?: string[]
+    android?: {
+      package?: string
+    }
   }
 }
 
@@ -72,8 +82,8 @@ export interface ProjectContext {
 
 export type CycliToolbox = {
   [K in keyof GluegunToolbox as K extends `${infer _}`
-    ? K
-    : never]: GluegunToolbox[K]
+  ? K
+  : never]: GluegunToolbox[K]
 } & DependenciesExtension &
   InteractiveExtension &
   ProjectConfigExtension &
@@ -83,4 +93,5 @@ export type CycliToolbox = {
   WorkflowsExtension &
   DiffExtension &
   FurtherActionsExtension &
-  ExpoExtension
+  ExpoExtension &
+  PrettierExtension

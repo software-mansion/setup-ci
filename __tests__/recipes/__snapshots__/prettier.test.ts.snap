@@ -1,0 +1,410 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`prettier check recipe rn-setup-ci-create-expo-stack prettier check 1`] = `
+Object {
+  "dependencies": Object {
+    "react": "",
+    "react-native": "",
+  },
+  "devDependencies": Object {
+    "@babel/core": "",
+    "@babel/preset-env": "",
+    "@babel/runtime": "",
+    "@react-native/babel-preset": "",
+    "@react-native/metro-config": "",
+    "@react-native/typescript-config": "",
+    "@types/react": "",
+    "@types/react-test-renderer": "",
+    "prettier": "",
+    "react-test-renderer": "",
+  },
+  "engines": Object {
+    "node": ">=18",
+  },
+  "name": "RnSetupCiYarnFlat",
+  "packageManager": "yarn@3.6.4",
+  "private": true,
+  "scripts": Object {
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
+    "prettier:check": "prettier --check \\"**/*.{ts,tsx,js,jsx,json,css,scss,md}\\"",
+    "prettier:write": "prettier --write \\"**/*.{ts,tsx,js,jsx,json,css,scss,md}\\"",
+    "start": "react-native start",
+  },
+  "version": "0.0.1",
+}
+`;
+
+exports[`prettier check recipe rn-setup-ci-create-expo-stack prettier check 2`] = `
+"name: Prettier check
+
+on:
+  pull_request:
+
+jobs:
+  prettier-check:
+    name: Prettier check
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🏗 Setup repo
+        uses: actions/checkout@v4
+
+      - name: 🌿 Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: ✨ Run Prettier check
+        run: npm run prettier:check
+"
+`;
+
+exports[`prettier check recipe rn-setup-ci-npm-flat prettier check 1`] = `
+Object {
+  "dependencies": Object {
+    "react": "",
+    "react-native": "",
+  },
+  "devDependencies": Object {
+    "@babel/core": "",
+    "@babel/preset-env": "",
+    "@babel/runtime": "",
+    "@react-native/babel-preset": "",
+    "@react-native/metro-config": "",
+    "@react-native/typescript-config": "",
+    "@types/react": "",
+    "@types/react-test-renderer": "",
+    "prettier": "",
+    "react-test-renderer": "",
+  },
+  "engines": Object {
+    "node": ">=18",
+  },
+  "name": "RnSetupCiYarnFlat",
+  "packageManager": "yarn@3.6.4",
+  "private": true,
+  "scripts": Object {
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
+    "prettier:check": "prettier --check \\"**/*.{ts,tsx,js,jsx,json,css,scss,md}\\"",
+    "prettier:write": "prettier --write \\"**/*.{ts,tsx,js,jsx,json,css,scss,md}\\"",
+    "start": "react-native start",
+  },
+  "version": "0.0.1",
+}
+`;
+
+exports[`prettier check recipe rn-setup-ci-npm-flat prettier check 2`] = `
+"name: Prettier check
+
+on:
+  pull_request:
+
+jobs:
+  prettier-check:
+    name: Prettier check
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🏗 Setup repo
+        uses: actions/checkout@v4
+
+      - name: 🌿 Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: 'package.json'
+          cache: 'npm'
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: ✨ Run Prettier check
+        run: npm run prettier:check
+"
+`;
+
+exports[`prettier check recipe rn-setup-ci-npm-flat prettier check 3`] = `
+"{
+  \\"semi\\": false,
+  \\"singleQuote\\": true,
+  \\"trailingComma\\": \\"es5\\"
+}
+"
+`;
+
+exports[`prettier check recipe rn-setup-ci-npm-flat prettier check 4`] = `
+"node_modules
+dist
+build
+"
+`;
+
+exports[`prettier check recipe rn-setup-ci-npm-monorepo prettier check 1`] = `
+Object {
+  "dependencies": Object {
+    "@expo/vector-icons": "",
+    "@react-navigation/native": "",
+    "expo": "",
+    "expo-constants": "",
+    "expo-font": "",
+    "expo-linking": "",
+    "expo-router": "",
+    "expo-splash-screen": "",
+    "expo-status-bar": "",
+    "expo-system-ui": "",
+    "expo-updates": "",
+    "expo-web-browser": "",
+    "react": "",
+    "react-dom": "",
+    "react-native": "",
+    "react-native-gesture-handler": "",
+    "react-native-reanimated": "",
+    "react-native-safe-area-context": "",
+    "react-native-screens": "",
+    "react-native-web": "",
+  },
+  "devDependencies": Object {
+    "@babel/core": "",
+    "@types/react": "",
+    "@types/react-test-renderer": "",
+    "jest-expo": "",
+    "prettier": "",
+    "react-test-renderer": "",
+  },
+  "main": "expo-router/entry",
+  "name": "expo-app",
+  "private": true,
+  "scripts": Object {
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "prettier:check": "prettier --check \\"**/*.{ts,tsx,js,jsx,json,css,scss,md}\\"",
+    "prettier:write": "prettier --write \\"**/*.{ts,tsx,js,jsx,json,css,scss,md}\\"",
+    "reset-project": "node ./scripts/reset-project.js",
+    "start": "expo start",
+    "web": "expo start --web",
+  },
+  "version": "1.0.0",
+}
+`;
+
+exports[`prettier check recipe rn-setup-ci-npm-monorepo prettier check 2`] = `
+"name: Prettier check
+
+on:
+  pull_request:
+    paths:
+      - apps/expo-app/**
+
+jobs:
+  prettier-check:
+    name: Prettier check
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🏗 Setup repo
+        uses: actions/checkout@v4
+
+      - name: 🌿 Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: 'apps/expo-app/.nvmrc'
+          cache: 'npm'
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: ✨ Run Prettier check
+        run: npm run prettier:check --prefix apps/expo-app
+"
+`;
+
+exports[`prettier check recipe rn-setup-ci-npm-monorepo prettier check 3`] = `
+"{
+  \\"semi\\": false,
+  \\"singleQuote\\": true,
+  \\"trailingComma\\": \\"es5\\"
+}
+"
+`;
+
+exports[`prettier check recipe rn-setup-ci-npm-monorepo prettier check 4`] = `
+"node_modules
+dist
+build
+"
+`;
+
+exports[`prettier check recipe rn-setup-ci-yarn-flat prettier check 1`] = `
+Object {
+  "dependencies": Object {
+    "react": "",
+    "react-native": "",
+  },
+  "devDependencies": Object {
+    "@babel/core": "",
+    "@babel/preset-env": "",
+    "@babel/runtime": "",
+    "@react-native/babel-preset": "",
+    "@react-native/metro-config": "",
+    "@react-native/typescript-config": "",
+    "@types/react": "",
+    "@types/react-test-renderer": "",
+    "prettier": "",
+    "react-test-renderer": "",
+  },
+  "engines": Object {
+    "node": ">=18",
+  },
+  "name": "RnSetupCiYarnFlat",
+  "packageManager": "yarn@3.6.4",
+  "private": true,
+  "scripts": Object {
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
+    "prettier:check": "prettier --check \\"**/*.{ts,tsx,js,jsx,json,css,scss,md}\\"",
+    "prettier:write": "prettier --write \\"**/*.{ts,tsx,js,jsx,json,css,scss,md}\\"",
+    "start": "react-native start",
+  },
+  "version": "0.0.1",
+}
+`;
+
+exports[`prettier check recipe rn-setup-ci-yarn-flat prettier check 2`] = `
+"name: Prettier check
+
+on:
+  pull_request:
+
+jobs:
+  prettier-check:
+    name: Prettier check
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🏗 Setup repo
+        uses: actions/checkout@v4
+
+      - name: 🌿 Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: 'package.json'
+          cache: 'yarn'
+
+      - name: 📦 Install dependencies
+        run: yarn install --immutable
+
+      - name: ✨ Run Prettier check
+        run: yarn prettier:check
+"
+`;
+
+exports[`prettier check recipe rn-setup-ci-yarn-flat prettier check 3`] = `
+"{
+  \\"semi\\": false,
+  \\"singleQuote\\": true,
+  \\"trailingComma\\": \\"es5\\"
+}
+"
+`;
+
+exports[`prettier check recipe rn-setup-ci-yarn-flat prettier check 4`] = `
+"node_modules
+dist
+build
+"
+`;
+
+exports[`prettier check recipe rn-setup-ci-yarn-monorepo prettier check 1`] = `
+Object {
+  "dependencies": Object {
+    "@expo/vector-icons": "",
+    "@react-navigation/native": "",
+    "expo": "",
+    "expo-constants": "",
+    "expo-font": "",
+    "expo-linking": "",
+    "expo-router": "",
+    "expo-splash-screen": "",
+    "expo-status-bar": "",
+    "expo-system-ui": "",
+    "expo-updates": "",
+    "expo-web-browser": "",
+    "react": "",
+    "react-dom": "",
+    "react-native": "",
+    "react-native-gesture-handler": "",
+    "react-native-reanimated": "",
+    "react-native-safe-area-context": "",
+    "react-native-screens": "",
+    "react-native-web": "",
+  },
+  "devDependencies": Object {
+    "@babel/core": "",
+    "@types/react": "",
+    "@types/react-test-renderer": "",
+    "jest-expo": "",
+    "prettier": "",
+    "react-test-renderer": "",
+  },
+  "main": "expo-router/entry",
+  "name": "expo-app",
+  "private": true,
+  "scripts": Object {
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "prettier:check": "prettier --check \\"**/*.{ts,tsx,js,jsx,json,css,scss,md}\\"",
+    "prettier:write": "prettier --write \\"**/*.{ts,tsx,js,jsx,json,css,scss,md}\\"",
+    "reset-project": "node ./scripts/reset-project.js",
+    "start": "expo start",
+    "web": "expo start --web",
+  },
+  "version": "1.0.0",
+}
+`;
+
+exports[`prettier check recipe rn-setup-ci-yarn-monorepo prettier check 2`] = `
+"name: Prettier check
+
+on:
+  pull_request:
+    paths:
+      - apps/expo-app/**
+
+jobs:
+  prettier-check:
+    name: Prettier check
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🏗 Setup repo
+        uses: actions/checkout@v4
+
+      - name: 🌿 Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: 'apps/expo-app/.nvmrc'
+          cache: 'yarn'
+
+      - name: 📦 Install dependencies
+        run: yarn install --immutable
+
+      - name: ✨ Run Prettier check
+        run: yarn --cwd apps/expo-app prettier:check
+"
+`;
+
+exports[`prettier check recipe rn-setup-ci-yarn-monorepo prettier check 3`] = `
+"{
+  \\"semi\\": false,
+  \\"singleQuote\\": true,
+  \\"trailingComma\\": \\"es5\\"
+}
+"
+`;
+
+exports[`prettier check recipe rn-setup-ci-yarn-monorepo prettier check 4`] = `
+"node_modules
+dist
+build
+"
+`;
