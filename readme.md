@@ -4,7 +4,7 @@
 
 The problem we noticed is that setting up CI is performed once, needs to be researched every time, and is often trial and error driven. The process is repetitive.
 
-We created a tool that bootstraps CI with the most used features, which are ready for customization in the future. When you run `npx setup-ci` React Native CI CLI generates GitHub workflows for the most popular CI tasks.
+We created a tool that bootstraps CI with the most used features, which are ready for customization in the future. Running `npx setup-ci` generates GitHub workflows for the most popular CI tasks.
 
 ## 📖 Usage
 
