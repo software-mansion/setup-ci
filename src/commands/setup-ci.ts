@@ -82,7 +82,7 @@ const getSelectedOptions = async (toolbox: CycliToolbox): Promise<string[]> => {
 
 const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
   toolbox.interactive.vspace()
-  toolbox.interactive.intro(' Welcome to React Native CI CLI! ')
+  toolbox.interactive.intro(' Welcome to npx setup-ci! ')
 
   if (isGitDirty() == null) {
     throw Error('This is not a git repository.')
