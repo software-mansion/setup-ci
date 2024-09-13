@@ -11,6 +11,7 @@
     "compile": "tsc -p .",
     "copy-templates": "cp -r ./src/templates/ ./build/templates",
     "build": "yarn clean-build && yarn compile && yarn copy-templates",
+    "build:alias": "sed -i 's/\"name\": \"setup-ci\"/\"name\": \"react-native-ci-cli\"/g' package.json && yarn build",
     "prepublishOnly": "yarn build",
     "format": "eslint \"**/*.{js,jsx,ts,tsx}\" --fix && prettier \"**/*.{js,jsx,ts,tsx,json}\" --write",
     "test": "jest",

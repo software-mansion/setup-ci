@@ -1,4 +1,6 @@
-name: Publish to NPM
+# publish as "react-native-ci-cli" instead of "setup-ci" for testing purposes
+
+name: Publish to NPM with alias
 on:
   release:
     types: [created]
@@ -21,10 +23,10 @@ jobs:
       - name: 📦 Install dependencies
         run: yarn
 
-      - name: 🛠️ Build
-        run: yarn build
+      - name: 🛠️ Build for alias
+        run: yarn build:alias
 
-      - name: 🚀 Publish package to NPM repository
+      - name: 🚀 Publish package to NPM repository for alias
         run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
