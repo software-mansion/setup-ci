@@ -1,6 +1,12 @@
 name: Run Jest
 
-on: pull_request
+on:
+  pull_request:
+    paths-ignore:
+      - '.github/**'
+      - 'docs/**'
+      - 'CHANGELOG.md'
+      - 'readme.md'
 
 jobs:
   jest:
