@@ -2,7 +2,6 @@ import { REPOSITORY_SECRETS_HELP_URL } from '../constants'
 import { CycliRecipe, CycliToolbox, ProjectContext } from '../types'
 import { join } from 'path'
 import { recursiveAssign } from '../utils/recursiveAssign'
-import { addTerminatingNewline } from '../utils/addTerminatingNewline'
 
 const FLAG = 'eas'
 
@@ -33,8 +32,6 @@ const patchEasJson = async (
     recursiveAssign(config, patch)
   )
 
-  addTerminatingNewline('eas.json')
-
   toolbox.interactive.step('Configured development profile for EAS Build.')
 }
 
@@ -60,8 +57,6 @@ const patchAppJson = async (toolbox: CycliToolbox): Promise<void> => {
     await toolbox.patching.update(appJsonFile, (config) =>
       recursiveAssign(config, patch)
     )
-
-    addTerminatingNewline(appJsonFile)
   }
 
   toolbox.interactive.step('Set runtimeVersion policy to "fingerprint".')
