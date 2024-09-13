@@ -23,8 +23,9 @@ test('prints help', async () => {
     '--jest',
     '--ts',
     '--prettier',
-    '--eas-update',
+    '--eas',
     '--detox',
+    '--maestro',
   ]) {
     expect(output).toContain(message)
   }
