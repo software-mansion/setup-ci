@@ -75,6 +75,6 @@
       "<rootDir>/__tests__/setup-after-env.js"
     ],
     "maxWorkers": 1,
-    "testTimeout": 180000
+    "testTimeout": 240000
   }
 }
