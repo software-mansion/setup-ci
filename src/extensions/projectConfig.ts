@@ -1,7 +1,8 @@
-import { AppJson, CycliToolbox, PackageJson } from '../types'
+import { AppJson, CycliToolbox, PackageJson, ProjectContext } from '../types'
 import { join } from 'path'
 
 const APP_JSON_FILES = ['app.json', 'app.config.json']
+const DEFAULT_NODE_VERSION = 'v20.17.0'
 
 module.exports = (toolbox: CycliToolbox) => {
   const { filesystem } = toolbox
@@ -28,6 +29,50 @@ module.exports = (toolbox: CycliToolbox) => {
     }
 
     return undefined
+  }
+
+  const nodeVersionFileInDirectory = (dir: string): string | undefined => {
+    if (filesystem.exists(join(dir, '.nvmrc'))) {
+      return join(dir, '.nvmrc')
+    } else if (filesystem.exists(join('dir', '.node-version'))) {
+      return join(dir, '.node-version')
+    } else {
+      const packageJson = filesystem.read(join(dir, 'package.json'), 'json')
+      if (packageJson?.volta?.node || packageJson?.engines?.node) {
+        return join(dir, 'package.json')
+      }
+    }
+    return undefined
+  }
+
+  const nodeVersionFile = (context: ProjectContext): string => {
+    const { repoRoot, packageRoot } = context.path
+
+    // First, we look for node version in package root.
+    // If not found, we look for it in repository root (for monorepo support).
+    // If still not found, create .nvmrc in package root with default node version (v20.17.0).
+    const file =
+      nodeVersionFileInDirectory(packageRoot) ??
+      nodeVersionFileInDirectory(repoRoot)
+
+    if (!file) {
+      filesystem.write(join(packageRoot, '.nvmrc'), DEFAULT_NODE_VERSION + '\n')
+
+      toolbox.interactive.warning(
+        `No node version file found. Created .nvmrc with default node version (${DEFAULT_NODE_VERSION}).`
+      )
+
+      toolbox.furtherActions.push(
+        [
+          `Couldn't retrieve your project's node version. Generated .nvmrc file with default node version (${DEFAULT_NODE_VERSION}).`,
+          'Please check if it matches your project and update if necessary.',
+        ].join(' ')
+      )
+
+      return join(packageRoot, '.nvmrc')
+    }
+
+    return file
   }
 
   const isExpo = (): boolean => {
@@ -74,6 +119,7 @@ module.exports = (toolbox: CycliToolbox) => {
     packageJson,
     appJsonFile,
     appJson,
+    nodeVersionFile,
     isExpo,
     getName,
     getAppId,
@@ -85,6 +131,7 @@ export interface ProjectConfigExtension {
     packageJson: () => PackageJson
     appJsonFile: () => string | undefined
     appJson: () => AppJson | undefined
+    nodeVersionFile: (context: ProjectContext) => string
     isExpo: () => boolean
     getName: () => string
     getAppId: () => string | undefined

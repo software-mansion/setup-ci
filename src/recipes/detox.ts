@@ -40,7 +40,7 @@ const addDetoxExpoPlugin = async (toolbox: CycliToolbox) => {
 
 const execute = async (toolbox: CycliToolbox, context: ProjectContext) => {
   toolbox.interactive.vspace()
-  toolbox.interactive.sectionHeader('Genereating Detox workflow')
+  toolbox.interactive.sectionHeader('Generating Detox workflow')
 
   const expo = toolbox.projectConfig.isExpo()
 

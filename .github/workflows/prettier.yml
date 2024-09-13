@@ -1,6 +1,7 @@
 name: Prettier check
-on:
-  - pull_request
+
+on: pull_request
+
 jobs:
   prettier-check:
     name: Prettier check
@@ -8,7 +9,9 @@ jobs:
     steps:
       - name: 🏗 Setup repo
         uses: actions/checkout@v4
+
       - name: 📦 Install dependencies
         run: yarn
+
       - name: ✨ Run Prettier check
-        run: yarn --cwd . prettier:check
+        run: yarn prettier:check
