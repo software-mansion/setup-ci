@@ -6,15 +6,18 @@ jobs:
   changelog:
     runs-on: ubuntu-latest
     steps:
+      - name: 🏗 Setup repo
       - uses: actions/checkout@v4
         with:
           token: ${{ secrets.PA_TOKEN }}
-      - name: Conventional Changelog Action
+
+      - name: 📘 Conventional Changelog Action
         id: changelog
         uses: TriPSs/conventional-changelog-action@v3
         with:
           github-token: ${{ secrets.PA_TOKEN }}
-      - name: Create release
+
+      - name: 🚀 Create release
         uses: actions/create-release@v1
         if: ${{ steps.changelog.outputs.skipped == 'false' }}
         env:

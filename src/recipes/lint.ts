@@ -19,7 +19,7 @@ const execute = async (
   context: ProjectContext
 ): Promise<void> => {
   toolbox.interactive.vspace()
-  toolbox.interactive.sectionHeader('Genereating ESLint workflow')
+  toolbox.interactive.sectionHeader('Generating ESLint workflow')
 
   // eslint@9 introduces new configuration format that is not supported by widely used plugins yet,
   // so we stick to ^8 for now.
