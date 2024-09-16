@@ -16,12 +16,12 @@ const StartScreen = () => {
       <CommandBox />
       <div className={styles.buttonsContainer}>
         <HomepageButton
-          href="/react-native-ci-cli/docs/introduction/getting-started"
+          href="/setup-ci/docs/introduction/getting-started"
           title="Learn more"
         />
         <HomepageButton
           target="_blank"
-          href="https://github.com/software-mansion-labs/react-native-ci-cli/"
+          href="https://github.com/software-mansion/setup-ci"
           title="GitHub"
         />
       </div>

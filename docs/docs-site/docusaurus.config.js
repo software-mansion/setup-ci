@@ -8,10 +8,10 @@ const config = {
 
   url: 'https://docs.swmansion.com',
 
-  baseUrl: '/react-native-ci-cli/',
+  baseUrl: '/setup-ci/',
 
   organizationName: 'software-mansion',
-  projectName: 'react-native-ci-cli',
+  projectName: 'setup-ci',
 
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'throw',
@@ -38,6 +38,11 @@ const config = {
     ],
   ],
 
+  markdown: {
+    mermaid: true,
+  },
+  themes: ['@docusaurus/theme-mermaid'],
+
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
@@ -61,7 +66,7 @@ const config = {
             position: 'right',
           },
           {
-            href: 'https://github.com/software-mansion-labs/react-native-ci-cli/',
+            href: 'hhttps://github.com/software-mansion/setup-ci',
             position: 'right',
             className: 'header-github',
             'aria-label': 'GitHub repository',

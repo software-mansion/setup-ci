@@ -1,0 +1,109 @@
+---
+sidebar_position: 3
+---
+
+# Lookup cached debug build
+
+Workflow that calculates the [fingerprint](https://expo.dev/blog/fingerprint-your-native-runtime) of the app and 
+checks whether a debug build with the same fingerprint is cached and can be retrieved.
+
+This workflow can be triggered by other workflows depending on it.
+
+## Usage 
+
+This workflow cannot be explicitly specified to be generated using SCI. It will be generated automatically
+if you choose to create workflow depending on it.
+
+## Detailed behavior
+
+Below you can find detailed information about what the script 
+does with your project when generating Lookup cached debug build workflow.
+
+### Input and output
+
+Input:
+- `platform: ('android' | 'ios')` - The platform for which the build should be looked up
+
+Output:
+- `build-exists: boolean` - whether the build was found in cache
+- `fingerprint: string` - the fingerprint calculated for specified platform
+
+### Fingerprint
+
+This workflow uses [@expo/fingerprint](https://expo.dev/blog/fingerprint-your-native-runtime) to generate 
+a hash string of your native code (called _fingerprint_). It then checks whether key 
+`${{ inputs.platform }}-debug-build-${{ fingerprint }}` can be restored from cache.
+
+### Modified and created files
+
+<table>
+  <tr>
+    <th style={{ width: "40%" }}>File</th>
+    <th>Changes</th>
+  </tr>
+  <tr>
+    <td><code>.github/workflows/lookup-cached-debug-build.yml</code></td>
+    <td>Contains the CI workflow.</td>
+  </tr>
+  <tr>
+    <td><code>package.json</code></td>
+    <td>
+      <ul>
+        <li>
+          New script: 
+          <code>
+            fingerprint:android: npx expo-updates fingerprint:generate 
+            --platform android | jq -r '.hash' | xargs -n 1 echo 'fingerprint:'
+          </code>
+        </li>
+        <li>
+          New script: 
+          <code>
+            fingerprint:ios: npx expo-updates fingerprint:generate 
+            --platform ios | jq -r '.hash' | xargs -n 1 echo 'fingerprint:'
+          </code>
+        </li>
+      </ul>
+    </td>
+  </tr>
+</table>
+
+### Workflow details
+
+#### build-debug-android
+
+The following diagram represents the flow of the `build-debug-android` workflow:
+
+```mermaid
+flowchart TD;
+    A["🔍 Lookup cached debug build (and skip all following steps if found)\nUsing <a href='/setup-ci/docs/aux-workflows/lookup-cached-debug-build'>lookup-cached-debug-build</a>"]-->B["💾 Maximize build space\nUsing <a href='https://github.com/AdityaGarg8/remove-unwanted-software'>AdityaGarg8/remove-unwanted-software</a>"]
+    B-->C["🌿 Setup Node"];
+    C-->D["☕ Setup JDK 17"]
+    D-->E["🐘 Setup Gradle 8.8"]
+    E-->F["📦 Install dependencies"];
+    F-->G["🛠️ Build [yarn build:debug:android]"]
+    G-->H["📡 Store built app in cache"]
+```
+
+#### build-debug-ios
+
+The following diagram represents the flow of the `build-debug-ios` workflow:
+
+```mermaid
+flowchart TD;
+    A["🔍 Lookup cached debug build (and skip all following steps if found)\nUsing <a href='/setup-ci/docs/aux-workflows/lookup-cached-debug-build'>lookup-cached-debug-build</a>"]-->B["💾 Maximize build space\nUsing <a href='https://github.com/AdityaGarg8/remove-unwanted-software'>AdityaGarg8/remove-unwanted-software</a>"]
+    B-->C["🌿 Setup Node"];
+    C-->D["🔨 Use latest stable Xcode"]
+    D-->E["📦 Install dependencies"];
+    E-->F["🛠️ Build [yarn build:debug:ios]"]
+    F-->G["📡 Store built app in cache"]
+```
+
+## Known issues and limitations
+
+- One of limitations of GitHub Actions is that cache is scoped and cannot be accessed between 
+  arbitrary branches (see [#79](https://github.com/actions/cache/issues/79)). This means that 
+  if a build with specific fingerprint is created on `feature-a` branch, then in `feature-b` 
+  branch with the same fingerprint, the build is not visible and the app will be built again.
+  However, since the build is also created on main branch, once either `feature-a` or `feature-b`
+  is merged to main, the build will be cached and available for all existing and future branches in the repository.

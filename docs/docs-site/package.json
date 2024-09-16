@@ -16,6 +16,7 @@
   "dependencies": {
     "@docusaurus/core": "2.4.3",
     "@docusaurus/preset-classic": "2.4.3",
+    "@docusaurus/theme-mermaid": "2.4.3",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
     "@mdx-js/react": "^1.6.22",

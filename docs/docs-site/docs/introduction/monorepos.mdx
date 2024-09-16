@@ -1,5 +1,5 @@
 ---
-sidebar_position: 4
+sidebar_position: 5
 ---
 
 # Support for monorepos
@@ -63,7 +63,7 @@ This is to ensure that all workflows generated in monorepo have unique names and
 If we inspect the contents of `package-a-prettier.yml`, we can see
 some quirks specific to workflows generated in monorepos.
 
-```yaml {5,6,20} title=".github/workflows/package-a-prettier.yml" showLineNumbers
+```yaml {5,6,19,26} title=".github/workflows/package-a-prettier.yml" showLineNumbers
 name: Prettier check
 
 on:
@@ -79,12 +79,19 @@ jobs:
       - name: 🏗 Setup repo
         uses: actions/checkout@v4
 
+      - name: 🌿 Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: "apps/package-a/.nvmrc"
+          cache: "yarn"
+
       - name: 📦 Install dependencies
-        run: yarn
+        run: yarn install --immutable
 
       - name: ✨ Run Prettier check
-        run: yarn --cwd apps/expo-app prettier:check
+        run: yarn --cwd apps/package-a prettier:check
 ```
 
 - Lines 5-6: the `paths` field ensures that the workflow runs only when changes are made in `apps/package-a` directory
-- Line 20: the `yarn` command uses `--cwd` flag to specify in which package it should be run (for npm projects, the `npm run --prefix` option is used)
+- Line 19: the path to `.nvmrc` file is adjusted to point to `package-a` directory
+- Line 26: the `yarn` command uses `--cwd` flag to specify in which package it should be run (for npm projects, the `npm run --prefix` option is used)
