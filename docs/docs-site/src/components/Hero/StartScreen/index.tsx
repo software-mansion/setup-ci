@@ -16,7 +16,7 @@ const StartScreen = () => {
       <CommandBox />
       <div className={styles.buttonsContainer}>
         <HomepageButton
-          href="/react-native-ci-cli/docs/introduction"
+          href="/react-native-ci-cli/docs/introduction/getting-started"
           title="Learn more"
         />
         <HomepageButton

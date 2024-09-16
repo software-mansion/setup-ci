@@ -336,8 +336,30 @@
   --swm-details-foreground: var(--swm-purple-dark-120);
   --swm-details-background: var(--swm-purple-dark-140);
 
+  /* Admonitions */
+  --swm-admonition-color-secondary: var(--swm-navy-light-10);
+  --swm-admonition-color-success: var(--swm-green-dark-120);
+  --swm-admonition-color-danger: var(--swm-red-dark-120);
+  --swm-admonition-color-info: var(--swm-blue-light-20);
+  --swm-admonition-color-caution: var(--swm-yellow-dark-120);
+
+  --swm-admonition-color-secondary-shadow: var(--swm-navy-light-80);
+  --swm-admonition-color-success-shadow: var(--swm-green-dark-140);
+  --swm-admonition-color-danger-shadow: var(--swm-red-dark-140);
+  --swm-admonition-color-info-shadow: var(--swm-blue-light-100);
+  --swm-admonition-color-caution-shadow: var(--swm-yellow-dark-140);
+
   /* Details */
   --swm-details-color: var(--swm-off-white);
+
+  /* Quotes */
+  --swm-background-quote: var(--swm-navy-dark-80);
+  --swm-background-quote-secondary: var(--swm-navy-light-20);
+  --swm-background-quote-blue: var(--swm-blue-light-40);
+  --swm-background-quote-green: var(--swm-green-light-40);
+  --swm-background-quote-red: var(--swm-red-light-40);
+  --swm-background-quote-yellow: var(--swm-yellow-light-40);
+  --swm-background-quote-purple: var(--swm-purple-light-40);
 
   /* Code snippets */
   --swm-border: var(--swm-navy-light-60);

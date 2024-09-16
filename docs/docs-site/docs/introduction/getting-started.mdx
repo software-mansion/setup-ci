@@ -1,0 +1,64 @@
+---
+sidebar_position: 1
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Getting started
+
+In this section you will find information about what is **Setup CI** and how to use it to quickly bootstrap
+CI/CD workflows in your existing or new React Native project.
+
+:::caution
+Currently, Setup CI only supports **GitHub Actions** as a CI/CD provider. Support for other platforms is planned for the future.
+:::
+
+## What is Setup CI?
+
+Setup CI (SCI) is a tool built by [Software Mansion](https://swmansion.com/) meant to simplify the process of setting up CI/CD workflows in React Native apps.
+
+## Why use Setup CI?
+
+:::danger
+TODO
+:::
+
+## How to use
+
+You can use SCI in an existing project or in a new one. Go to the project root directory (where `package.json` is located) and run the following command.
+
+```bash
+npx setup-ci
+```
+
+You will be prompted with a series of questions about the tools you want to set up in your project. After answering them, the tool will:
+
+- Generate workflow `.yml` files
+- Install all missing necessary dependencies
+- Update configuration files (e.g. `package.json`, `app.json`, `eas.json`) accordingly
+- Generate default configuration for selected tools if needed (e.g. default `.prettierrc` for Prettier)
+- Print a list of manual steps needed to finish the setup
+
+:::tip
+You can find more details about what files SCI generates and modifies for each supported workflow in [Workflows](/docs/category/workflows) section.
+:::
+
+### Run with preset 
+
+To skip interactive prompts at the beggining of the script, you can specify your own preset with option flags. For example, to set up workflows for Jest and ESLint, you can run:
+
+```bash
+npx setup-ci --preset --jest --lint
+```
+
+:::tip
+You can find more information about available option flags in [Command line options](/docs/introduction/command-line-options) or using `npx setup-ci --help`
+:::
+
+## Example usage
+
+:::danger
+TODO (similar to example in monorepo section)
+With explanation of generated yml files
+:::

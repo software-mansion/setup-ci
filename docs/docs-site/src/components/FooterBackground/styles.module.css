@@ -25,7 +25,7 @@
   margin-top: 107px;
 }
 
-footer {
+[class*='footerLanding'] {
   margin-top: -107px;
 }
 
@@ -33,7 +33,7 @@ footer {
   .container {
     margin-top: 122px;
   }
-  footer {
+  [class*='footerLanding'] {
     margin-top: -122px;
   }
 }
@@ -42,7 +42,7 @@ footer {
   .container {
     margin-top: 147px;
   }
-  footer {
+  [class*='footerLanding'] {
     margin-top: -147px;
   }
 }
@@ -51,7 +51,7 @@ footer {
   .container {
     margin-top: 173px;
   }
-  footer {
+  [class*='footerLanding'] {
     margin-top: -173px;
   }
 }

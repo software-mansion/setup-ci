@@ -1,0 +1,26 @@
+---
+sidebar_position: 5
+---
+
+# Limits of automation
+
+Although SCI is designed to automate as much as possible, there are some limitations to what it can do. In such cases, you will need to perform manual steps.
+Hovewer, **SCI will always provide you with instructions** on what needs to be done
+in form of a **"What next?"** list printed at the end of script execution, or during the
+execution using interactive prompts.
+
+Example of a "What next?" list printed at the end of script execution:
+
+![what-next](./img/what_next.png)
+
+Example of a manual step instruction during the execution:
+
+![manual-step-detox](./img/manual_step_detox.png)
+
+## Examples of manual steps
+
+Some of the tasks that SCI cannot automate include:
+
+- Patching native mobile code
+- Updating dynamic configuration files (e.g. `app.config.js`)
+- Creating repository secrets (e.g. `EXPO_TOKEN`)

@@ -1,6 +1,6 @@
 {
-  "label": "Workflows",
-  "position": 2,
+  "label": "Introduction",
+  "position": 1,
   "link": {
     "type": "generated-index"
   }
