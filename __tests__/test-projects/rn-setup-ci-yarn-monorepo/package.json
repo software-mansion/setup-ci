@@ -1,0 +1,10 @@
+{
+  "name": "rn-setup-ci-yarn-monorepo",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT"
+}

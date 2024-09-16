@@ -11,7 +11,7 @@ const execute = async (
   context: ProjectContext
 ): Promise<void> => {
   toolbox.interactive.vspace()
-  toolbox.interactive.sectionHeader('Genereating Jest workflow')
+  toolbox.interactive.sectionHeader('Generating Jest workflow')
 
   await toolbox.dependencies.addDev('jest', context)
 

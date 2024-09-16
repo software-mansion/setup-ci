@@ -1,14 +1,17 @@
 name: Check ESLint
-on:
-  - pull_request
+
+on: pull_request
+
 jobs:
-  test:
+  lint:
     name: ESLint
     runs-on: ubuntu-latest
     steps:
       - name: 🏗 Setup repo
         uses: actions/checkout@v4
+
       - name: 📦 Install dependencies
         run: yarn
+
       - name: 🤓 Run ESLint
-        run: yarn --cwd . lint
+        run: yarn lint

@@ -1,0 +1,49 @@
+{
+  "expo": {
+    "name": "rn-setup-ci-create-expo-stack",
+    "slug": "rn-setup-ci-create-expo-stack",
+    "version": "1.0.0",
+    "scheme": "rn-setup-ci-create-expo-stack",
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": ["expo-router"],
+    "experiments": {
+      "typedRoutes": true,
+      "tsconfigPaths": true
+    },
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.kmichno.rnsetupcicreateexpostack"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.kmichno.rnsetupcicreateexpostack"
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/0a526a84-ef57-452b-82b4-59fd0af9e9b3"
+    }
+  }
+}

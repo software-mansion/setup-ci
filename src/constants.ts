@@ -39,6 +39,7 @@ export const S_RADIO_ACTIVE = '●'
 export const S_RADIO_INACTIVE = '○'
 export const S_R_ARROW = '►'
 
+export const NON_INTERACTIVE_FLAG = 'non-interactive'
 export const HELP_FLAG = 'help'
 export const PRESET_FLAG = 'preset'
 
