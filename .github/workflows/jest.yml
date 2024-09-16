@@ -1,0 +1,23 @@
+name: Run Jest
+
+on:
+  pull_request:
+    paths-ignore:
+      - '.github/**'
+      - 'docs/**'
+      - 'CHANGELOG.md'
+      - 'readme.md'
+
+jobs:
+  jest:
+    name: Jest
+    runs-on: macos-latest
+    steps:
+      - name: 🏗 Setup repo
+        uses: actions/checkout@v4
+
+      - name: 📦 Install dependencies
+        run: yarn
+
+      - name: 🎭 Run Jest
+        run: yarn test

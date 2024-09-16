@@ -1,0 +1,399 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`typescript check recipe rn-setup-ci-create-expo-stack typescript check 1`] = `
+Object {
+  "dependencies": Object {
+    "react": "",
+    "react-native": "",
+  },
+  "devDependencies": Object {
+    "@babel/core": "",
+    "@babel/preset-env": "",
+    "@babel/runtime": "",
+    "@react-native/babel-preset": "",
+    "@react-native/metro-config": "",
+    "@react-native/typescript-config": "",
+    "@types/react": "",
+    "@types/react-test-renderer": "",
+    "react-test-renderer": "",
+    "typescript": "",
+  },
+  "engines": Object {
+    "node": ">=18",
+  },
+  "name": "RnSetupCiYarnFlat",
+  "packageManager": "yarn@3.6.4",
+  "private": true,
+  "scripts": Object {
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
+    "start": "react-native start",
+    "ts:check": "tsc -p . --noEmit",
+  },
+  "version": "0.0.1",
+}
+`;
+
+exports[`typescript check recipe rn-setup-ci-create-expo-stack typescript check 2`] = `
+"{
+  \\"extends\\": \\"expo/tsconfig.base\\",
+  \\"compilerOptions\\": {
+    \\"strict\\": true,
+
+    \\"baseUrl\\": \\".\\",
+    \\"paths\\": {
+      \\"~/*\\": [\\"*\\"]
+    }
+  },
+  \\"include\\": [\\"**/*.ts\\", \\"**/*.tsx\\", \\".expo/types/**/*.ts\\", \\"expo-env.d.ts\\"]
+}
+"
+`;
+
+exports[`typescript check recipe rn-setup-ci-create-expo-stack typescript check 3`] = `
+"name: Run Typescript
+
+on:
+  pull_request:
+
+jobs:
+  typescript-check:
+    name: Typescript check
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🏗 Setup repo
+        uses: actions/checkout@v4
+
+      - name: 🌿 Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🔍 Run Typescript check
+        run: npm run ts:check
+"
+`;
+
+exports[`typescript check recipe rn-setup-ci-npm-flat typescript check 1`] = `
+Object {
+  "dependencies": Object {
+    "react": "",
+    "react-native": "",
+  },
+  "devDependencies": Object {
+    "@babel/core": "",
+    "@babel/preset-env": "",
+    "@babel/runtime": "",
+    "@react-native/babel-preset": "",
+    "@react-native/metro-config": "",
+    "@react-native/typescript-config": "",
+    "@types/react": "",
+    "@types/react-test-renderer": "",
+    "react-test-renderer": "",
+    "typescript": "",
+  },
+  "engines": Object {
+    "node": ">=18",
+  },
+  "name": "RnSetupCiYarnFlat",
+  "packageManager": "yarn@3.6.4",
+  "private": true,
+  "scripts": Object {
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
+    "start": "react-native start",
+    "ts:check": "tsc -p . --noEmit",
+  },
+  "version": "0.0.1",
+}
+`;
+
+exports[`typescript check recipe rn-setup-ci-npm-flat typescript check 2`] = `
+"{
+  \\"extends\\": \\"@react-native/typescript-config/tsconfig.json\\"
+}
+"
+`;
+
+exports[`typescript check recipe rn-setup-ci-npm-flat typescript check 3`] = `
+"name: Run Typescript
+
+on:
+  pull_request:
+
+jobs:
+  typescript-check:
+    name: Typescript check
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🏗 Setup repo
+        uses: actions/checkout@v4
+
+      - name: 🌿 Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: 'package.json'
+          cache: 'npm'
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🔍 Run Typescript check
+        run: npm run ts:check
+"
+`;
+
+exports[`typescript check recipe rn-setup-ci-npm-monorepo typescript check 1`] = `
+Object {
+  "dependencies": Object {
+    "@expo/vector-icons": "",
+    "@react-navigation/native": "",
+    "expo": "",
+    "expo-constants": "",
+    "expo-font": "",
+    "expo-linking": "",
+    "expo-router": "",
+    "expo-splash-screen": "",
+    "expo-status-bar": "",
+    "expo-system-ui": "",
+    "expo-updates": "",
+    "expo-web-browser": "",
+    "react": "",
+    "react-dom": "",
+    "react-native": "",
+    "react-native-gesture-handler": "",
+    "react-native-reanimated": "",
+    "react-native-safe-area-context": "",
+    "react-native-screens": "",
+    "react-native-web": "",
+  },
+  "devDependencies": Object {
+    "@babel/core": "",
+    "@types/react": "",
+    "@types/react-test-renderer": "",
+    "jest-expo": "",
+    "react-test-renderer": "",
+    "typescript": "",
+  },
+  "main": "expo-router/entry",
+  "name": "expo-app",
+  "private": true,
+  "scripts": Object {
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "reset-project": "node ./scripts/reset-project.js",
+    "start": "expo start",
+    "ts:check": "tsc -p . --noEmit",
+    "web": "expo start --web",
+  },
+  "version": "1.0.0",
+}
+`;
+
+exports[`typescript check recipe rn-setup-ci-npm-monorepo typescript check 2`] = `
+"{
+  \\"extends\\": \\"expo/tsconfig.base\\",
+  \\"compilerOptions\\": {
+    \\"strict\\": true,
+    \\"paths\\": {
+      \\"@/*\\": [\\"./*\\"]
+    }
+  },
+  \\"include\\": [\\"**/*.ts\\", \\"**/*.tsx\\", \\".expo/types/**/*.ts\\", \\"expo-env.d.ts\\"]
+}
+"
+`;
+
+exports[`typescript check recipe rn-setup-ci-npm-monorepo typescript check 3`] = `
+"name: Run Typescript
+
+on:
+  pull_request:
+    paths:
+      - apps/expo-app/**
+
+jobs:
+  typescript-check:
+    name: Typescript check
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🏗 Setup repo
+        uses: actions/checkout@v4
+
+      - name: 🌿 Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: 'apps/expo-app/.nvmrc'
+          cache: 'npm'
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🔍 Run Typescript check
+        run: npm run ts:check --prefix apps/expo-app
+"
+`;
+
+exports[`typescript check recipe rn-setup-ci-yarn-flat typescript check 1`] = `
+Object {
+  "dependencies": Object {
+    "react": "",
+    "react-native": "",
+  },
+  "devDependencies": Object {
+    "@babel/core": "",
+    "@babel/preset-env": "",
+    "@babel/runtime": "",
+    "@react-native/babel-preset": "",
+    "@react-native/metro-config": "",
+    "@react-native/typescript-config": "",
+    "@types/react": "",
+    "@types/react-test-renderer": "",
+    "react-test-renderer": "",
+    "typescript": "",
+  },
+  "engines": Object {
+    "node": ">=18",
+  },
+  "name": "RnSetupCiYarnFlat",
+  "packageManager": "yarn@3.6.4",
+  "private": true,
+  "scripts": Object {
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
+    "start": "react-native start",
+    "ts:check": "tsc -p . --noEmit",
+  },
+  "version": "0.0.1",
+}
+`;
+
+exports[`typescript check recipe rn-setup-ci-yarn-flat typescript check 2`] = `
+"{
+  \\"extends\\": \\"@react-native/typescript-config/tsconfig.json\\"
+}
+"
+`;
+
+exports[`typescript check recipe rn-setup-ci-yarn-flat typescript check 3`] = `
+"name: Run Typescript
+
+on:
+  pull_request:
+
+jobs:
+  typescript-check:
+    name: Typescript check
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🏗 Setup repo
+        uses: actions/checkout@v4
+
+      - name: 🌿 Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: 'package.json'
+          cache: 'yarn'
+
+      - name: 📦 Install dependencies
+        run: yarn install --immutable
+
+      - name: 🔍 Run Typescript check
+        run: yarn ts:check
+"
+`;
+
+exports[`typescript check recipe rn-setup-ci-yarn-monorepo typescript check 1`] = `
+Object {
+  "dependencies": Object {
+    "@expo/vector-icons": "",
+    "@react-navigation/native": "",
+    "expo": "",
+    "expo-constants": "",
+    "expo-font": "",
+    "expo-linking": "",
+    "expo-router": "",
+    "expo-splash-screen": "",
+    "expo-status-bar": "",
+    "expo-system-ui": "",
+    "expo-updates": "",
+    "expo-web-browser": "",
+    "react": "",
+    "react-dom": "",
+    "react-native": "",
+    "react-native-gesture-handler": "",
+    "react-native-reanimated": "",
+    "react-native-safe-area-context": "",
+    "react-native-screens": "",
+    "react-native-web": "",
+  },
+  "devDependencies": Object {
+    "@babel/core": "",
+    "@types/react": "",
+    "@types/react-test-renderer": "",
+    "jest-expo": "",
+    "react-test-renderer": "",
+    "typescript": "",
+  },
+  "main": "expo-router/entry",
+  "name": "expo-app",
+  "private": true,
+  "scripts": Object {
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "reset-project": "node ./scripts/reset-project.js",
+    "start": "expo start",
+    "ts:check": "tsc -p . --noEmit",
+    "web": "expo start --web",
+  },
+  "version": "1.0.0",
+}
+`;
+
+exports[`typescript check recipe rn-setup-ci-yarn-monorepo typescript check 2`] = `
+"{
+  \\"extends\\": \\"expo/tsconfig.base\\",
+  \\"compilerOptions\\": {
+    \\"strict\\": true,
+    \\"paths\\": {
+      \\"@/*\\": [\\"./*\\"]
+    }
+  },
+  \\"include\\": [\\"**/*.ts\\", \\"**/*.tsx\\", \\".expo/types/**/*.ts\\", \\"expo-env.d.ts\\"]
+}
+"
+`;
+
+exports[`typescript check recipe rn-setup-ci-yarn-monorepo typescript check 3`] = `
+"name: Run Typescript
+
+on:
+  pull_request:
+    paths:
+      - apps/expo-app/**
+
+jobs:
+  typescript-check:
+    name: Typescript check
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🏗 Setup repo
+        uses: actions/checkout@v4
+
+      - name: 🌿 Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: 'apps/expo-app/.nvmrc'
+          cache: 'yarn'
+
+      - name: 📦 Install dependencies
+        run: yarn install --immutable
+
+      - name: 🔍 Run Typescript check
+        run: yarn --cwd apps/expo-app ts:check
+"
+`;

@@ -59,7 +59,7 @@ The following are **feature flags** that can be used with `--preset` flag (they 
 
 <table>
   <tr>
-    <th style="text-align: center; vertical-align: middle;">Flag</th>
+    <th width="160px" style="text-align: center; vertical-align: middle;">Flag</th>
     <th style="text-align: center; vertical-align: middle;">Description</th>
   </tr>
   <tr>
@@ -79,12 +79,26 @@ The following are **feature flags** that can be used with `--preset` flag (they 
     <td style="vertical-align: middle;">Generate Prettier check workflow to run on every PR</td>
   </tr>
   <tr>
-    <td style="vertical-align: middle;">--eas-update</td>
-    <td style="vertical-align: middle;">Generate Preview with EAS Update workflow to run on every PR (Expo projects only)</td>
+    <td style="vertical-align: middle;">--eas</td>
+    <td style="vertical-align: middle;">Generate Preview with EAS workflow to run on every PR <b>(Expo projects only)</b>. 
+      The workflow uses <a href=https://github.com/expo/expo-github-action/tree/main/continuous-deploy-fingerprint>Expo continuous-deploy-fingerprint action</a>
+      to publish EAS Updates and trigger EAS Builds in development profile 
+      when the fingerprint of the app changes. You can learn more with Expo documentation on
+      <a href=https://docs.expo.dev/build/introduction/>EAS Build</a>,
+      <a href=https://docs.expo.dev/eas-update/introduction/>EAS Update</a>
+      and <a href=https://expo.dev/blog/fingerprint-your-native-runtime>Expo fingerprint</a>.
+      </br>
+      Additionally, a comment will be created in your PR with a link to the build 
+      and a QR code to scan and open the app on your device with the latest update.
+    </td>
   </tr>
   <tr>
     <td style="vertical-align: middle;">--detox</td>
     <td style="vertical-align: middle;">Generate workflow to run Detox e2e tests on every PR</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: middle;">--maestro</td>
+    <td style="vertical-align: middle;">Generate workflow to run Maestro e2e tests on every PR</td>
   </tr>
 </table>
 
@@ -112,8 +126,8 @@ the maintainers directly.
 
 ## 🚸 Roadmap
 
-- [ ] Build Expo DevClient when fingerprint changes
-- [ ] Maestro support for E2E tests
+- [x] Build Expo DevClient when fingerprint changes
+- [x] Maestro support for E2E tests
 - [ ] Different workflows for different branches (ex. PR, main, release)
 - [ ] Upload source maps to Sentry
 - [ ] Handle different vendors

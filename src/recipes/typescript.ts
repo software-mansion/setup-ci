@@ -8,7 +8,7 @@ const execute = async (
   context: ProjectContext
 ): Promise<void> => {
   toolbox.interactive.vspace()
-  toolbox.interactive.sectionHeader('Genereating Typescript check workflow')
+  toolbox.interactive.sectionHeader('Generating Typescript check workflow')
 
   await toolbox.dependencies.addDev('typescript', context)
 
