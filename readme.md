@@ -20,7 +20,7 @@ If your project has a monorepo structure, run the script from the root directory
 
 ## 💡 Demo
 
-Say we want to set up GitHub actions that run ESLint check and Jest tests on our project every time we create or push to an existing Pull Request.
+Say we want to set up GitHub actions that run Typescript and Prettier checks on our project every time we create or push to an existing Pull Request.
 Let's try to use `npx setup-ci` to do the heavy lifting and generate all the necessary configurations.
 
 <p align="center">
@@ -29,7 +29,7 @@ Let's try to use `npx setup-ci` to do the heavy lifting and generate all the nec
     src="docs/example-usage.gif"/>
 </p>
 
-Alternatively, we can go fully automatic by passing flags `--preset --lint --jest` to avoid all interaction with the script. You can check the section below for more information about available flags!
+Alternatively, we can use flags `--preset --ts --prettier` to avoid the interactive survey at the beginning of the script. You can check the section below for more information about available flags!
 
 ## ⚙️ Features
 
