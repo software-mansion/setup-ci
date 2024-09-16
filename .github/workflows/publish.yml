@@ -28,3 +28,11 @@ jobs:
         run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: 🛠️ Build dev
+        run: yarn build:dev
+
+      - name: 🚀 Publish dev package to NPM repository
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

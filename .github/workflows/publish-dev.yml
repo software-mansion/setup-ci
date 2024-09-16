@@ -1,10 +1,8 @@
-# publish as "react-native-ci-cli" instead of "setup-ci" for testing purposes
+# publish as "react-native-ci-cli" with dev version instead of "setup-ci" for testing purposes
 
-name: Publish to NPM with alias
+name: Publish dev version to NPM
 on:
-  release:
-    types: [created]
-  workflow_dispatch:
+  push: main
 
 jobs:
   build:
@@ -23,10 +21,13 @@ jobs:
       - name: 📦 Install dependencies
         run: yarn
 
-      - name: 🛠️ Build for alias
-        run: yarn build:alias
+      - name: 🏷️ Bump dev version
+        run: yarn bump:dev
 
-      - name: 🚀 Publish package to NPM repository for alias
+      - name: 🛠️ Build dev
+        run: yarn build:dev
+
+      - name: 🚀 Publish dev to NPM repository
         run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
