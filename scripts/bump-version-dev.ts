@@ -1,5 +1,4 @@
 const fs = require('fs')
-const { execSync } = require('child_process')
 const semver = require('semver')
 
 const packageJSON = require('../package.json')
