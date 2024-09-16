@@ -26,7 +26,7 @@ Let's try to use `npx setup-ci` to do the heavy lifting and generate all the nec
 <p align="center">
   <img 
     style="width: 80%;"
-    src="https://s12.gifyu.com/images/SonNQ.gif"/>
+    src="docs/example-usage.gif"/>
 </p>
 
 Alternatively, we can go fully automatic by passing flags `--preset --lint --jest` to avoid all interaction with the script. You can check the section below for more information about available flags!
