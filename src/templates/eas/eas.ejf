@@ -7,7 +7,7 @@ const install = {
 }
 %>
 
-name: EAS Update
+name: Preview with EAS
 
 on:
   pull_request: <%= (isMonorepo) ? `
@@ -15,11 +15,15 @@ on:
       - ${props.pathRelativeToRoot}/**` : "" %>
 
 jobs:
-  eas-update:
+  preview-with-eas:
+    name: Preview with EAS
     runs-on: ubuntu-latest
+    concurrency: fingerprint-${{ github.run_id }}
     permissions:
       contents: read
       pull-requests: write
+      actions: write
+      packages: write
     steps:
       - name: 🔍 Check for EXPO_TOKEN
         run: |
@@ -46,8 +50,9 @@ jobs:
       - name: 📦 Install dependencies
         run: <%= install[props.packageManager] %>
 
-      - name: 🚀 Publish update
-        uses: expo/expo-github-action/preview@v8
+      - name: 🚀 Create Preview with EAS Build and Update
+        uses: expo/expo-github-action/continuous-deploy-fingerprint@main
         with:
-          working-directory: <%= props.pathRelativeToRoot %>
-          command: eas update --auto --branch ${{ github.event.pull_request.head.ref }}
+          profile: development
+          branch: development
+          <%= (isMonorepo) ? `working-directory: ${props.pathRelativeToRoot}` : '' %>

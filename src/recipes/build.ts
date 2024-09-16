@@ -112,12 +112,7 @@ export const createBuildWorkflows = async (
   const existsIOsDir = toolbox.filesystem.exists('ios')
 
   if (expo) {
-    toolbox.print.info('⚙️ Running expo prebuild to setup app.json properly.')
-    await toolbox.interactive.spawnSubprocess(
-      'Expo prebuild',
-      `npx expo prebuild --${context.packageManager}`,
-      { alwaysPrintStderr: true }
-    )
+    await toolbox.expo.prebuild(context, { cleanAfter: false })
   }
 
   const iOSAppName = toolbox.filesystem

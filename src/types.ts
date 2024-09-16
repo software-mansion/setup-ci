@@ -9,6 +9,7 @@ import { COLORS, LOCK_FILE_TO_MANAGER } from './constants'
 import { DiffExtension } from './extensions/diff'
 import { OptionsExtension } from './extensions/options'
 import { FurtherActionsExtension } from './extensions/furtherActions'
+import { ExpoExtension } from './extensions/expo'
 import { PrettierExtension } from './extensions/prettier'
 
 export type MessageColor = keyof typeof COLORS
@@ -56,6 +57,7 @@ export interface CycliRecipe {
 }
 
 export type Platform = 'android' | 'ios'
+export type Environment = 'development'
 
 export interface AppJson {
   expo?: {
@@ -91,4 +93,5 @@ export type CycliToolbox = {
   WorkflowsExtension &
   DiffExtension &
   FurtherActionsExtension &
+  ExpoExtension &
   PrettierExtension

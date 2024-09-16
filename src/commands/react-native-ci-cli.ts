@@ -3,7 +3,7 @@ import lint from '../recipes/lint'
 import jest from '../recipes/jest'
 import typescriptCheck from '../recipes/typescript'
 import prettierCheck from '../recipes/prettier'
-import easUpdate from '../recipes/eas-update'
+import eas from '../recipes/eas'
 import detox from '../recipes/detox'
 import maestro from '../recipes/maestro'
 import isGitDirty from 'is-git-dirty'
@@ -33,7 +33,7 @@ const RECIPES = [
   jest,
   typescriptCheck,
   prettierCheck,
-  easUpdate,
+  eas,
   detox,
   maestro,
 ]
