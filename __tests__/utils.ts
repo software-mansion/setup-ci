@@ -1,7 +1,7 @@
 import { execSync, spawn } from 'child_process'
 import { join } from 'path'
 
-const PATH_TO_BINARY = join(__dirname, '..', 'bin', 'react-native-ci-cli')
+const PATH_TO_BINARY = join(__dirname, '..', 'bin', 'setup-ci')
 
 const TEST_PROJECTS_FOLDER = 'test-projects'
 const TEST_PROJECT_NAME = 'test-project'

@@ -1,6 +1,6 @@
 import { print } from 'gluegun'
 
-export const CYCLI_COMMAND = 'react-native-ci-cli'
+export const CYCLI_COMMAND = 'setup-ci'
 
 export const COLORS = {
   bold: print.colors.bold,
@@ -48,8 +48,7 @@ export const LOCK_FILE_TO_MANAGER = {
   ['package-lock.json']: 'npm',
 } as const
 
-const REPOSITORY_URL =
-  'https://github.com/software-mansion-labs/react-native-ci-cli'
+const REPOSITORY_URL = 'https://github.com/software-mansion/setup-ci'
 export const REPOSITORY_SECRETS_HELP_URL = `${REPOSITORY_URL}?tab=readme-ov-file#-repository-secrets`
 export const REPOSITORY_FEATURES_HELP_URL = `${REPOSITORY_URL}?tab=readme-ov-file#%EF%B8%8F-features`
 export const REPOSITORY_ISSUES_URL = `${REPOSITORY_URL}/issues`

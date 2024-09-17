@@ -1,0 +1,33 @@
+# publish as "react-native-ci-cli" with dev version instead of "setup-ci" for testing purposes
+
+name: Publish dev version to NPM
+on:
+  push: main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🏗 Setup repo
+        uses: actions/checkout@v4
+
+      - name: 🍀 Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'yarn'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: 📦 Install dependencies
+        run: yarn
+
+      - name: 🏷️ Bump dev version
+        run: yarn bump:dev
+
+      - name: 🛠️ Build dev
+        run: yarn build:dev
+
+      - name: 🚀 Publish dev to NPM repository
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
