@@ -15,6 +15,9 @@ const build = {
 name: Build Android Debug App
 
 on:
+  push:
+    branches:
+      - main
   workflow_call:
     outputs:
       build-cache-key:
