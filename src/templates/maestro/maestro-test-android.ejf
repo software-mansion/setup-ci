@@ -52,10 +52,10 @@ jobs:
           path: android-debug-build/
           key: ${{ needs.build-debug-android.outputs.build-cache-key }}
 
-      - name: 🌿 Setup Node 20
+      - name: 🌿 Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version-file: '<%= props.nodeVersionFile %>'
           cache: '<%= props.packageManager %>'
 
       - name: ☕ Setup JDK 17
