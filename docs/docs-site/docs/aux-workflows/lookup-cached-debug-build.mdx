@@ -72,38 +72,11 @@ a hash string of your native code (called _fingerprint_). It then checks whether
 
 #### build-debug-android
 
-The following diagram represents the flow of the `build-debug-android` workflow:
+The following diagram represents the flow of the `lookup-cached-debug-build` workflow:
 
 ```mermaid
-flowchart TD;
-    A["🔍 Lookup cached debug build (and skip all following steps if found)\nUsing <a href='/setup-ci/docs/aux-workflows/lookup-cached-debug-build'>lookup-cached-debug-build</a>"]-->B["💾 Maximize build space\nUsing <a href='https://github.com/AdityaGarg8/remove-unwanted-software'>AdityaGarg8/remove-unwanted-software</a>"]
-    B-->C["🌿 Setup Node"];
-    C-->D["☕ Setup JDK 17"]
-    D-->E["🐘 Setup Gradle 8.8"]
-    E-->F["📦 Install dependencies"];
-    F-->G["🛠️ Build [yarn build:debug:android]"]
-    G-->H["📡 Store built app in cache"]
+flowchart LR;
+    A["🌿 Setup Node"]-->B["📦 Install dependencies"];
+    B-->C["🧬 Calculate fingerprint"];
+    C-->D["🐛 Lookup debug build in cache"];
 ```
-
-#### build-debug-ios
-
-The following diagram represents the flow of the `build-debug-ios` workflow:
-
-```mermaid
-flowchart TD;
-    A["🔍 Lookup cached debug build (and skip all following steps if found)\nUsing <a href='/setup-ci/docs/aux-workflows/lookup-cached-debug-build'>lookup-cached-debug-build</a>"]-->B["💾 Maximize build space\nUsing <a href='https://github.com/AdityaGarg8/remove-unwanted-software'>AdityaGarg8/remove-unwanted-software</a>"]
-    B-->C["🌿 Setup Node"];
-    C-->D["🔨 Use latest stable Xcode"]
-    D-->E["📦 Install dependencies"];
-    E-->F["🛠️ Build [yarn build:debug:ios]"]
-    F-->G["📡 Store built app in cache"]
-```
-
-## Known issues and limitations
-
-- One of limitations of GitHub Actions is that cache is scoped and cannot be accessed between 
-  arbitrary branches (see [#79](https://github.com/actions/cache/issues/79)). This means that 
-  if a build with specific fingerprint is created on `feature-a` branch, then in `feature-b` 
-  branch with the same fingerprint, the build is not visible and the app will be built again.
-  However, since the build is also created on main branch, once either `feature-a` or `feature-b`
-  is merged to main, the build will be cached and available for all existing and future branches in the repository.

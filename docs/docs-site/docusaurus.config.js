@@ -66,7 +66,7 @@ const config = {
             position: 'right',
           },
           {
-            href: 'hhttps://github.com/software-mansion/setup-ci',
+            href: 'https://github.com/software-mansion/setup-ci',
             position: 'right',
             className: 'header-github',
             'aria-label': 'GitHub repository',
