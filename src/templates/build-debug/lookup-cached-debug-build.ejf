@@ -1,14 +1,12 @@
 <%
-const isMonorepo = props.pathRelativeToRoot !== '.'
-
 const install = {
   yarn: "yarn install --immutable",
   npm: "npm ci"
 }
 
 const runFingerprint = {
-  yarn: `yarn ${(isMonorepo) ? `--cwd ${props.pathRelativeToRoot} ` : ""}` + 'fingerprint:${{ inputs.platform }}',
-  npm: 'npm run fingerprint:${{ inputs.platform }}' + ((isMonorepo) ? `--prefix ${props.pathRelativeToRoot}` : "")
+  yarn: `yarn ${(props.isMonorepo) ? `--cwd ${props.pathRelativeToRoot} ` : ""}` + 'fingerprint:${{ inputs.platform }}',
+  npm: 'npm run fingerprint:${{ inputs.platform }}' + ((props.isMonorepo) ? `--prefix ${props.pathRelativeToRoot}` : "")
 }
 %>
 

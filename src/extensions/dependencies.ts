@@ -1,5 +1,5 @@
 import { COLORS, CYCLI_COMMAND, REPOSITORY_ISSUES_URL } from '../constants'
-import { CycliToolbox, ProjectContext } from '../types'
+import { CycliToolbox } from '../types'
 import messageFromError from '../utils/messageFromError'
 import { join, sep } from 'path'
 
@@ -12,11 +12,7 @@ module.exports = (toolbox: CycliToolbox) => {
   const existsDev = (name: string): boolean =>
     Boolean(toolbox.projectConfig.packageJson().devDependencies?.[name])
 
-  const install = async (
-    fullName: string,
-    context: ProjectContext,
-    { dev }: { dev: boolean }
-  ) => {
+  const install = async (fullName: string, { dev }: { dev: boolean }) => {
     const type = dev ? 'devDependency' : 'dependency'
 
     const spinner = toolbox.interactive.spin(
@@ -26,7 +22,7 @@ module.exports = (toolbox: CycliToolbox) => {
     try {
       await packageManager.add(fullName, {
         dev,
-        force: context.packageManager,
+        force: toolbox.context.packageManager(),
       })
     } catch (error: unknown) {
       spinner.stop()
@@ -63,7 +59,6 @@ module.exports = (toolbox: CycliToolbox) => {
 
   const add = async (
     name: string,
-    context: ProjectContext,
     {
       version = '',
       skipInstalledCheck = false,
@@ -81,12 +76,11 @@ module.exports = (toolbox: CycliToolbox) => {
 
     const fullName = version ? [name, version].join('@') : name
 
-    await install(fullName, context, { dev: false })
+    await install(fullName, { dev: false })
   }
 
   const addDev = async (
     name: string,
-    context: ProjectContext,
     {
       version = '',
       skipInstalledCheck = false,
@@ -99,7 +93,7 @@ module.exports = (toolbox: CycliToolbox) => {
       toolbox.interactive.warning(
         `Detected package ${name} in "dependencies", but shouldn't it be in "devDependencies"?`
       )
-      await add(name, context, { version, skipInstalledCheck })
+      await add(name, { version, skipInstalledCheck })
       return
     }
 
@@ -112,7 +106,7 @@ module.exports = (toolbox: CycliToolbox) => {
 
     const fullName = version ? [name, version].join('@') : name
 
-    await install(fullName, context, { dev: true })
+    await install(fullName, { dev: true })
   }
 
   toolbox.dependencies = {
@@ -129,7 +123,6 @@ export interface DependenciesExtension {
     existsDev: (name: string) => boolean
     add: (
       name: string,
-      context: ProjectContext,
       options?: {
         version?: string
         skipInstalledCheck?: boolean
@@ -137,7 +130,6 @@ export interface DependenciesExtension {
     ) => Promise<void>
     addDev: (
       name: string,
-      context: ProjectContext,
       options?: {
         version?: string
         skipInstalledCheck?: boolean

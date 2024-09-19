@@ -1,10 +1,10 @@
-import { CycliRecipe, CycliToolbox, ProjectContext } from '../types'
+import { CycliRecipe, CycliToolbox } from '../types'
 import { createBuildWorkflows } from './build'
 import { join } from 'path'
 
 const FLAG = 'maestro'
 
-const execute = async (toolbox: CycliToolbox, context: ProjectContext) => {
+const execute = async (toolbox: CycliToolbox) => {
   toolbox.interactive.vspace()
   toolbox.interactive.sectionHeader('Genereating Maestro workflow')
 
@@ -13,7 +13,7 @@ const execute = async (toolbox: CycliToolbox, context: ProjectContext) => {
   const {
     android: androidDebugBuildWorkflowFileName,
     ios: iOSDebugBuildWorkflowFileName,
-  } = await createBuildWorkflows(toolbox, context, {
+  } = await createBuildWorkflows(toolbox, {
     mode: 'debug',
     expo,
   })
@@ -49,19 +49,14 @@ const execute = async (toolbox: CycliToolbox, context: ProjectContext) => {
 
   await toolbox.workflows.generate(
     join('maestro', 'maestro-test-android.ejf'),
-    context,
     {
       androidDebugBuildWorkflowFileName,
     }
   )
 
-  await toolbox.workflows.generate(
-    join('maestro', 'maestro-test-ios.ejf'),
-    context,
-    {
-      iOSDebugBuildWorkflowFileName,
-    }
-  )
+  await toolbox.workflows.generate(join('maestro', 'maestro-test-ios.ejf'), {
+    iOSDebugBuildWorkflowFileName,
+  })
 
   toolbox.interactive.success('Created Maestro workflow.')
 }

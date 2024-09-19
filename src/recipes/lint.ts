@@ -1,4 +1,4 @@
-import { CycliRecipe, CycliToolbox, ProjectContext } from '../types'
+import { CycliRecipe, CycliToolbox } from '../types'
 import { join } from 'path'
 import { FLAG as PRETTIER_FLAG } from './prettier'
 
@@ -14,27 +14,24 @@ const existsEslintConfiguration = (toolbox: CycliToolbox): boolean =>
       )
   )
 
-const execute = async (
-  toolbox: CycliToolbox,
-  context: ProjectContext
-): Promise<void> => {
+const execute = async (toolbox: CycliToolbox): Promise<void> => {
   toolbox.interactive.vspace()
   toolbox.interactive.sectionHeader('Generating ESLint workflow')
 
   // eslint@9 introduces new configuration format that is not supported by widely used plugins yet,
   // so we stick to ^8 for now.
-  await toolbox.dependencies.addDev('eslint', context, { version: '^8' })
-  await toolbox.dependencies.addDev('typescript', context)
-  await toolbox.dependencies.addDev('@react-native/eslint-config', context)
+  await toolbox.dependencies.addDev('eslint', { version: '^8' })
+  await toolbox.dependencies.addDev('typescript')
+  await toolbox.dependencies.addDev('@react-native/eslint-config')
 
   const withPrettier =
-    context.selectedOptions.includes(PRETTIER_FLAG) ||
+    toolbox.context.selectedOptions.includes(PRETTIER_FLAG) ||
     toolbox.dependencies.existsDev('prettier') ||
     toolbox.dependencies.exists('prettier')
 
   if (withPrettier) {
-    await toolbox.dependencies.addDev('eslint-plugin-prettier', context)
-    await toolbox.dependencies.addDev('eslint-config-prettier', context)
+    await toolbox.dependencies.addDev('eslint-plugin-prettier')
+    await toolbox.dependencies.addDev('eslint-config-prettier')
   }
 
   await toolbox.scripts.add('lint', 'eslint "**/*.{js,jsx,ts,tsx}"')
@@ -53,7 +50,7 @@ const execute = async (
     )
   }
 
-  await toolbox.workflows.generate(join('lint', 'lint.ejf'), context)
+  await toolbox.workflows.generate(join('lint', 'lint.ejf'))
 
   toolbox.interactive.success('Created ESLint workflow.')
 }

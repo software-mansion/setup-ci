@@ -1,21 +1,19 @@
 <%
-const isMonorepo = props.pathRelativeToRoot !== '.'
-
 const install = {
   yarn: "yarn install --immutable",
   npm: "npm ci"
 }
 
 const build = {
-  yarn: `yarn ${(isMonorepo) ? `--cwd ${props.pathRelativeToRoot} ` : ""}build:release:ios`,
-  npm: `npm run build:release:ios ${(isMonorepo) ? `--prefix ${props.pathRelativeToRoot}` : ""}`
+  yarn: `yarn ${(props.isMonorepo) ? `--cwd ${props.pathRelativeToRoot} ` : ""}build:release:ios`,
+  npm: `npm run build:release:ios ${(props.isMonorepo) ? `--prefix ${props.pathRelativeToRoot}` : ""}`
 }
 %>
 
 name: Build iOS Release App
 
 on:
-  pull_request: <%= (props.pathRelativeToRoot !== '.') ? `
+  pull_request: <%= (props.isMonorepo) ? `
     paths:
       - ${props.pathRelativeToRoot}/**` : "" %>
 

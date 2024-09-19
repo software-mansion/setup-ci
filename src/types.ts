@@ -1,7 +1,7 @@
 import { GluegunToolbox } from 'gluegun/build/types/domain/toolbox'
 import { DependenciesExtension } from './extensions/dependencies'
 import { InteractiveExtension } from './extensions/interactive'
-import { ProjectContextExtension } from './extensions/projectContext'
+import { ContextExtension } from './extensions/context'
 import { ScriptsExtension } from './extensions/scripts'
 import { WorkflowsExtension } from './extensions/workflows'
 import { ProjectConfigExtension } from './extensions/projectConfig'
@@ -39,9 +39,7 @@ export type LockFile = keyof typeof LOCK_FILE_TO_MANAGER
 export type PackageManager =
   (typeof LOCK_FILE_TO_MANAGER)[keyof typeof LOCK_FILE_TO_MANAGER]
 
-export type RunResult =
-  | ((toolbox: CycliToolbox, context: ProjectContext) => Promise<string>)
-  | null
+export type RunResult = ((toolbox: CycliToolbox) => Promise<string>) | null
 
 export interface RecipeMeta {
   name: string
@@ -52,7 +50,7 @@ export interface RecipeMeta {
 
 export interface CycliRecipe {
   meta: RecipeMeta
-  execute: (toolbox: CycliToolbox, context: ProjectContext) => Promise<void>
+  execute: (toolbox: CycliToolbox) => Promise<void>
   validate?: (toolbox: CycliToolbox) => void
 }
 
@@ -68,18 +66,6 @@ export interface AppJson {
   }
 }
 
-export interface ProjectContext {
-  packageManager: PackageManager
-  path: {
-    repoRoot: string
-    packageRoot: string
-    repoFolderName: string
-    relFromRepoRoot: (p: string) => string
-    absFromRepoRoot: (...p: string[]) => string
-  }
-  selectedOptions: string[]
-}
-
 export type CycliToolbox = {
   [K in keyof GluegunToolbox as K extends `${infer _}`
     ? K
@@ -87,7 +73,7 @@ export type CycliToolbox = {
 } & DependenciesExtension &
   InteractiveExtension &
   ProjectConfigExtension &
-  ProjectContextExtension &
+  ContextExtension &
   ScriptsExtension &
   OptionsExtension &
   WorkflowsExtension &

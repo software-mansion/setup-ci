@@ -1,4 +1,4 @@
-import { CycliRecipe, CycliToolbox, ProjectContext } from '../types'
+import { CycliRecipe, CycliToolbox } from '../types'
 import { createBuildWorkflows } from './build'
 import { join } from 'path'
 
@@ -38,7 +38,7 @@ const addDetoxExpoPlugin = async (toolbox: CycliToolbox) => {
   }
 }
 
-const execute = async (toolbox: CycliToolbox, context: ProjectContext) => {
+const execute = async (toolbox: CycliToolbox) => {
   toolbox.interactive.vspace()
   toolbox.interactive.sectionHeader('Generating Detox workflow')
 
@@ -59,23 +59,23 @@ const execute = async (toolbox: CycliToolbox, context: ProjectContext) => {
     )
   }
 
-  await createBuildWorkflows(toolbox, context, {
+  await createBuildWorkflows(toolbox, {
     mode: 'release',
     expo,
   })
 
-  await toolbox.dependencies.addDev('detox', context)
+  await toolbox.dependencies.addDev('detox')
   // >=29 because of https://wix.github.io/Detox/docs/introduction/project-setup#step-1-bootstrap
-  await toolbox.dependencies.addDev('jest', context, {
+  await toolbox.dependencies.addDev('jest', {
     version: '">=29"',
     skipInstalledCheck: true,
   })
-  await toolbox.dependencies.addDev('typescript', context)
-  await toolbox.dependencies.addDev('ts-jest', context)
-  await toolbox.dependencies.addDev('@types/jest', context)
+  await toolbox.dependencies.addDev('typescript')
+  await toolbox.dependencies.addDev('ts-jest')
+  await toolbox.dependencies.addDev('@types/jest')
 
   if (expo) {
-    await toolbox.dependencies.addDev(DETOX_EXPO_PLUGIN, context)
+    await toolbox.dependencies.addDev(DETOX_EXPO_PLUGIN)
     await addDetoxExpoPlugin(toolbox)
   }
 
@@ -122,12 +122,9 @@ const execute = async (toolbox: CycliToolbox, context: ProjectContext) => {
     toolbox.furtherActions.push(starterTestMessage)
   }
 
-  await toolbox.workflows.generate(
-    join('detox', 'test-detox-android.ejf'),
-    context
-  )
+  await toolbox.workflows.generate(join('detox', 'test-detox-android.ejf'))
 
-  await toolbox.workflows.generate(join('detox', 'test-detox-ios.ejf'), context)
+  await toolbox.workflows.generate(join('detox', 'test-detox-ios.ejf'))
 
   toolbox.interactive.success('Created Detox workflow.')
 }

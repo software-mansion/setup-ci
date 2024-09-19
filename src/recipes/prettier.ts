@@ -1,4 +1,4 @@
-import { CycliRecipe, CycliToolbox, ProjectContext } from '../types'
+import { CycliRecipe, CycliToolbox } from '../types'
 import { join } from 'path'
 
 export const FLAG = 'prettier'
@@ -13,14 +13,11 @@ const existsPrettierConfiguration = (toolbox: CycliToolbox): boolean =>
       )
   )
 
-const execute = async (
-  toolbox: CycliToolbox,
-  context: ProjectContext
-): Promise<void> => {
+const execute = async (toolbox: CycliToolbox): Promise<void> => {
   toolbox.interactive.vspace()
   toolbox.interactive.sectionHeader('Generating Prettier check workflow')
 
-  await toolbox.dependencies.addDev('prettier', context)
+  await toolbox.dependencies.addDev('prettier')
 
   await toolbox.scripts.add(
     'prettier:check',
@@ -32,7 +29,7 @@ const execute = async (
     'prettier --write "**/*.{ts,tsx,js,jsx,json,css,scss,md}"'
   )
 
-  await toolbox.workflows.generate(join('prettier', 'prettier.ejf'), context)
+  await toolbox.workflows.generate(join('prettier', 'prettier.ejf'))
 
   if (!existsPrettierConfiguration(toolbox)) {
     await toolbox.template.generate({

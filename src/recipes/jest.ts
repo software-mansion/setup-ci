@@ -1,19 +1,16 @@
 import { join } from 'path'
-import { CycliRecipe, CycliToolbox, ProjectContext } from '../types'
+import { CycliRecipe, CycliToolbox } from '../types'
 const FLAG = 'jest'
 
 const existsJestConfiguration = (toolbox: CycliToolbox): boolean =>
   Boolean(toolbox.projectConfig.packageJson().jest) ||
   Boolean(toolbox.filesystem.list()?.some((f) => f.startsWith('jest.config.')))
 
-const execute = async (
-  toolbox: CycliToolbox,
-  context: ProjectContext
-): Promise<void> => {
+const execute = async (toolbox: CycliToolbox): Promise<void> => {
   toolbox.interactive.vspace()
   toolbox.interactive.sectionHeader('Generating Jest workflow')
 
-  await toolbox.dependencies.addDev('jest', context)
+  await toolbox.dependencies.addDev('jest')
 
   await toolbox.scripts.add('test', 'jest --passWithNoTests')
 
@@ -28,7 +25,7 @@ const execute = async (
     )
   }
 
-  await toolbox.workflows.generate(join('jest', 'jest.ejf'), context)
+  await toolbox.workflows.generate(join('jest', 'jest.ejf'))
 
   toolbox.interactive.success('Created Jest workflow.')
 }

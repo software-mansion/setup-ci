@@ -8,7 +8,7 @@ import detox from '../recipes/detox'
 import maestro from '../recipes/maestro'
 import isGitDirty from 'is-git-dirty'
 import sequentialPromiseMap from '../utils/sequentialPromiseMap'
-import { CycliRecipe, CycliToolbox, ProjectContext } from '../types'
+import { CycliRecipe, CycliToolbox } from '../types'
 import messageFromError from '../utils/messageFromError'
 import intersection from 'lodash/intersection'
 import {
@@ -127,18 +127,15 @@ const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
     }
   }
 
-  const context: ProjectContext = toolbox.projectContext.obtain()
-  toolbox.interactive.surveyStep('Obtained project context.')
-
-  const snapshotBefore = await toolbox.diff.gitStatus(context)
+  const snapshotBefore = await toolbox.diff.gitStatus()
   toolbox.interactive.surveyStep(
     'Created snapshot of project state before execution.'
   )
 
-  context.selectedOptions = await getSelectedOptions(toolbox)
+  toolbox.context.selectedOptions = await getSelectedOptions(toolbox)
 
   const executors = RECIPES.filter((recipe: CycliRecipe) =>
-    context.selectedOptions.includes(recipe.meta.flag)
+    toolbox.context.selectedOptions.includes(recipe.meta.flag)
   ).map((recipe: CycliRecipe) => recipe.execute)
 
   if (executors.length === 0) {
@@ -147,23 +144,21 @@ const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
   }
 
   toolbox.interactive.surveyStep(
-    `Detected ${context.packageManager} as your package manager.`
+    `Detected ${toolbox.context.packageManager()} as your package manager.`
   )
 
-  await sequentialPromiseMap(executors, (executor) =>
-    executor(toolbox, context)
-  )
+  await sequentialPromiseMap(executors, (executor) => executor(toolbox))
 
-  const snapshotAfter = await toolbox.diff.gitStatus(context)
+  const snapshotAfter = await toolbox.diff.gitStatus()
   const diff = toolbox.diff.compare(snapshotBefore, snapshotAfter)
 
   toolbox.prettier.formatFiles(Array.from(diff.keys()))
 
-  toolbox.diff.print(diff, context)
+  toolbox.diff.print(diff)
 
   toolbox.furtherActions.print()
 
-  const usedFlags = context.selectedOptions
+  const usedFlags = toolbox.context.selectedOptions
     .map((flag: string) => `--${flag}`)
     .join(' ')
 

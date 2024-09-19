@@ -1,5 +1,5 @@
 import { REPOSITORY_SECRETS_HELP_URL } from '../constants'
-import { CycliRecipe, CycliToolbox, ProjectContext } from '../types'
+import { CycliRecipe, CycliToolbox } from '../types'
 import { join } from 'path'
 import { recursiveAssign } from '../utils/recursiveAssign'
 
@@ -62,16 +62,13 @@ const patchAppJson = async (toolbox: CycliToolbox): Promise<void> => {
   toolbox.interactive.step('Set runtimeVersion policy to "fingerprint".')
 }
 
-const execute = async (
-  toolbox: CycliToolbox,
-  context: ProjectContext
-): Promise<void> => {
+const execute = async (toolbox: CycliToolbox): Promise<void> => {
   toolbox.interactive.vspace()
   toolbox.interactive.sectionHeader('Generating Preview with EAS workflow')
 
-  await toolbox.dependencies.add('expo', context)
-  await toolbox.dependencies.add('expo-dev-client', context)
-  await toolbox.dependencies.add('expo-updates', context)
+  await toolbox.dependencies.add('expo')
+  await toolbox.dependencies.add('expo-dev-client')
+  await toolbox.dependencies.add('expo-updates')
 
   if (!toolbox.filesystem.exists('eas.json')) {
     await toolbox.expo.eas.buildConfigure()
@@ -81,7 +78,7 @@ const execute = async (
     )
   }
 
-  await toolbox.expo.prebuild(context, { cleanAfter: true })
+  await toolbox.expo.prebuild({ cleanAfter: true })
 
   await toolbox.expo.eas.credentialsConfigureBuild({
     platform: 'android',
@@ -112,7 +109,7 @@ const execute = async (
   await patchEasJson(toolbox, withIOSCredentials)
   await patchAppJson(toolbox)
 
-  await toolbox.workflows.generate(join('eas', 'eas.ejf'), context)
+  await toolbox.workflows.generate(join('eas', 'eas.ejf'))
 
   toolbox.interactive.success('Created Preview with EAS workflow.')
 

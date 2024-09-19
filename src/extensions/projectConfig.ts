@@ -1,4 +1,4 @@
-import { AppJson, CycliToolbox, PackageJson, ProjectContext } from '../types'
+import { AppJson, CycliToolbox, PackageJson } from '../types'
 import { join } from 'path'
 
 const APP_JSON_FILES = ['app.json', 'app.config.json']
@@ -45,8 +45,9 @@ module.exports = (toolbox: CycliToolbox) => {
     return undefined
   }
 
-  const nodeVersionFile = (context: ProjectContext): string => {
-    const { repoRoot, packageRoot } = context.path
+  const nodeVersionFile = (): string => {
+    const packageRoot = toolbox.context.path.packageRoot()
+    const repoRoot = toolbox.context.path.repoRoot()
 
     // First, we look for node version in package root.
     // If not found, we look for it in repository root (for monorepo support).
@@ -131,7 +132,7 @@ export interface ProjectConfigExtension {
     packageJson: () => PackageJson
     appJsonFile: () => string | undefined
     appJson: () => AppJson | undefined
-    nodeVersionFile: (context: ProjectContext) => string
+    nodeVersionFile: () => string
     isExpo: () => boolean
     getName: () => string
     getAppId: () => string | undefined

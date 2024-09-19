@@ -1,14 +1,12 @@
 <%
-const isMonorepo = props.pathRelativeToRoot !== '.'
-
 const install = {
   yarn: "yarn install --immutable",
   npm: "npm ci"
 }
 
 const build = {
-  yarn: `yarn ${(isMonorepo) ? `--cwd ${props.pathRelativeToRoot} ` : ""}build:debug:ios`,
-  npm: `npm run build:debug:ios ${(isMonorepo) ? `--prefix ${props.pathRelativeToRoot}` : ""}`
+  yarn: `yarn ${(props.isMonorepo) ? `--cwd ${props.pathRelativeToRoot} ` : ""}build:debug:ios`,
+  npm: `npm run build:debug:ios ${(props.isMonorepo) ? `--prefix ${props.pathRelativeToRoot}` : ""}`
 }
 %>
 

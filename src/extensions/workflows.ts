@@ -1,4 +1,4 @@
-import { CycliToolbox, ProjectContext } from '../types'
+import { CycliToolbox } from '../types'
 import { basename } from 'path'
 
 module.exports = (toolbox: CycliToolbox) => {
@@ -17,29 +17,29 @@ module.exports = (toolbox: CycliToolbox) => {
 
   const generate = async (
     template: string,
-    context: ProjectContext,
     props: Record<string, string> = {}
   ): Promise<string> => {
-    const pathRelativeToRoot = context.path.relFromRepoRoot(
-      context.path.packageRoot
+    const pathRelativeToRoot = toolbox.context.path.relFromRepoRoot(
+      toolbox.context.path.packageRoot()
     )
 
-    const nodeVersionFile = context.path.relFromRepoRoot(
-      toolbox.projectConfig.nodeVersionFile(context)
+    const nodeVersionFile = toolbox.context.path.relFromRepoRoot(
+      toolbox.projectConfig.nodeVersionFile()
     )
 
     const workflowString = await toolbox.template.generate({
       template,
       props: {
-        packageManager: context.packageManager,
+        packageManager: toolbox.context.packageManager(),
         nodeVersionFile,
         pathRelativeToRoot,
+        isMonorepo: toolbox.context.isMonorepo(),
         ...props,
       },
     })
 
     const workflowFileName = getWorkflowFileName(template, pathRelativeToRoot)
-    const target = context.path.absFromRepoRoot(
+    const target = toolbox.context.path.absFromRepoRoot(
       '.github',
       'workflows',
       workflowFileName
@@ -59,7 +59,6 @@ export interface WorkflowsExtension {
   workflows: {
     generate: (
       template: string,
-      context: ProjectContext,
       props?: Record<string, string>
     ) => Promise<string>
   }

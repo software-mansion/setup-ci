@@ -1,26 +1,24 @@
 <%
-const isMonorepo = props.pathRelativeToRoot !== '.'
-
 const install = {
   yarn: "yarn install --immutable",
   npm: "npm ci"
 }
 
 const startBundler = {
-  yarn: `yarn ${(isMonorepo) ? `--cwd ${props.pathRelativeToRoot} ` : ""}start`,
-  npm: `npm run start ${(isMonorepo) ? `--prefix ${props.pathRelativeToRoot}` : ""}`
+  yarn: `yarn ${(props.isMonorepo) ? `--cwd ${props.pathRelativeToRoot} ` : ""}start`,
+  npm: `npm run start ${(props.isMonorepo) ? `--prefix ${props.pathRelativeToRoot}` : ""}`
 }
 
 const runTests = {
-  yarn: `yarn ${(isMonorepo) ? `--cwd ${props.pathRelativeToRoot} ` : ""}maestro:test`,
-  npm: `npm run maestro:test ${(isMonorepo) ? `--prefix ${props.pathRelativeToRoot}` : ""}`
+  yarn: `yarn ${(props.isMonorepo) ? `--cwd ${props.pathRelativeToRoot} ` : ""}maestro:test`,
+  npm: `npm run maestro:test ${(props.isMonorepo) ? `--prefix ${props.pathRelativeToRoot}` : ""}`
 }
 %>
 
 name: Maestro Test iOS
 
 on:
-  pull_request: <%= (props.pathRelativeToRoot !== '.') ? `
+  pull_request: <%= (props.isMonorepo) ? `
     paths:
       - ${props.pathRelativeToRoot}/**` : "" %>
 
