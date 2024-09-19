@@ -89,6 +89,11 @@ const getSelectedOptions = async (toolbox: CycliToolbox): Promise<string[]> => {
   }
 }
 
+const validateProject = (toolbox: CycliToolbox) => {
+  toolbox.context.packageManager()
+  toolbox.context.path.packageRoot()
+}
+
 const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
   toolbox.interactive.vspace()
   toolbox.interactive.intro(' Welcome to npx setup-ci! ')
@@ -126,6 +131,8 @@ const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
       }
     }
   }
+
+  validateProject(toolbox)
 
   const snapshotBefore = await toolbox.diff.gitStatus()
   toolbox.interactive.surveyStep(
