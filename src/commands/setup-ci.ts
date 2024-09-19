@@ -8,8 +8,7 @@ import detox from '../recipes/detox'
 import maestro from '../recipes/maestro'
 import isGitDirty from 'is-git-dirty'
 import sequentialPromiseMap from '../utils/sequentialPromiseMap'
-import { CycliRecipe, CycliToolbox } from '../types'
-import messageFromError from '../utils/messageFromError'
+import { CycliError, CycliRecipe, CycliToolbox } from '../types'
 import intersection from 'lodash/intersection'
 import {
   CYCLI_COMMAND,
@@ -17,6 +16,7 @@ import {
   PRESET_FLAG,
   REPOSITORY_FEATURES_HELP_URL,
 } from '../constants'
+import { isCycliError, messageFromError } from '../utils/errors'
 
 const SKIP_GIT_CHECK_FLAG = 'skip-git-check'
 
@@ -55,7 +55,7 @@ const getSelectedOptions = async (toolbox: CycliToolbox): Promise<string[]> => {
           const validationError = messageFromError(error)
 
           // adding context to validation error reason (used in multiselect menu hint)
-          throw Error(
+          throw CycliError(
             `Cannot generate ${recipe.meta.name} workflow in your project.\nReason: ${validationError}`
           )
         }
@@ -99,7 +99,7 @@ const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
   toolbox.interactive.intro(' Welcome to npx setup-ci! ')
 
   if (isGitDirty() == null) {
-    throw Error('This is not a git repository.')
+    throw CycliError('This is not a git repository.')
   }
 
   if (isGitDirty()) {
@@ -109,7 +109,7 @@ const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
       )
     } else {
       if (toolbox.options.isPreset()) {
-        throw Error(
+        throw CycliError(
           `You have to commit your changes before running with preset or use --${SKIP_GIT_CHECK_FLAG}.`
         )
       }
@@ -183,11 +183,14 @@ const run = async (toolbox: GluegunToolbox) => {
   try {
     await runReactNativeCiCli(toolbox as CycliToolbox)
   } catch (error: unknown) {
-    const errMessage = messageFromError(error)
     toolbox.interactive.vspace()
-    toolbox.interactive.error(
-      `Failed to execute ${CYCLI_COMMAND} with following error:\n${errMessage}`
-    )
+    let errMessage = messageFromError(error)
+
+    if (!isCycliError(error)) {
+      errMessage = `${CYCLI_COMMAND} failed with unexpected error:\n${errMessage}`
+    }
+
+    toolbox.interactive.error(errMessage)
   } finally {
     process.exit()
   }

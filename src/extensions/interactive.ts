@@ -27,8 +27,11 @@ import {
   S_UR,
   S_VBAR,
 } from '../constants'
-import { CycliToolbox, MessageColor } from '../types'
+import { CycliError, CycliToolbox, MessageColor } from '../types'
 
+const CYCLI_ERROR_CANCEL = CycliError(
+  'The script execution has been canceled by the user.'
+)
 const DEFAULT_HEADER_WIDTH = 80
 
 interface Spinner {
@@ -123,7 +126,7 @@ module.exports = (toolbox: CycliToolbox) => {
     }).prompt()
 
     if (isCancel(confirmed)) {
-      throw Error('The script execution has been canceled by the user.')
+      throw CYCLI_ERROR_CANCEL
     }
   }
 
@@ -213,7 +216,7 @@ module.exports = (toolbox: CycliToolbox) => {
     }).prompt()
 
     if (isCancel(confirmed)) {
-      throw Error('The script execution has been canceled by the user.')
+      throw CYCLI_ERROR_CANCEL
     }
 
     return Boolean(confirmed)
@@ -365,7 +368,7 @@ module.exports = (toolbox: CycliToolbox) => {
     const selected = await multiselectPromise
 
     if (isCancel(selected)) {
-      throw Error('The script execution has been canceled by the user.')
+      throw CYCLI_ERROR_CANCEL
     }
 
     return selected as string[]
