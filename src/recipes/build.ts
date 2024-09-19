@@ -1,4 +1,4 @@
-import { CycliToolbox, Platform, ProjectContext } from '../types'
+import { CycliError, CycliToolbox, Platform, ProjectContext } from '../types'
 import { join } from 'path'
 
 const BuildMode = {
@@ -121,7 +121,7 @@ export const createBuildWorkflows = async (
     ?.replace('.xcworkspace', '')
 
   if (!iOSAppName) {
-    throw Error(
+    throw CycliError(
       'Failed to obtain iOS app name. Perhaps your ios/ directory is missing .xcworkspace file.'
     )
   }

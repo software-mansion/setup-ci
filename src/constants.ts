@@ -2,6 +2,8 @@ import { print } from 'gluegun'
 
 export const CYCLI_COMMAND = 'setup-ci'
 
+export const CYCLI_ERROR_NAME = 'CycliError'
+
 export const COLORS = {
   bold: print.colors.bold,
   cyan: print.colors.cyan,
