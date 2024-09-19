@@ -25,12 +25,14 @@ const execute = async (toolbox: CycliToolbox, context: ProjectContext) => {
 
   if (!toolbox.filesystem.exists('.maestro')) {
     const appId = toolbox.projectConfig.getAppId()
+    const isExpo = toolbox.projectConfig.isExpo()
 
     await toolbox.template.generate({
       template: join('maestro', 'example-flow.ejf'),
       target: join('.maestro', 'example-flow.yml'),
       props: {
         appId: appId || 'insert.your.app.id.here',
+        isExpo,
       },
     })
 
