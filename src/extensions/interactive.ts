@@ -27,7 +27,7 @@ import {
   S_UR,
   S_VBAR,
 } from '../constants'
-import { CycliToolbox, MessageColor } from '../types'
+import { CycliError, CycliToolbox, MessageColor } from '../types'
 
 const DEFAULT_HEADER_WIDTH = 80
 
@@ -123,7 +123,7 @@ module.exports = (toolbox: CycliToolbox) => {
     }).prompt()
 
     if (isCancel(confirmed)) {
-      throw Error('The script execution has been canceled by the user.')
+      throw CycliError('The script execution has been canceled by the user.')
     }
   }
 
@@ -213,7 +213,7 @@ module.exports = (toolbox: CycliToolbox) => {
     }).prompt()
 
     if (isCancel(confirmed)) {
-      throw Error('The script execution has been canceled by the user.')
+      throw CycliError('The script execution has been canceled by the user.')
     }
 
     return Boolean(confirmed)
@@ -365,7 +365,7 @@ module.exports = (toolbox: CycliToolbox) => {
     const selected = await multiselectPromise
 
     if (isCancel(selected)) {
-      throw Error('The script execution has been canceled by the user.')
+      throw CycliError('The script execution has been canceled by the user.')
     }
 
     return selected as string[]

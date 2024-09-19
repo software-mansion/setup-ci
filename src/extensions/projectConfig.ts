@@ -1,4 +1,10 @@
-import { AppJson, CycliToolbox, PackageJson, ProjectContext } from '../types'
+import {
+  AppJson,
+  CycliError,
+  CycliToolbox,
+  PackageJson,
+  ProjectContext,
+} from '../types'
 import { join } from 'path'
 
 const APP_JSON_FILES = ['app.json', 'app.config.json']
@@ -9,7 +15,7 @@ module.exports = (toolbox: CycliToolbox) => {
 
   const packageJson = (): PackageJson => {
     if (!filesystem.exists('package.json')) {
-      throw Error(
+      throw CycliError(
         'No package.json found in current directory. Are you sure you are in a project directory?'
       )
     }

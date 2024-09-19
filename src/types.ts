@@ -5,12 +5,18 @@ import { ProjectContextExtension } from './extensions/projectContext'
 import { ScriptsExtension } from './extensions/scripts'
 import { WorkflowsExtension } from './extensions/workflows'
 import { ProjectConfigExtension } from './extensions/projectConfig'
-import { COLORS, LOCK_FILE_TO_MANAGER } from './constants'
+import { COLORS, CYCLI_ERROR_NAME, LOCK_FILE_TO_MANAGER } from './constants'
 import { DiffExtension } from './extensions/diff'
 import { OptionsExtension } from './extensions/options'
 import { FurtherActionsExtension } from './extensions/furtherActions'
 import { ExpoExtension } from './extensions/expo'
 import { PrettierExtension } from './extensions/prettier'
+
+export const CycliError = (message: string): Error => {
+  const error = new Error(message)
+  error.name = CYCLI_ERROR_NAME
+  return error
+}
 
 export type MessageColor = keyof typeof COLORS
 

@@ -1,7 +1,7 @@
 import { COLORS, CYCLI_COMMAND, REPOSITORY_ISSUES_URL } from '../constants'
 import { CycliToolbox, ProjectContext } from '../types'
-import messageFromError from '../utils/messageFromError'
 import { join, sep } from 'path'
+import { messageFromError } from '../utils/errors'
 
 module.exports = (toolbox: CycliToolbox) => {
   const { packageManager } = toolbox
