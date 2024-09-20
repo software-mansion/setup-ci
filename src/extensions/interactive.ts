@@ -6,7 +6,8 @@ import {
   log as clackLog,
 } from '@clack/prompts'
 import { ConfirmPrompt, MultiSelectPrompt, SelectPrompt } from '@clack/core'
-import { spawn } from 'child_process'
+import { execSync } from 'child_process'
+
 import {
   COLORS,
   S_ACTION,
@@ -445,54 +446,41 @@ module.exports = (toolbox: CycliToolbox) => {
     command: string,
     { alwaysPrintStderr = false }: { alwaysPrintStderr?: boolean } = {}
   ): Promise<void> => {
-    return new Promise((resolve, reject) => {
-      vspace()
-      sectionHeader(`Running ${processName}...`, { color: 'dim' })
+    vspace()
+    sectionHeader(`Running ${processName}...`, { color: 'dim' })
 
-      const subprocess = spawn(command, {
+    try {
+      execSync(command, {
         stdio: ['inherit', 'inherit', alwaysPrintStderr ? 'inherit' : 'pipe'],
-        shell: true,
       })
-
-      step(`Started ${processName}.`)
-
-      let stderr = ''
-
-      if (!alwaysPrintStderr) {
-        subprocess.stderr?.on('data', (data) => {
-          stderr += data.toString()
-        })
+      step(`Finished running ${processName}.`)
+    } catch (e: unknown) {
+      if (!e || typeof e !== 'object' || !('status' in e)) {
+        error(`${processName} exited with an unknown error.`)
+        throw CycliError(`Failed to execute command ${COLORS.bold(command)}.`)
       }
 
-      subprocess.on('close', (code) => {
-        if (code !== 0) {
-          error(`${processName} exited with code ${code}.`)
+      error(`${processName} exiter with error status code ${e.status}.`)
 
-          if (!alwaysPrintStderr && stderr) {
-            info(`\nstderr: ${stderr}`, 'red')
-          }
-        } else {
-          step(`Finished running ${processName}.`)
+      if (
+        'stderr' in e &&
+        (typeof e.stderr === 'string' || e.stderr instanceof Buffer)
+      ) {
+        const stderr = e.stderr.toString()
+        if (!alwaysPrintStderr && stderr) {
+          info(stderr, 'red')
         }
+      }
 
-        sectionFooter({ color: 'dim' })
-        vspace()
-
-        if (code !== 0) {
-          reject(
-            new Error(
-              `Failed to execute ${command}.\nThe subprocess exited with code ${code}.`
-            )
-          )
-        } else {
-          resolve()
-        }
-      })
-
-      subprocess.on('error', (err) => {
-        reject(err)
-      })
-    })
+      throw CycliError(
+        `Failed to execute command ${COLORS.bold(
+          command
+        )}.\nThe subprocess exited with code ${e.status}.`
+      )
+    } finally {
+      sectionFooter({ color: 'dim' })
+      vspace()
+    }
   }
 
   toolbox.interactive = {
