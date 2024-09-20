@@ -117,12 +117,12 @@ export const createBuildWorkflows = async (
 
   const iOSAppName = toolbox.filesystem
     .list('ios')
-    ?.find((file) => file.endsWith('.xcworkspace'))
-    ?.replace('.xcworkspace', '')
+    ?.find((file) => file.endsWith('.xcodeproj'))
+    ?.replace('.xcodeproj', '')
 
   if (!iOSAppName) {
     throw CycliError(
-      'Failed to obtain iOS app name. Perhaps your ios/ directory is missing .xcworkspace file.'
+      'Failed to obtain iOS app name. Perhaps your ios/ directory is missing *.xcodeproj file.'
     )
   }
 
