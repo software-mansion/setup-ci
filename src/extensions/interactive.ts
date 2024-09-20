@@ -441,11 +441,11 @@ module.exports = (toolbox: CycliToolbox) => {
     info(`${S_UR}\n${S_DL}${S_VBAR.repeat(width - 1)}`, color)
   }
 
-  const spawnSubprocess = async (
+  const spawnSubprocess = (
     processName: string,
     command: string,
     { alwaysPrintStderr = false }: { alwaysPrintStderr?: boolean } = {}
-  ): Promise<void> => {
+  ) => {
     vspace()
     sectionHeader(`Running ${processName}...`, { color: 'dim' })
 
@@ -541,6 +541,6 @@ export interface InteractiveExtension {
       processName: string,
       command: string,
       options?: { alwaysPrintStderr?: boolean }
-    ) => Promise<void>
+    ) => void
   }
 }
