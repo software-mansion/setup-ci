@@ -457,7 +457,7 @@ module.exports = (toolbox: CycliToolbox) => {
     } catch (e: unknown) {
       if (!e || typeof e !== 'object' || !('status' in e)) {
         error(`${processName} exited with an unknown error.`)
-        throw CycliError(`Failed to execute command ${COLORS.bold(command)}.`)
+        throw Error(`Failed to execute command ${COLORS.bold(command)}.`)
       }
 
       error(`${processName} exiter with error status code ${e.status}.`)
@@ -472,7 +472,7 @@ module.exports = (toolbox: CycliToolbox) => {
         }
       }
 
-      throw CycliError(
+      throw Error(
         `Failed to execute command ${COLORS.bold(
           command
         )}.\nThe subprocess exited with code ${e.status}.`

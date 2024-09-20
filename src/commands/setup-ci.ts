@@ -15,6 +15,7 @@ import {
   HELP_FLAG,
   PRESET_FLAG,
   REPOSITORY_FEATURES_HELP_URL,
+  REPOSITORY_TROUBLESHOOTING_URL,
 } from '../constants'
 import { isCycliError, messageFromError } from '../utils/errors'
 
@@ -185,7 +186,11 @@ const run = async (toolbox: GluegunToolbox) => {
     let errMessage = messageFromError(error)
 
     if (!isCycliError(error)) {
-      errMessage = `${CYCLI_COMMAND} failed with unexpected error:\n${errMessage}`
+      errMessage = [
+        `${CYCLI_COMMAND} failed with unexpected error:`,
+        errMessage,
+        `You can check ${REPOSITORY_TROUBLESHOOTING_URL} for potential solution.`,
+      ].join('\n')
     }
 
     toolbox.interactive.error(errMessage)
