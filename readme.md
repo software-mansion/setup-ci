@@ -121,7 +121,14 @@ as you will always be prompted to create secrets if necessary. The following tab
   </tr>
 </table>
 
+## 🔍 Troubleshooting 
+
+For known issues with `npx setup-ci`, please check [Troubleshooting](docs/troubleshooting.md).
+
 ## 💬 Your feedback
+
+> [!IMPORTANT]
+> If you have an issue using `npx setup-ci`, you can check [Troubleshooting](docs/troubleshooting.md) and [Reported Bugs](https://github.com/software-mansion/setup-ci/issues?q=is%3Aissue+label%3A%22%F0%9F%AA%B2+bug%22+) for a potential solution.
 
 This tool is supposed to be helpful to as many developers as possible - and therefore we are open to your ideas and general feedback! If you want to share your opinion about `npx setup-ci` or
 have some thoughts about how it could be further developed, don't hesitate to create an issue or contact
