@@ -1,6 +1,6 @@
 {
   "name": "setup-ci",
-  "version": "0.4.10",
+  "version": "0.5.0",
   "description": "Effortlessly generate GitHub workflows for the most popular CI tasks in your React Native project.",
   "types": "build/types/types.d.ts",
   "bin": {
