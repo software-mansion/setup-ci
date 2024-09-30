@@ -111,6 +111,8 @@ export const setupTestProject = (projectName: string): void => {
       )} ${PATH_TO_TEST_PROJECT}`,
       `cd ${PATH_TO_TEST_PROJECT}`,
       'git init',
+      'git config --local user.email "email"',
+      'git config --local user.name "name"',
       'git add .',
       'git commit -m "Initial commit"',
     ].join(' && ')

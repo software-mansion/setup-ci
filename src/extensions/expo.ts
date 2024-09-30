@@ -1,17 +1,13 @@
 import { CycliToolbox, Platform, Environment } from '../types'
 
 module.exports = (toolbox: CycliToolbox) => {
-  const prebuild = async ({
-    cleanAfter,
-  }: {
-    cleanAfter: boolean
-  }): Promise<void> => {
+  const prebuild = ({ cleanAfter }: { cleanAfter: boolean }) => {
     const existsAndroidDir = toolbox.filesystem.exists('android')
     const existsIOsDir = toolbox.filesystem.exists('ios')
 
     toolbox.print.info('⚙️ Running expo prebuild to setup app configuration.')
 
-    await toolbox.interactive.spawnSubprocess(
+    toolbox.interactive.spawnSubprocess(
       'Expo prebuild',
       `npx expo prebuild --${toolbox.context.packageManager()}`,
       { alwaysPrintStderr: true }
@@ -24,7 +20,7 @@ module.exports = (toolbox: CycliToolbox) => {
   }
 
   const buildConfigure = async (): Promise<void> => {
-    await toolbox.interactive.spawnSubprocess(
+    toolbox.interactive.spawnSubprocess(
       'EAS Build configuration',
       'npx eas-cli build:configure -p all'
     )
@@ -32,8 +28,8 @@ module.exports = (toolbox: CycliToolbox) => {
     toolbox.interactive.step('Created default EAS Build configuration.')
   }
 
-  const updateConfigure = async (): Promise<void> => {
-    await toolbox.interactive.spawnSubprocess(
+  const updateConfigure = async () => {
+    toolbox.interactive.spawnSubprocess(
       'EAS Update configuration',
       'npx eas-cli update:configure'
     )
@@ -41,16 +37,16 @@ module.exports = (toolbox: CycliToolbox) => {
     toolbox.interactive.step('Created default EAS Update configuration.')
   }
 
-  const credentialsConfigureBuild = async ({
+  const credentialsConfigureBuild = ({
     platform,
     environment,
   }: {
     platform: Platform
     environment: Environment
-  }): Promise<void> => {
+  }) => {
     const platformName = platform === 'android' ? 'Android' : 'iOS'
 
-    await toolbox.interactive.spawnSubprocess(
+    toolbox.interactive.spawnSubprocess(
       `EAS Credentials configuration for ${platformName}`,
       `npx eas-cli credentials:configure-build -p ${platform} -e ${environment}`
     )
@@ -70,17 +66,17 @@ module.exports = (toolbox: CycliToolbox) => {
 
 export interface ExpoExtension {
   expo: {
-    prebuild: ({ cleanAfter }: { cleanAfter: boolean }) => Promise<void>
+    prebuild: ({ cleanAfter }: { cleanAfter: boolean }) => void
     eas: {
-      buildConfigure: () => Promise<void>
-      updateConfigure: () => Promise<void>
+      buildConfigure: () => void
+      updateConfigure: () => void
       credentialsConfigureBuild: ({
         platform,
         environment,
       }: {
         platform: Platform
         environment: Environment
-      }) => Promise<void>
+      }) => void
     }
   }
 }

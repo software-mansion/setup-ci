@@ -45,6 +45,12 @@ module.exports = (toolbox: CycliToolbox) => {
       workflowFileName
     )
 
+    if (toolbox.filesystem.exists(target)) {
+      toolbox.interactive.warning(
+        `Workflow file ${workflowFileName} already exists and will be overwritten.`
+      )
+    }
+
     toolbox.filesystem.write(target, workflowString)
 
     toolbox.interactive.step(`Created ${workflowFileName} workflow file.`)

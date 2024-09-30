@@ -18,6 +18,9 @@ then select the setup that matches your project - `npx setup-ci` generates workf
 
 If your project has a monorepo structure, run the script from the root directory of the app for which you want to set up workflows.
 
+> [!WARNING]
+> If you re-run `npx setup-ci` in the same project or already have some workflows set up manually, they might get overwritten. Therefore, we recommend running the script with no uncommitted changes, so you can easily inspect the diff after script execution.
+
 ## 💡 Demo
 
 Say we want to set up GitHub actions that run Typescript and Prettier checks on our project every time we create or push to an existing Pull Request.
@@ -118,7 +121,14 @@ as you will always be prompted to create secrets if necessary. The following tab
   </tr>
 </table>
 
+## 🔍 Troubleshooting 
+
+For known issues with `npx setup-ci`, please check [Troubleshooting](docs/troubleshooting.md).
+
 ## 💬 Your feedback
+
+> [!IMPORTANT]
+> If you have an issue using `npx setup-ci`, you can check [Troubleshooting](docs/troubleshooting.md) and [Reported Bugs](https://github.com/software-mansion/setup-ci/issues?q=is%3Aissue+label%3A%22%F0%9F%AA%B2+bug%22+) for a potential solution.
 
 This tool is supposed to be helpful to as many developers as possible - and therefore we are open to your ideas and general feedback! If you want to share your opinion about `npx setup-ci` or
 have some thoughts about how it could be further developed, don't hesitate to create an issue or contact
