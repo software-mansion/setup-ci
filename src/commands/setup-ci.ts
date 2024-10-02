@@ -15,6 +15,7 @@ import {
   HELP_FLAG,
   PRESET_FLAG,
   REPOSITORY_FEATURES_HELP_URL,
+  REPOSITORY_METRICS_HELP_URL,
   REPOSITORY_TROUBLESHOOTING_URL,
   SKIP_TELEMETRY_FLAG,
 } from '../constants'
@@ -186,7 +187,7 @@ const run = async (toolbox: CycliToolbox) => {
     toolbox.interactive.surveyInfo(
       [
         `${CYCLI_COMMAND} collects anonymous usage data. You can disable it by using --skip-telemetry.`,
-        'Learn more at [TODO]',
+        `Learn more at ${REPOSITORY_METRICS_HELP_URL}`,
       ].join('\n'),
       'dim'
     )
