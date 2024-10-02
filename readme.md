@@ -56,6 +56,10 @@ When using `npx setup-ci`, you can provide additional flags to modify its defaul
     <td style="vertical-align: middle;">--skip-git-check</td>
     <td style="vertical-align: middle;">By default, the script will prompt the user if there are uncommitted changes in the working repository. Use this flag to proceed without asking.</td>
   </tr>
+  <tr>
+    <td style="vertical-align: middle;">--skip-telemetry</td>
+    <td style="vertical-align: middle;">Skip sending anonymous metrics.</td>
+  </tr>
 </table>
 
 The following are **feature flags** that can be used with `--preset` flag (they are ignored if `--preset` is not provided).
@@ -124,6 +128,10 @@ as you will always be prompted to create secrets if necessary. The following tab
 ## 🔍 Troubleshooting 
 
 For known issues with `npx setup-ci`, please check [Troubleshooting](docs/troubleshooting.md).
+
+## 📊 Metrics
+
+By default, `npx setup-ci` collects anonymous usage data that helps us improve the tool. You can disable it by using the `--skip-telemetry` option. Collected data consists of timestamp, tool version, selected options, whether the script has been run for the first time and whether it ended with an unexpected error.
 
 ## 💬 Your feedback
 
