@@ -125,13 +125,15 @@ as you will always be prompted to create secrets if necessary. The following tab
   </tr>
 </table>
 
-## 🔍 Troubleshooting 
+## 🔍 Troubleshooting
 
 For known issues with `npx setup-ci`, please check [Troubleshooting](docs/troubleshooting.md).
 
 ## 📊 Metrics
 
-By default, `npx setup-ci` collects anonymous usage data that helps us improve the tool. You can disable it by using the `--skip-telemetry` option. Collected data consists of timestamp, tool version, selected options, whether the script has been run for the first time and whether it ended with an unexpected error.
+By default, `npx setup-ci` collects anonymous usage data that helps us improve the tool. You can disable it by using the `--skip-telemetry` option.
+Collected data consists of timestamp, tool version, selected options, whether the script has been run for the first time and whether it ended with an unexpected error (without stacktrace
+so that no sensitive PII can be accidentally leaked).
 
 ## 💬 Your feedback
 
