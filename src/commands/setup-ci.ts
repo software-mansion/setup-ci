@@ -16,6 +16,7 @@ import {
   PRESET_FLAG,
   REPOSITORY_FEATURES_HELP_URL,
   REPOSITORY_TROUBLESHOOTING_URL,
+  SKIP_TELEMETRY_FLAG,
 } from '../constants'
 import { isCycliError, messageFromError } from '../utils/errors'
 
@@ -90,47 +91,10 @@ const getSelectedOptions = async (toolbox: CycliToolbox): Promise<string[]> => {
   }
 }
 
-const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
-  toolbox.interactive.vspace()
-  toolbox.interactive.intro(' Welcome to npx setup-ci! ')
-
-  if (isGitDirty() == null) {
-    throw CycliError('This is not a git repository.')
-  }
-
-  if (isGitDirty()) {
-    if (toolbox.parameters.options[SKIP_GIT_CHECK_FLAG]) {
-      toolbox.interactive.surveyWarning(
-        `Proceeding with dirty git repository as --${SKIP_GIT_CHECK_FLAG} option is enabled.`
-      )
-    } else {
-      if (toolbox.options.isPreset()) {
-        throw CycliError(
-          `You have to commit your changes before running with preset or use --${SKIP_GIT_CHECK_FLAG}.`
-        )
-      }
-
-      const proceed = await toolbox.interactive.confirm(
-        [
-          `It is advised to commit all your changes before running ${CYCLI_COMMAND}.`,
-          'Running the script with uncommitted changes may have destructive consequences.',
-          'Do you want to proceed anyway?\n',
-        ].join('\n'),
-        { type: 'warning' }
-      )
-
-      if (!proceed) {
-        toolbox.interactive.outro(
-          'Please commit your changes before running this command.'
-        )
-        return
-      }
-    }
-  }
-
-  const context: ProjectContext = toolbox.projectContext.obtain()
-  toolbox.interactive.surveyStep('Obtained project context.')
-
+const runReactNativeCiCli = async (
+  toolbox: CycliToolbox,
+  context: ProjectContext
+) => {
   const snapshotBefore = await toolbox.diff.gitStatus(context)
   toolbox.interactive.surveyStep(
     'Created snapshot of project state before execution.'
@@ -178,9 +142,69 @@ const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
   }
 }
 
-const run = async (toolbox: GluegunToolbox) => {
+const checkGit = async (toolbox: CycliToolbox) => {
+  if (isGitDirty() == null) {
+    throw CycliError('This is not a git repository.')
+  }
+
+  if (isGitDirty()) {
+    if (toolbox.parameters.options[SKIP_GIT_CHECK_FLAG]) {
+      toolbox.interactive.surveyWarning(
+        `Proceeding with dirty git repository as --${SKIP_GIT_CHECK_FLAG} option is enabled.`
+      )
+    } else {
+      if (toolbox.options.isPreset()) {
+        throw CycliError(
+          `You have to commit your changes before running with preset or use --${SKIP_GIT_CHECK_FLAG}.`
+        )
+      }
+
+      const proceed = await toolbox.interactive.confirm(
+        [
+          `It is advised to commit all your changes before running ${CYCLI_COMMAND}.`,
+          'Running the script with uncommitted changes may have destructive consequences.',
+          'Do you want to proceed anyway?\n',
+        ].join('\n'),
+        { type: 'warning' }
+      )
+
+      if (!proceed) {
+        toolbox.interactive.outro(
+          'Please commit your changes before running this command.'
+        )
+        return
+      }
+    }
+  }
+}
+
+const run = async (toolbox: CycliToolbox) => {
+  toolbox.interactive.vspace()
+  toolbox.interactive.intro(` Welcome to npx ${CYCLI_COMMAND}! `)
+
+  if (!toolbox.options.skipTelemetry()) {
+    toolbox.interactive.surveyInfo(
+      [
+        `${CYCLI_COMMAND} collects anonymous usage data. You can disable it by using --skip-telemetry.`,
+        'Learn more at [TODO]',
+      ].join('\n'),
+      'dim'
+    )
+  }
+
+  let finishedWithUnexpectedError = false
+  let context: ProjectContext | undefined
+
   try {
-    await runReactNativeCiCli(toolbox as CycliToolbox)
+    await checkGit(toolbox as CycliToolbox)
+
+    context = toolbox.projectContext.obtain()
+    toolbox.interactive.surveyStep('Obtained project context.')
+
+    await runReactNativeCiCli(
+      toolbox as CycliToolbox,
+      context as ProjectContext
+    )
   } catch (error: unknown) {
     toolbox.interactive.vspace()
     let errMessage = messageFromError(error)
@@ -191,12 +215,36 @@ const run = async (toolbox: GluegunToolbox) => {
         errMessage,
         `You can check ${REPOSITORY_TROUBLESHOOTING_URL} for potential solution.`,
       ].join('\n')
+
+      finishedWithUnexpectedError = true
     }
 
     toolbox.interactive.error(errMessage)
-  } finally {
-    process.exit()
   }
+
+  try {
+    if (!toolbox.options.skipTelemetry()) {
+      await toolbox.telemetry.sendLog({
+        version: toolbox.meta.version(),
+        firstUse: context?.firstUse,
+        options:
+          context &&
+          Object.fromEntries(
+            RECIPES.map((recipe) => [
+              recipe.meta.flag,
+              (context as ProjectContext).selectedOptions.includes(
+                recipe.meta.flag
+              ),
+            ])
+          ),
+        error: finishedWithUnexpectedError,
+      })
+    }
+  } catch (_: unknown) {
+    // ignore telemetry errors
+  }
+
+  process.exit()
 }
 
 const getFeatureOptions = (): Option[] => {
@@ -221,9 +269,13 @@ const command: CycliCommand = {
       description:
         'Run with preset. Combine with feature flags to specify generated workflows',
     },
+    {
+      flag: SKIP_TELEMETRY_FLAG,
+      description: 'Skip telemetry data collection',
+    },
   ],
   featureOptions: [...getFeatureOptions()],
-  run,
+  run: (toolbox: GluegunToolbox) => run(toolbox as CycliToolbox),
 }
 
 module.exports = command

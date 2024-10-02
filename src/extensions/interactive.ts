@@ -388,6 +388,15 @@ module.exports = (toolbox: CycliToolbox) => {
     else print.info(message)
   }
 
+  const surveyInfo = (message: string, color?: MessageColor) => {
+    print.info(
+      `${dim(S_BAR)}\n${dim(S_BAR)}  ${withNewlinePrefix(
+        color ? COLORS[color](message) : message,
+        `${dim(S_BAR)} `
+      )}`
+    )
+  }
+
   const vspace = () => info('')
 
   const step = (message: string) => {
@@ -490,6 +499,7 @@ module.exports = (toolbox: CycliToolbox) => {
     surveyStep,
     surveyWarning,
     info,
+    surveyInfo,
     vspace,
     step,
     error,
@@ -524,6 +534,7 @@ export interface InteractiveExtension {
     surveyStep: (message: string) => void
     surveyWarning: (message: string) => void
     info: (message: string, color?: MessageColor) => void
+    surveyInfo: (message: string, color?: MessageColor) => void
     vspace: () => void
     step: (message: string) => void
     error: (message: string) => void

@@ -11,6 +11,7 @@ import { OptionsExtension } from './extensions/options'
 import { FurtherActionsExtension } from './extensions/furtherActions'
 import { ExpoExtension } from './extensions/expo'
 import { PrettierExtension } from './extensions/prettier'
+import { TelemetryExtension } from './extensions/telemetry'
 
 export const CycliError = (message: string): Error => {
   const error = new Error(message)
@@ -84,6 +85,7 @@ export interface ProjectContext {
     absFromRepoRoot: (...p: string[]) => string
   }
   selectedOptions: string[]
+  firstUse: boolean
 }
 
 export type CycliToolbox = {
@@ -100,4 +102,5 @@ export type CycliToolbox = {
   DiffExtension &
   FurtherActionsExtension &
   ExpoExtension &
-  PrettierExtension
+  PrettierExtension &
+  TelemetryExtension

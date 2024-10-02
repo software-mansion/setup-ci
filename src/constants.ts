@@ -44,6 +44,7 @@ export const S_R_ARROW = '►'
 export const NON_INTERACTIVE_FLAG = 'non-interactive'
 export const HELP_FLAG = 'help'
 export const PRESET_FLAG = 'preset'
+export const SKIP_TELEMETRY_FLAG = 'skip-telemetry'
 
 export const LOCK_FILE_TO_MANAGER = {
   ['yarn.lock']: 'yarn',
