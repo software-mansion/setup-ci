@@ -44,6 +44,7 @@ export const S_R_ARROW = '►'
 export const NON_INTERACTIVE_FLAG = 'non-interactive'
 export const HELP_FLAG = 'help'
 export const PRESET_FLAG = 'preset'
+export const SKIP_TELEMETRY_FLAG = 'skip-telemetry'
 
 export const LOCK_FILE_TO_MANAGER = {
   ['yarn.lock']: 'yarn',
@@ -53,5 +54,6 @@ export const LOCK_FILE_TO_MANAGER = {
 const REPOSITORY_URL = 'https://github.com/software-mansion/setup-ci'
 export const REPOSITORY_SECRETS_HELP_URL = `${REPOSITORY_URL}?tab=readme-ov-file#-repository-secrets`
 export const REPOSITORY_FEATURES_HELP_URL = `${REPOSITORY_URL}?tab=readme-ov-file#%EF%B8%8F-features`
+export const REPOSITORY_METRICS_HELP_URL = `${REPOSITORY_URL}?tab=readme-ov-file#%-metrics`
 export const REPOSITORY_ISSUES_URL = `${REPOSITORY_URL}/issues`
 export const REPOSITORY_TROUBLESHOOTING_URL = `${REPOSITORY_URL}/blob/master/docs/troubleshooting.md`

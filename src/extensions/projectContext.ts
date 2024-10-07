@@ -59,7 +59,20 @@ module.exports = (toolbox: CycliToolbox) => {
     return process.cwd()
   }
 
+  // Check whether ~/.setup-ci exists and creates it if not.
+  const isFirstUse = (): boolean => {
+    const setupCiDir = join(filesystem.homedir(), '.setup-ci')
+
+    if (!filesystem.exists(setupCiDir)) {
+      filesystem.write(setupCiDir, '')
+      return true
+    }
+
+    return false
+  }
+
   const obtain = (): ProjectContext => {
+    const firstUse = isFirstUse()
     const repoRoot = getRepoRoot()
     const packageRoot = getPackageRoot()
 
@@ -81,6 +94,7 @@ module.exports = (toolbox: CycliToolbox) => {
         absFromRepoRoot,
       },
       selectedOptions: [],
+      firstUse,
     }
   }
 
