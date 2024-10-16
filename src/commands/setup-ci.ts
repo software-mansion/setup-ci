@@ -11,12 +11,14 @@ import sequentialPromiseMap from '../utils/sequentialPromiseMap'
 import { CycliError, CycliRecipe, CycliToolbox, ProjectContext } from '../types'
 import intersection from 'lodash/intersection'
 import {
+  COLORS,
   CYCLI_COMMAND,
   HELP_FLAG,
   PRESET_FLAG,
   REPOSITORY_FEATURES_HELP_URL,
   REPOSITORY_METRICS_HELP_URL,
   REPOSITORY_TROUBLESHOOTING_URL,
+  REPOSITORY_URL,
   SKIP_TELEMETRY_FLAG,
 } from '../constants'
 import { isCycliError, messageFromError } from '../utils/errors'
@@ -40,6 +42,37 @@ const RECIPES = [
   detox,
   maestro,
 ]
+
+const printBanner = (toolbox: CycliToolbox) => {
+  // disable line wrapping
+  toolbox.interactive.info('\x1B[?7l')
+
+  toolbox.interactive.info(
+    COLORS.green(
+      [
+        '  88d888b. 88d888b. dP.  .dP',
+        "  88'  `88 88'  `88  `8bd8'",
+        '  88    88 88.  .88  .d88b.',
+        "  dP    dP 88Y888P' dP'  `dP",
+        '           88',
+        '           dP',
+      ].join('\n')
+    ) +
+      [
+        '         dP                                       oo',
+        '                      88',
+        '  .d8888b. .d8888b. d8888P dP    dP 88d888b.          .d8888b. dP',
+        "  Y8ooooo. 88ooood8   88   88    88 88'  `88 88888888 88'  `'' 88",
+        '        88 88.  ...   88   88.  .88 88.  .88          88.  ... 88',
+        "  `88888P' `88888P'   dP   `88888P' 88Y888P'          `88888P' dP",
+        '                                    88',
+        '                                    dP',
+      ].join('\n')
+  )
+
+  // Enable line wrapping again
+  toolbox.interactive.info('\x1B[?7h')
+}
 
 const getSelectedOptions = async (toolbox: CycliToolbox): Promise<string[]> => {
   if (toolbox.options.isPreset()) {
@@ -181,12 +214,25 @@ const checkGit = async (toolbox: CycliToolbox) => {
 
 const run = async (toolbox: CycliToolbox) => {
   toolbox.interactive.vspace()
-  toolbox.interactive.intro(` Welcome to npx ${CYCLI_COMMAND}! `)
+
+  printBanner(toolbox)
+
+  toolbox.interactive.surveyInfo(
+    [
+      `${COLORS.cyan(
+        `npx ${CYCLI_COMMAND}`
+      )} aims to help you set up CI workflows for your React Native app.`,
+      `If you find the project useful, you can give us a ⭐ on GitHub:`,
+      '',
+      `\t\t → ${REPOSITORY_URL}`,
+    ].join('\n'),
+    'green'
+  )
 
   if (!toolbox.options.skipTelemetry()) {
     toolbox.interactive.surveyInfo(
       [
-        `${CYCLI_COMMAND} collects anonymous usage data. You can disable it by using --skip-telemetry.`,
+        `This script collects anonymous usage data. You can disable it by using --skip-telemetry.`,
         `Learn more at ${REPOSITORY_METRICS_HELP_URL}`,
       ].join('\n'),
       'dim'
