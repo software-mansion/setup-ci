@@ -2,3 +2,4 @@ node_modules
 dist
 build
 __tests__/test-projects
+docs/docs-site

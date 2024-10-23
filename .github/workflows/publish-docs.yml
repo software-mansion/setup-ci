@@ -1,0 +1,35 @@
+name: Publish Docs
+env:
+  YARN_ENABLE_HARDENED_MODE: 0
+on:
+  push:
+    branches:
+      - main
+    paths: docs/docs-site/**
+  workflow_dispatch:
+
+jobs:
+  publish:
+    if: github.repository == 'software-mansion/setup-ci'
+    runs-on: ubuntu-latest
+    concurrency:
+      group: publish-docs-${{ github.ref }}
+      cancel-in-progress: true
+    steps:
+      - name: 🏗 Setup repo
+        uses: actions/checkout@v4
+
+      - name: 🔨 Build docs site
+        run: >-
+          git config --local user.email "action@github.com"
+          && git config --local user.name "GitHub Action"
+          && cd docs/docs-site
+          && yarn
+          && yarn build
+
+      - name: 🚀 Publish generated content to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@releases/v3
+        with:
+          FOLDER: docs/docs-site/build
+          BRANCH: gh-pages
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

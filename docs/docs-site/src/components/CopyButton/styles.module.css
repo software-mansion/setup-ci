@@ -1,0 +1,49 @@
+.copyButton {
+  background-color: transparent;
+  border: 2px solid #696969;
+  border-radius: 15%;
+
+  flex: none;
+  aspect-ratio: 1;
+
+  margin-top: 0.2rem;
+  margin-bottom: 0.2rem;
+
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+
+  transition: opacity 0.3s ease;
+}
+
+.copyButton:hover {
+  opacity: 1 !important;
+}
+
+.iconContainer {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+.hidden {
+  opacity: 0 !important;
+  transform: scale(0.5);
+}
+
+.visible {
+  opacity: 1 !important;
+  transform: scale(1);
+}
+
+@media (max-width: 996px) {
+  .copyButton {
+    margin-top: 0.1rem;
+    margin-bottom: 0.1rem;
+  }
+}

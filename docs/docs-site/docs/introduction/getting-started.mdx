@@ -1,0 +1,128 @@
+---
+sidebar_position: 1
+---
+
+# Getting started
+
+In this section you will find information about what is **Setup CI** and how to use it to quickly bootstrap
+CI/CD workflows in your existing or new React Native project.
+
+:::caution
+Currently, Setup CI only supports **GitHub Actions** as a CI/CD provider. Support for other platforms is planned for the future.
+:::
+
+## What is Setup CI?
+
+Setup CI (SCI) is a tool built by [Software Mansion](https://swmansion.com/) meant to simplify the process of setting up CI/CD workflows in React Native apps.
+
+## Why use Setup CI?
+
+Setting up CI/CD workflows can be a time-consuming and error-prone process. Additionaly, experience shows that you do it only once in a while and it's easy to forget how to do it properly.
+SCI allows to automate it using best practices to cache as much as possible to reduce used time and resources, allowing you to focus on developing your app instead of configuring pipelines.
+
+## How to use
+
+You can use SCI in an existing project or in a new one. Go to the project root directory (where `package.json` is located) and run the following command.
+
+```bash
+npx setup-ci
+```
+
+You will be prompted with a series of questions about the tools you want to set up in your project. After answering them, the tool will:
+
+- Generate workflow `.yml` files
+- Install all missing necessary dependencies
+- Update configuration files (e.g. `package.json`, `app.json`, `eas.json`) accordingly
+- Generate default configuration for selected tools if needed (e.g. default `.prettierrc` for Prettier)
+- Print a list of manual steps needed to finish the setup
+
+:::tip
+You can find more details about what files SCI generates and modifies for each supported workflow in [Workflows](/docs/category/workflows) section.
+:::
+
+### Run with preset 
+
+To skip interactive prompts at the beggining of the script, you can specify your own preset with option flags. For example, to set up workflows for Jest and ESLint, you can run:
+
+```bash
+npx setup-ci --preset --jest --lint
+```
+
+:::tip
+You can find more information about available option flags in [Command line options](/docs/introduction/command-line-options) or using `npx setup-ci --help`
+:::
+
+## Example usage
+
+Let's say we have a React Native project called `my-rn-project` and we want to set up Prettier and Typescript checks to run on every Pull Request. We can use SCI to do it for us.
+
+```bash
+cd my-rn-project
+npx setup-ci --preset --prettier --ts
+```
+
+After the command finishes, we obtain some information about what happened. For example, we can see a list of all files that SCI added or modified for us.
+
+```bash showLineNumbers
+▼ The following files have been added or modified: 
+
+my-rn-project
+├── package.json (~)
+├── yarn.lock (~)
+├── .github/workflows
+│  ├── prettier.yml (+)
+│  └── typescript.yml (+)
+├── .prettierrc (+)
+├── .prettierignore (+)
+└── .nvmrc (+)
+```
+
+We can also see a list of manual steps that we need to perform to finish the setup.
+
+```
+╭───────────────────────────────── What next? ────────────────────────────────── 
+╯ 
+► Couldn't retrieve your project's node version. Generated .nvmrc file with default 
+node version (v20.17.0). Please check if it matches your project and update if necessary. 
+╮
+╰───────────────────────────────────────────────────────────────────────────────
+```
+
+Let's break down this output to see what exactly happened:
+
+- `package.json` and `yarn.lock` files were modified, because SCI installed some missing dependencies and added scripts to `package.json`
+- `.github/workflows` directory was created with two files: `prettier.yml` and `typescript.yml` - these are the CI workflows that SCI generated for Prettier and Typescript checks
+- `.prettierrc` and `.prettierignore` files were added - these are the default configuration files for Prettier which SCI added because no Prettier configuration was detected in the project
+- `.nvmrc` file was added - this is because no file with node version was found. We can also see that in the "What next?" list, SCI 
+  suggests verifying that the default node version in `.nvmrc` matches the project's requirements
+
+This all looks great, we can also verify how the workflows actually look like. Let's inspect `.github/workflows/prettier.yml`.
+
+```yaml title=".github/workflows/prettier.yml" showLineNumbers
+name: Prettier check
+
+on:
+  pull_request:
+
+jobs:
+  prettier-check:
+    name: Prettier check
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🏗 Setup repo
+        uses: actions/checkout@v4
+
+      - name: 🌿 Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'yarn'
+
+      - name: 📦 Install dependencies
+        run: yarn install --immutable
+
+      - name: ✨ Run Prettier check
+        run: yarn prettier:check
+```
+
+Seems to be a reasonable GitHub Actions workflow! For more explanation about SCI and specific workflows, check out the following sections!
