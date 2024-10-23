@@ -1,4 +1,9 @@
-import { CycliToolbox, PackageManager, ProjectContext } from '../types'
+import {
+  CycliError,
+  CycliToolbox,
+  PackageManager,
+  ProjectContext,
+} from '../types'
 import { LOCK_FILE_TO_MANAGER } from '../constants'
 import { lookItUpSync } from 'look-it-up'
 import { basename, join, relative } from 'path'
@@ -15,7 +20,7 @@ module.exports = (toolbox: CycliToolbox) => {
         ) || []
 
     if (lockFiles.length == 0) {
-      throw Error(
+      throw CycliError(
         [
           'No lock file found in repository root directory. Are you sure you are in a project directory?',
           'Make sure you generated lock file by installing project dependencies.',
@@ -46,7 +51,7 @@ module.exports = (toolbox: CycliToolbox) => {
     const packageJson = toolbox.projectConfig.packageJson()
 
     if (packageJson.workspaces) {
-      throw Error(
+      throw CycliError(
         'The current directory is workspace root directory. Please run the script again from selected package root directory.'
       )
     }
@@ -54,7 +59,20 @@ module.exports = (toolbox: CycliToolbox) => {
     return process.cwd()
   }
 
+  // Check whether ~/.setup-ci exists and creates it if not.
+  const isFirstUse = (): boolean => {
+    const setupCiDir = join(filesystem.homedir(), '.setup-ci')
+
+    if (!filesystem.exists(setupCiDir)) {
+      filesystem.write(setupCiDir, '')
+      return true
+    }
+
+    return false
+  }
+
   const obtain = (): ProjectContext => {
+    const firstUse = isFirstUse()
     const repoRoot = getRepoRoot()
     const packageRoot = getPackageRoot()
 
@@ -76,6 +94,7 @@ module.exports = (toolbox: CycliToolbox) => {
         absFromRepoRoot,
       },
       selectedOptions: [],
+      firstUse,
     }
   }
 

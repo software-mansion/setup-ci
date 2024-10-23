@@ -1,10 +1,10 @@
 import { GluegunToolbox } from 'gluegun'
 import { HelpCommand } from './help'
-import { CycliCommand } from './react-native-ci-cli'
+import { CycliCommand } from './setup-ci'
 import { HELP_FLAG } from '../constants'
 
 const help: HelpCommand = require('./help')
-const cycli: CycliCommand = require('./react-native-ci-cli')
+const cycli: CycliCommand = require('./setup-ci')
 
 module.exports = {
   hidden: true,

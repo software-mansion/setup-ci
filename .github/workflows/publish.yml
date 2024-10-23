@@ -29,10 +29,10 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: 🛠️ Build for alias
-        run: yarn build:alias
+      - name: 🛠️ Build dev
+        run: yarn build:dev
 
-      - name: 🚀 Publish package to NPM repository for alias
+      - name: 🚀 Publish dev package to NPM repository
         run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

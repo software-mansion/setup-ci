@@ -1,21 +1,21 @@
 {
-  "name": "react-native-ci-cli",
-  "version": "0.4.10",
+  "name": "setup-ci",
+  "version": "0.6.0",
   "description": "Effortlessly generate GitHub workflows for the most popular CI tasks in your React Native project.",
   "types": "build/types/types.d.ts",
   "bin": {
-    "react-native-ci-cli": "bin/react-native-ci-cli"
+    "setup-ci": "bin/setup-ci"
   },
   "scripts": {
     "clean-build": "rimraf -rf ./build",
     "compile": "tsc -p .",
     "copy-templates": "cp -r ./src/templates/ ./build/templates",
     "build": "yarn clean-build && yarn compile && yarn copy-templates",
+    "build:dev": "sed -i 's/\"name\": \"setup-ci\"/\"name\": \"react-native-ci-cli\"/g' package.json && yarn build",
+    "bump:dev": "node scripts/bump-version-dev.ts",
     "prepublishOnly": "yarn build",
-    "format": "eslint \"**/*.{js,jsx,ts,tsx}\" --fix && prettier \"**/*.{js,jsx,ts,tsx,json}\" --write",
     "test": "jest --runInBand --bail --verbose",
     "watch": "jest --watch",
-    "build:alias": "sed -i 's/\"name\": \"react-native-ci-cli\"/\"name\": \"setup-ci\"/g' package.json && yarn build",
     "snapupdate": "jest --updateSnapshot",
     "coverage": "jest --coverage",
     "ts:check": "tsc -p . --noEmit",
@@ -37,7 +37,7 @@
     "cli",
     "CD"
   ],
-  "repository": "github:software-mansion-labs/react-native-ci-cli",
+  "repository": "github:software-mansion/setup-ci",
   "dependencies": {
     "@clack/core": "^0.3.4",
     "@clack/prompts": "^0.7.0",
@@ -61,6 +61,7 @@
     "jest": "24.5.0",
     "prettier": "^2.2.1",
     "pretty-quick": "^3.1.0",
+    "semver": "^7.6.3",
     "ts-jest": "24.3.0",
     "ts-node": "^10.9.1",
     "typescript": "^5.5.3"

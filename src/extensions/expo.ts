@@ -1,16 +1,16 @@
 import { CycliToolbox, ProjectContext, Platform, Environment } from '../types'
 
 module.exports = (toolbox: CycliToolbox) => {
-  const prebuild = async (
+  const prebuild = (
     context: ProjectContext,
     { cleanAfter }: { cleanAfter: boolean }
-  ): Promise<void> => {
+  ) => {
     const existsAndroidDir = toolbox.filesystem.exists('android')
     const existsIOsDir = toolbox.filesystem.exists('ios')
 
     toolbox.print.info('⚙️ Running expo prebuild to setup app configuration.')
 
-    await toolbox.interactive.spawnSubprocess(
+    toolbox.interactive.spawnSubprocess(
       'Expo prebuild',
       `npx expo prebuild --${context.packageManager}`,
       { alwaysPrintStderr: true }
@@ -23,7 +23,7 @@ module.exports = (toolbox: CycliToolbox) => {
   }
 
   const buildConfigure = async (): Promise<void> => {
-    await toolbox.interactive.spawnSubprocess(
+    toolbox.interactive.spawnSubprocess(
       'EAS Build configuration',
       'npx eas-cli build:configure -p all'
     )
@@ -31,8 +31,8 @@ module.exports = (toolbox: CycliToolbox) => {
     toolbox.interactive.step('Created default EAS Build configuration.')
   }
 
-  const updateConfigure = async (): Promise<void> => {
-    await toolbox.interactive.spawnSubprocess(
+  const updateConfigure = async () => {
+    toolbox.interactive.spawnSubprocess(
       'EAS Update configuration',
       'npx eas-cli update:configure'
     )
@@ -40,16 +40,16 @@ module.exports = (toolbox: CycliToolbox) => {
     toolbox.interactive.step('Created default EAS Update configuration.')
   }
 
-  const credentialsConfigureBuild = async ({
+  const credentialsConfigureBuild = ({
     platform,
     environment,
   }: {
     platform: Platform
     environment: Environment
-  }): Promise<void> => {
+  }) => {
     const platformName = platform === 'android' ? 'Android' : 'iOS'
 
-    await toolbox.interactive.spawnSubprocess(
+    toolbox.interactive.spawnSubprocess(
       `EAS Credentials configuration for ${platformName}`,
       `npx eas-cli credentials:configure-build -p ${platform} -e ${environment}`
     )
@@ -72,17 +72,17 @@ export interface ExpoExtension {
     prebuild: (
       context: ProjectContext,
       { cleanAfter }: { cleanAfter: boolean }
-    ) => Promise<void>
+    ) => void
     eas: {
-      buildConfigure: () => Promise<void>
-      updateConfigure: () => Promise<void>
+      buildConfigure: () => void
+      updateConfigure: () => void
       credentialsConfigureBuild: ({
         platform,
         environment,
       }: {
         platform: Platform
         environment: Environment
-      }) => Promise<void>
+      }) => void
     }
   }
 }

@@ -12,7 +12,7 @@ test('prints help', async () => {
   expect(output).toContain(version)
 
   for (const message of [
-    'Welcome to react-native-ci-cli',
+    'Welcome to setup-ci',
     'Quickly setup CI workflows for your React Native app',
     '--help',
     '--version',

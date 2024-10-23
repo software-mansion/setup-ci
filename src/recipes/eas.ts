@@ -1,5 +1,5 @@
 import { REPOSITORY_SECRETS_HELP_URL } from '../constants'
-import { CycliRecipe, CycliToolbox, ProjectContext } from '../types'
+import { CycliError, CycliRecipe, CycliToolbox, ProjectContext } from '../types'
 import { join } from 'path'
 import { recursiveAssign } from '../utils/recursiveAssign'
 
@@ -74,16 +74,16 @@ const execute = async (
   await toolbox.dependencies.add('expo-updates', context)
 
   if (!toolbox.filesystem.exists('eas.json')) {
-    await toolbox.expo.eas.buildConfigure()
+    toolbox.expo.eas.buildConfigure()
   } else {
     toolbox.interactive.step(
       'Detected eas.json file, skipping EAS Build configuration.'
     )
   }
 
-  await toolbox.expo.prebuild(context, { cleanAfter: true })
+  toolbox.expo.prebuild(context, { cleanAfter: true })
 
-  await toolbox.expo.eas.credentialsConfigureBuild({
+  toolbox.expo.eas.credentialsConfigureBuild({
     platform: 'android',
     environment: 'development',
   })
@@ -101,13 +101,13 @@ const execute = async (
   )
 
   if (withIOSCredentials) {
-    await toolbox.expo.eas.credentialsConfigureBuild({
+    toolbox.expo.eas.credentialsConfigureBuild({
       platform: 'ios',
       environment: 'development',
     })
   }
 
-  await toolbox.expo.eas.updateConfigure()
+  toolbox.expo.eas.updateConfigure()
 
   await patchEasJson(toolbox, withIOSCredentials)
   await patchAppJson(toolbox)
@@ -126,7 +126,7 @@ const execute = async (
 
 const validate = (toolbox: CycliToolbox): void => {
   if (!toolbox.projectConfig.isExpo()) {
-    throw Error('only supported in expo projects')
+    throw CycliError('only supported in expo projects')
   }
 }
 

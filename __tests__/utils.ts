@@ -1,7 +1,7 @@
 import { execSync, spawn } from 'child_process'
 import { join } from 'path'
 
-const PATH_TO_BINARY = join(__dirname, '..', 'bin', 'react-native-ci-cli')
+const PATH_TO_BINARY = join(__dirname, '..', 'bin', 'setup-ci')
 
 const TEST_PROJECTS_FOLDER = 'test-projects'
 const TEST_PROJECT_NAME = 'test-project'
@@ -64,11 +64,14 @@ export const cli = async (
   }
 ): Promise<string> => {
   const subprocessPromise = new Promise<string>((resolve, reject) => {
-    const subprocess = spawn(`node ${PATH_TO_BINARY} ${flags.join(' ')}`, {
-      shell: true,
-      cwd,
-      stdio: ['inherit', 'pipe', 'inherit'],
-    })
+    const subprocess = spawn(
+      `node ${PATH_TO_BINARY} --skip-telemetry ${flags.join(' ')}`,
+      {
+        shell: true,
+        cwd,
+        stdio: ['inherit', 'pipe', 'inherit'],
+      }
+    )
 
     let output = ''
 
@@ -111,6 +114,8 @@ export const setupTestProject = (projectName: string): void => {
       )} ${PATH_TO_TEST_PROJECT}`,
       `cd ${PATH_TO_TEST_PROJECT}`,
       'git init',
+      'git config --local user.email "email"',
+      'git config --local user.name "name"',
       'git add .',
       'git commit -m "Initial commit"',
     ].join(' && ')

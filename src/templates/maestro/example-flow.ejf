@@ -2,7 +2,30 @@
 
 appId: <%= props.appId %>
 ---
+
 - launchApp
+
+<%- (props.isExpo) ? `
+# The following two steps skip through the Expo development server screen.
+# This is only needed in Expo projects using a development build.
+# Feel free to remove them if they are unnecessary in your setup.
+- runFlow:
+    when:
+        visible: 'Development Build'
+    commands:
+        - tapOn:
+            text: http://.*:8081
+
+- runFlow:
+    when:
+        visible: 'Continue'
+    commands:
+        - tapOn:
+            point: 25%, 25%
+` : "" 
+%>
+
+# Change to whatever matches your app welcome screen!
 - extendedWaitUntil: 
-    visible: "Welcome to React Native"
-    timeout: 60000
+    visible: "Home"
+    timeout: 120000

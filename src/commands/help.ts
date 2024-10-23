@@ -1,5 +1,5 @@
 import { GluegunCommand, GluegunToolbox } from 'gluegun'
-import { CycliCommand } from './react-native-ci-cli'
+import { CycliCommand } from './setup-ci'
 import { HELP_FLAG } from '../constants'
 
 module.exports = {

@@ -6,7 +6,8 @@ import {
   log as clackLog,
 } from '@clack/prompts'
 import { ConfirmPrompt, MultiSelectPrompt, SelectPrompt } from '@clack/core'
-import { spawn } from 'child_process'
+import { execSync } from 'child_process'
+
 import {
   COLORS,
   S_ACTION,
@@ -27,8 +28,11 @@ import {
   S_UR,
   S_VBAR,
 } from '../constants'
-import { CycliToolbox, MessageColor } from '../types'
+import { CycliError, CycliToolbox, MessageColor } from '../types'
 
+const CYCLI_ERROR_CANCEL = CycliError(
+  'The script execution has been canceled by the user.'
+)
 const DEFAULT_HEADER_WIDTH = 80
 
 interface Spinner {
@@ -123,7 +127,7 @@ module.exports = (toolbox: CycliToolbox) => {
     }).prompt()
 
     if (isCancel(confirmed)) {
-      throw Error('The script execution has been canceled by the user.')
+      throw CYCLI_ERROR_CANCEL
     }
   }
 
@@ -213,7 +217,7 @@ module.exports = (toolbox: CycliToolbox) => {
     }).prompt()
 
     if (isCancel(confirmed)) {
-      throw Error('The script execution has been canceled by the user.')
+      throw CYCLI_ERROR_CANCEL
     }
 
     return Boolean(confirmed)
@@ -365,7 +369,7 @@ module.exports = (toolbox: CycliToolbox) => {
     const selected = await multiselectPromise
 
     if (isCancel(selected)) {
-      throw Error('The script execution has been canceled by the user.')
+      throw CYCLI_ERROR_CANCEL
     }
 
     return selected as string[]
@@ -382,6 +386,15 @@ module.exports = (toolbox: CycliToolbox) => {
   const info = (message: string, color?: MessageColor) => {
     if (color) print.info(`${COLORS[color](message)} `)
     else print.info(message)
+  }
+
+  const surveyInfo = (message: string, color?: MessageColor) => {
+    print.info(
+      `${dim(S_BAR)}\n${dim(S_BAR)}  ${withNewlinePrefix(
+        color ? COLORS[color](message) : message,
+        `${dim(S_BAR)} `
+      )}`
+    )
   }
 
   const vspace = () => info('')
@@ -437,59 +450,46 @@ module.exports = (toolbox: CycliToolbox) => {
     info(`${S_UR}\n${S_DL}${S_VBAR.repeat(width - 1)}`, color)
   }
 
-  const spawnSubprocess = async (
+  const spawnSubprocess = (
     processName: string,
     command: string,
     { alwaysPrintStderr = false }: { alwaysPrintStderr?: boolean } = {}
-  ): Promise<void> => {
-    return new Promise((resolve, reject) => {
-      vspace()
-      sectionHeader(`Running ${processName}...`, { color: 'dim' })
+  ) => {
+    vspace()
+    sectionHeader(`Running ${processName}...`, { color: 'dim' })
 
-      const subprocess = spawn(command, {
+    try {
+      execSync(command, {
         stdio: ['inherit', 'inherit', alwaysPrintStderr ? 'inherit' : 'pipe'],
-        shell: true,
       })
-
-      step(`Started ${processName}.`)
-
-      let stderr = ''
-
-      if (!alwaysPrintStderr) {
-        subprocess.stderr?.on('data', (data) => {
-          stderr += data.toString()
-        })
+      step(`Finished running ${processName}.`)
+    } catch (e: unknown) {
+      if (!e || typeof e !== 'object' || !('status' in e)) {
+        error(`${processName} exited with an unknown error.`)
+        throw Error(`Failed to execute command ${COLORS.bold(command)}.`)
       }
 
-      subprocess.on('close', (code) => {
-        if (code !== 0) {
-          error(`${processName} exited with code ${code}.`)
+      error(`${processName} exiter with error status code ${e.status}.`)
 
-          if (!alwaysPrintStderr && stderr) {
-            info(`\nstderr: ${stderr}`, 'red')
-          }
-        } else {
-          step(`Finished running ${processName}.`)
+      if (
+        'stderr' in e &&
+        (typeof e.stderr === 'string' || e.stderr instanceof Buffer)
+      ) {
+        const stderr = e.stderr.toString()
+        if (!alwaysPrintStderr && stderr) {
+          info(stderr, 'red')
         }
+      }
 
-        sectionFooter({ color: 'dim' })
-        vspace()
-
-        if (code !== 0) {
-          reject(
-            new Error(
-              `Failed to execute ${command}.\nThe subprocess exited with code ${code}.`
-            )
-          )
-        } else {
-          resolve()
-        }
-      })
-
-      subprocess.on('error', (err) => {
-        reject(err)
-      })
-    })
+      throw Error(
+        `Failed to execute command ${COLORS.bold(
+          command
+        )}.\nThe subprocess exited with code ${e.status}.`
+      )
+    } finally {
+      sectionFooter({ color: 'dim' })
+      vspace()
+    }
   }
 
   toolbox.interactive = {
@@ -499,6 +499,7 @@ module.exports = (toolbox: CycliToolbox) => {
     surveyStep,
     surveyWarning,
     info,
+    surveyInfo,
     vspace,
     step,
     error,
@@ -533,6 +534,7 @@ export interface InteractiveExtension {
     surveyStep: (message: string) => void
     surveyWarning: (message: string) => void
     info: (message: string, color?: MessageColor) => void
+    surveyInfo: (message: string, color?: MessageColor) => void
     vspace: () => void
     step: (message: string) => void
     error: (message: string) => void
@@ -550,6 +552,6 @@ export interface InteractiveExtension {
       processName: string,
       command: string,
       options?: { alwaysPrintStderr?: boolean }
-    ) => Promise<void>
+    ) => void
   }
 }

@@ -15,6 +15,9 @@ const build = {
 name: Build Android Debug App
 
 on:
+  push:
+    branches:
+      - main # Build on main for caching purposes, this way every branch will have access to it
   workflow_call:
     outputs:
       build-cache-key:
@@ -45,10 +48,10 @@ jobs:
       - name: 🏗 Checkout repository
         uses: actions/checkout@v4
 
-      - name: 🌿 Setup Node 20
+      - name: 🌿 Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version-file: '<%= props.nodeVersionFile %>'
           cache: '<%= props.packageManager %>'
 
       - name: ☕ Setup JDK 17
