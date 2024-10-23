@@ -142,8 +142,8 @@
 
   /* Tabs */
   --swm-tab: var(--swm-navy-light-20);
-  --swm-tab-hover: var(--swm-purple-light-80);
-  --swm-tab-active: var(--swm-purple-light-100);
+  --swm-tab-hover: var(--swm-navy-dark-80);
+  --swm-tab-active: var(--swm-navy-dark-100);
 
   /* Table of Contents */
   --ifm-toc-border-color: transparent;
@@ -335,8 +335,8 @@
 
   /* Tabs */
   --swm-tab: var(--swm-navy-light-60);
-  --swm-tab-hover: var(--swm-purple-dark-60);
-  --swm-tab-active: var(--swm-purple-light-80);
+  --swm-tab-hover: var(--swm-blue-light-60);
+  --swm-tab-active: var(--swm-blue-light-80);
 
   /* Table of Contents */
   --ifm-toc-border-color: transparent;

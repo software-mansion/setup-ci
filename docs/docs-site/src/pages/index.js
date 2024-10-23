@@ -20,7 +20,6 @@ export default function Home() {
         <HomepageStartScreen />
       </div>
       <div className={styles.container}>
-        <Sponsors />
         <HireUsSection
           href={
             'https://swmansion.com/contact/projects?utm_source=screens&utm_medium=docs '

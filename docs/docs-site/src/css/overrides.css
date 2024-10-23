@@ -10,6 +10,11 @@
   z-index: 100;
 }
 
+.docusaurus-mermaid-container {
+  display: flex;
+  justify-content: center;
+}
+
 .navbar__items :nth-child(2) {
   flex: 1;
 }
