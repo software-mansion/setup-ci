@@ -37,7 +37,7 @@ const siteMap = {
     'useScrollViewOffset',
     'useSharedValue',
   ],
-} as const;
+} as const
 
 const legacyVersions = [
   {
@@ -60,48 +60,48 @@ const legacyVersions = [
     from: '/docs/2.3.x',
     to: '/docs/2.x',
   },
-];
+]
 
 function handleLegacyVersions(pathname: string): string {
-  const redirect = legacyVersions.find(({ from }) => pathname.match(from));
+  const redirect = legacyVersions.find(({ from }) => pathname.match(from))
 
   const redirectTo = redirect
     ? pathname.replace(redirect.from, redirect.to)
-    : null;
+    : null
 
-  return redirectTo;
+  return redirectTo
 }
 
 // Example pathname:
 // '/react-native-reanimated/docs/2.0.x/installation'
 // '/react-native-reanimated/docs/2.1.x/api/nativeMethods/measure#arguments'
 function handleSiteMap(pathname: string): string {
-  const id = pathname.split('#')[1] ?? '';
-  const pathnameWithoutId = pathname.replace(/#.*/, '');
+  const id = pathname.split('#')[1] ?? ''
+  const pathnameWithoutId = pathname.replace(/#.*/, '')
 
-  const [page, ...rest] = pathnameWithoutId.split('/').reverse();
+  const [page, ...rest] = pathnameWithoutId.split('/').reverse()
   const [section] =
     // @ts-ignore dunno tf is wrong here
-    Object.entries(siteMap).find(([_, pages]) => pages.includes(page)) ?? [];
+    Object.entries(siteMap).find(([_, pages]) => pages.includes(page)) ?? []
 
-  if (!section) return pathname;
+  if (!section) return pathname
 
-  let urlArr: string[] = [];
+  let urlArr: string[] = []
   if (rest.includes(section)) {
-    urlArr = [page, ...rest];
+    urlArr = [page, ...rest]
   } else {
-    urlArr = [page, section, ...rest];
+    urlArr = [page, section, ...rest]
   }
 
-  const url = urlArr.reverse().join('/');
-  return `${url}${id ? `#${id}` : ''}`;
+  const url = urlArr.reverse().join('/')
+  return `${url}${id ? `#${id}` : ''}`
 }
 
 // Returns null if pathname is not legacy and doesn't need to be redirected
 export function mapLegacyUrl(pathname: string): string | null {
-  const resolvedVersionPathname = handleLegacyVersions(pathname);
+  const resolvedVersionPathname = handleLegacyVersions(pathname)
 
-  if (!resolvedVersionPathname) return null;
+  if (!resolvedVersionPathname) return null
 
-  return handleSiteMap(resolvedVersionPathname);
+  return handleSiteMap(resolvedVersionPathname)
 }

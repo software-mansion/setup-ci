@@ -1,3 +1,3 @@
-import { TOCCollapsible } from '@swmansion/t-rex-ui';
+import { TOCCollapsible } from '@swmansion/t-rex-ui'
 
-export default TOCCollapsible;
+export default TOCCollapsible

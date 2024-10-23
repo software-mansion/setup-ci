@@ -1,7 +1,7 @@
-import React from 'react';
-import Tabs from '@theme-original/Tabs';
-import styles from './styles.module.css';
-import clsx from 'clsx';
+import React from 'react'
+import Tabs from '@theme-original/Tabs'
+import styles from './styles.module.css'
+import clsx from 'clsx'
 
 export default function TabsWrapper(props) {
   return (
@@ -10,5 +10,5 @@ export default function TabsWrapper(props) {
         <Tabs {...props} />
       </div>
     </>
-  );
+  )
 }

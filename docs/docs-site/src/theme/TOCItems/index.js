@@ -1,3 +1,3 @@
-import { TOCItems } from '@swmansion/t-rex-ui';
+import { TOCItems } from '@swmansion/t-rex-ui'
 
-export default TOCItems;
+export default TOCItems

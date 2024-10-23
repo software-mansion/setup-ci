@@ -1,3 +1,3 @@
-import { DocItemMetadata } from '@swmansion/t-rex-ui';
+import { DocItemMetadata } from '@swmansion/t-rex-ui'
 
-export default DocItemMetadata;
+export default DocItemMetadata

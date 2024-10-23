@@ -50,5 +50,5 @@ const oldDocsToNewDocsMap = {
 };
 
 export function mapOldDocsToNewUrl(pathname: string): string | null {
-  return oldDocsToNewDocsMap[pathname] || null;
+  return oldDocsToNewDocsMap[pathname] || null
 }

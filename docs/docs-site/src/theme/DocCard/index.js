@@ -1,3 +1,3 @@
-import { DocCard } from '@swmansion/t-rex-ui';
+import { DocCard } from '@swmansion/t-rex-ui'
 
-export default DocCard;
+export default DocCard

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react'
 
 /*
  * Caution - read before use!
@@ -10,23 +10,23 @@ import React, { useEffect, useState } from 'react';
  * `useIsBrowser` hook.
  */
 const useScreenSize = () => {
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth)
 
   useEffect(() => {
     const handleWindowResize = () => {
-      setWindowWidth(window.innerWidth);
-    };
+      setWindowWidth(window.innerWidth)
+    }
 
-    window.addEventListener('resize', handleWindowResize);
+    window.addEventListener('resize', handleWindowResize)
 
     return () => {
-      window.removeEventListener('resize', handleWindowResize);
-    };
-  }, []);
+      window.removeEventListener('resize', handleWindowResize)
+    }
+  }, [])
 
   return {
     windowWidth,
-  };
-};
+  }
+}
 
-export default useScreenSize;
+export default useScreenSize
