@@ -2,22 +2,17 @@
   position: absolute;
   bottom: 0;
   left: 0;
-
-  background: linear-gradient(
-      180deg,
-      var(--swm-white) 0%,
-      rgba(252, 252, 255, 0) 150.5%
-    ),
-    linear-gradient(
-      180deg,
-      var(--swm-red-light-40) 35%,
-      var(--swm-red-light-60) 100%
-    );
   width: 100%;
   height: 50vh;
   overflow: hidden;
 
-  z-index: -100;
+  z-index: 1;
+
+  background: linear-gradient(
+    180deg,
+    var(--swm-white) 40%,
+    var(--swm-navy-light-40) 80%
+  );
 }
 
 .container {
@@ -29,9 +24,31 @@
   margin-top: -107px;
 }
 
+[data-theme='dark'] .footerBackground {
+  background: linear-gradient(
+    180deg,
+    var(--black) 30%,
+    var(--swm-navy-dark-140) 100%
+  );
+}
+
 @media (max-width: 996px) {
   .container {
     margin-top: 122px;
+  }
+  .footerBackground {
+    background: linear-gradient(
+      180deg,
+      var(--swm-white) 70%,
+      var(--swm-navy-light-40) 100%
+    );
+  }
+  [data-theme='dark'] .footerBackground {
+    background: linear-gradient(
+      180deg,
+      var(--black) 80%,
+      var(--swm-navy-dark-140) 100%
+    );
   }
   [class*='footerLanding'] {
     margin-top: -122px;
@@ -41,6 +58,20 @@
 @media (max-width: 700px) {
   .container {
     margin-top: 147px;
+  }
+  .footerBackground {
+    background: linear-gradient(
+      180deg,
+      var(--swm-white) 60%,
+      var(--swm-navy-light-40) 80%
+    );
+  }
+  [data-theme='dark'] .footerBackground {
+    background: linear-gradient(
+      180deg,
+      var(--black) 70%,
+      var(--swm-navy-dark-140) 100%
+    );
   }
   [class*='footerLanding'] {
     margin-top: -147px;
@@ -54,18 +85,4 @@
   [class*='footerLanding'] {
     margin-top: -173px;
   }
-}
-
-[data-theme='dark'] .footerBackground {
-  background: linear-gradient(
-      180deg,
-      var(--swm-white) 0%,
-      rgba(252, 252, 255, 0) 150.5%
-    ),
-    linear-gradient(180deg, var(--swm-black) 35%, var(--swm-red-dark-120) 100%);
-  background: linear-gradient(
-    180deg,
-    var(--black) 0%,
-    var(--swm-red-dark-120) 100%
-  );
 }

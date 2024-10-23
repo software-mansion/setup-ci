@@ -2,6 +2,18 @@
   --swm-expandable-transition: transform 200ms ease;
 }
 
+.navbar {
+  z-index: 100;
+}
+
+.footer {
+  z-index: 100;
+}
+
+.navbar__items :nth-child(2) {
+  flex: 1;
+}
+
 table {
   display: table;
   width: 100%;
@@ -76,7 +88,7 @@ table thead tr {
 
 [class*='navbarLanding'] .header-github:before,
 [class*='navbarLanding'] .header-github:hover:before {
-  background-color: var(--swm-off-white);
+  background-color: var(--ifm-navbar-link-color);
 }
 
 [class*='codeBlockContent'] pre {

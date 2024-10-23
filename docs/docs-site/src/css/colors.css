@@ -111,13 +111,13 @@
   --swm-navy: #232736;
 
   /* Infima main colors */
-  --ifm-color-primary: var(--swm-red-light-100);
-  --ifm-color-primary-dark: var(--swm-red-dark-80);
-  --ifm-color-primary-darker: var(--swm-red-dark-100);
-  --ifm-color-primary-darkest: var(--swm-red-dark-120);
-  --ifm-color-primary-light: var(--swm-red-light-100);
-  --ifm-color-primary-lighter: var(--swm-red-light-80);
-  --ifm-color-primary-lightest: var(--swm-red-light-40);
+  --ifm-color-primary: var(--swm-navy-light-100);
+  --ifm-color-primary-dark: var(--swm-navy-dark-80);
+  --ifm-color-primary-darker: var(--swm-navy-dark-100);
+  --ifm-color-primary-darkest: var(--swm-navy-dark-120);
+  --ifm-color-primary-light: var(--swm-navy-light-100);
+  --ifm-color-primary-lighter: var(--swm-navy-light-80);
+  --ifm-color-primary-lightest: var(--swm-navy-light-40);
 
   /* Main site settings */
   --swm-background: var(--swm-white);
@@ -125,14 +125,16 @@
 
   --ifm-background-color: var(--swm-background);
   --ifm-navbar-background-color: var(--swm-background);
+  --ifm-navbar-link-color: var(--swm-navy-dark-100);
+
+  --swm-landing-background: var(--swm-white);
 
   /* Color Mode */
-  --swm-color-mode-enabled: var(--swm-red-light-20);
-  --swm-color-mode-disabled-color: var(--swm-red-light-20);
-
-  --swm-color-mode-enabled-landing: var(--swm-red-light-100);
-  --swm-color-mode-enabled-color-landing: var(--swm-off-white);
-  --swm-color-mode-disabled-color-landing: var(--swm-red-light-100);
+  --swm-color-mode-enabled: var(--swm-navy-light-20);
+  --swm-color-mode-disabled-color: var(--swm-navy-light-20);
+  --swm-color-mode-enabled-landing: var(--swm-navy-light-100);
+  --swm-color-mode-enabled-color-landing: var(--swm-navy-light-20);
+  --swm-color-mode-disabled-color-landing: var(--swm-navy-light-100);
 
   /* Typography */
   --ifm-heading-color: var(--ifm-color-primary);
@@ -156,7 +158,7 @@
   --swm-admonition-color-secondary: var(--swm-navy-light-10);
   --swm-admonition-color-success: var(--swm-green-light-20);
   --swm-admonition-color-danger: var(--swm-red-light-20);
-  --swm-admonition-color-info: var(--swm-blue-dark-20);
+  --swm-admonition-color-info: var(--swm-blue-light-20);
   --swm-admonition-color-caution: var(--swm-yellow-light-20);
 
   --swm-admonition-color-secondary-shadow: var(--swm-navy-light-80);
@@ -242,13 +244,15 @@
   --swm-sidebar-backdrop: rgba(0, 26, 114, 0.5);
 
   /* Landing */
-  --swm-landing-heading: var(--ifm-font-color-base);
+  --swm-landing-heading-gradient-top: var(--swm-navy-light-80);
+  --swm-landing-heading-gradient-bottom: var(--swm-navy-dark-120);
+
   --swm-landing-heading-selected: var(--swm-purple-light-100);
   --swm-landing-heading-selected-border: var(--swm-navy-light-100);
 
-  --swm-landing-horse: var(--swm-navy-light-100);
+  --swm-landing-subheading: var(--swm-navy-dark-100);
 
-  --swm-landing-button: var(--swm-red-light-100);
+  --swm-landing-button: var(--swm-navy-dark-100);
 
   --swm-landing-feature-item: var(--swm-red-light-40);
   --swm-landing-feature-item-shadow: var(--swm-red-light-100);
@@ -257,9 +261,13 @@
 
   /* Hire Us Section */
 
-  --swm-hire-us-section-title: var(--swm-red-light-80);
-  --swm-hire-us-section: var(--swm-red-light-100);
+  --swm-hire-us-section-title: var(--swm-navy-light-40);
+  --swm-hire-us-section: var(--swm-navy-light-100);
   --swm-hire-us-section-color: var(--swm-off-white);
+  --swm-hire-us-toc: var(--swm-navy-light-100);
+  --swm-hire-us-toc-color: var(--swm-off-white);
+  --swm-hire-us-toc-border-hover: var(--swm-navy-light-100);
+  --swm-hire-us-toc-color-hover: var(--swm-navy-light-100);
 
   /* Cards */
   --swm-card-background: var(--swm-background);
@@ -306,14 +314,17 @@
   --ifm-color-primary: var(--swm-navy-light-10);
 
   /* Main site settings */
-  --swm-background: var(--black);
+  --swm-background: var(--swm-navy);
   --swm-off-background: var(--swm-off-navy);
 
   --ifm-background-color: var(--swm-background);
   --ifm-navbar-background-color: var(--swm-background);
+  --ifm-navbar-link-color: var(--swm-off-white);
+
+  --swm-landing-background: var(--black);
 
   /* Color Mode */
-  --swm-color-mode-enabled: var(--swm-off-white);
+  --swm-color-mode-enabled: var(--swm-off-navy);
   --swm-color-mode-enabled-landing: var(--swm-off-white);
   --swm-color-mode-enabled-color-landing: var(--swm-navy-dark-140);
   --swm-color-mode-disabled-color: var(--swm-off-white);
@@ -353,12 +364,12 @@
   --swm-details-color: var(--swm-off-white);
 
   /* Quotes */
-  --swm-background-quote: var(--swm-navy-dark-80);
+  --swm-background-quote: var(--swm-light-off-navy);
   --swm-background-quote-secondary: var(--swm-navy-light-20);
-  --swm-background-quote-blue: var(--swm-blue-light-40);
+  --swm-background-quote-blue: var(--swm-blue-dark-140);
   --swm-background-quote-green: var(--swm-green-light-40);
   --swm-background-quote-red: var(--swm-red-light-40);
-  --swm-background-quote-yellow: var(--swm-yellow-light-40);
+  --swm-background-quote-yellow: var(--swm-yellow-dark-140);
   --swm-background-quote-purple: var(--swm-purple-light-40);
 
   /* Code snippets */
@@ -411,13 +422,15 @@
   --swm-sidebar-backdrop: rgba(35, 39, 54, 0.5);
 
   /* Landing */
-  --swm-landing-heading: var(--swm-off-white);
+  --swm-landing-heading-gradient-top: var(--swm-white);
+  --swm-landing-heading-gradient-bottom: #a9a9a9;
+
   --swm-landing-heading-selected: var(--swm-purple-dark-40);
   --swm-landing-heading-selected-border: var(--swm-navy-light-20);
 
-  --swm-landing-horse: var(--swm-off-white);
+  --swm-landing-subheading: var(--swm-blue-light-100);
 
-  --swm-landing-button: var(--swm-red-dark-100);
+  --swm-landing-button: var(--swm-blue-light-100);
 
   --swm-landing-feature-item: var(--swm-red-dark-100);
   --swm-landing-feature-item-shadow: var(--swm-red-dark-140);
@@ -425,10 +438,13 @@
   --swm-landing-sponsors-color: var(--swm-off-white);
 
   /* Hire Us Section */
-
-  --swm-hire-us-section-title: var(--swm-red-dark-100);
-  --swm-hire-us-section: var(--swm-red-dark-100);
+  --swm-hire-us-section-title: var(--swm-blue-light-100);
+  --swm-hire-us-section: var(--swm-blue-dark-100);
   --swm-hire-us-section-color: var(--black);
+  --swm-hire-us-toc: var(--swm-blue-light-80);
+  --swm-hire-us-toc-color: var(--swm-off-white);
+  --swm-hire-us-toc-color-hover: var(--swm-navy-light-40);
+  --swm-hire-us-toc-border-hover: var(--swm-navy-light-40);
 
   /* Cards */
   --swm-card-background: var(--swm-navy);

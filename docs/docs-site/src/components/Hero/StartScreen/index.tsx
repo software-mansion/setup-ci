@@ -7,11 +7,10 @@ const StartScreen = () => {
   return (
     <section className={styles.hero}>
       <h1 className={styles.headingLabel}>
-        <span>React Native</span>
-        <span>CI CLI</span>
+        <span>{'>'} setup-ci</span>
       </h1>
       <h2 className={styles.subheadingLabel}>
-        Efficiently setup CI for your React Native app
+        Quickly bootstrap CI for your React Native app
       </h2>
       <CommandBox />
       <div className={styles.buttonsContainer}>

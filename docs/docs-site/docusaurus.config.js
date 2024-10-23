@@ -1,9 +1,12 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 
+const lightCodeTheme = require('./src/theme/CodeBlock/highlighting-light.js')
+const darkCodeTheme = require('./src/theme/CodeBlock/highlighting-dark.js')
+
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'React Native CI CLI',
+  title: 'npx setup-ci',
   favicon: 'img/favicon.ico',
 
   url: 'https://docs.swmansion.com',
@@ -54,7 +57,7 @@ const config = {
       navbar: {
         hideOnScroll: true,
         logo: {
-          alt: 'React Native CI CLI logo',
+          alt: 'setup-ci logo',
           src: 'img/logo.svg',
           srcDark: 'img/logo-dark.svg',
         },
@@ -78,6 +81,10 @@ const config = {
         links: [],
         copyright:
           'All trademarks and copyrights belong to their respective owners.',
+      },
+      prism: {
+        theme: lightCodeTheme,
+        darkTheme: darkCodeTheme,
       },
     }),
 }
