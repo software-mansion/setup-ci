@@ -2,14 +2,11 @@
   height: 60px;
   padding: 1em 1.5em 1em 1em;
   border-radius: 1rem;
-
   font-weight: 500;
   font-size: 20px;
   text-wrap: nowrap;
-
   color: var(--swm-off-white);
   background-color: var(--swm-landing-button);
-
   cursor: pointer;
   transition: background-color 0.3s, color 0.3s;
 }

@@ -205,8 +205,8 @@
 
   /* Pagination */
   --swm-paginator-sublabel: var(--swm-navy-light-100);
-  --swm-paginator-label: var(--swm-purple-light-80);
-  --swm-paginator-label-hover: var(--swm-purple-light-100);
+  --swm-paginator-label: var(--swm-navy-light-80);
+  --swm-paginator-label-hover: var(--swm-navy-light-100);
 
   /* Footer */
   --swm-brand-copyright-color: var(--swm-navy-light-100);
@@ -244,19 +244,13 @@
   --swm-sidebar-backdrop: rgba(0, 26, 114, 0.5);
 
   /* Landing */
-  --swm-landing-heading-gradient-top: var(--swm-navy-light-80);
-  --swm-landing-heading-gradient-bottom: var(--swm-navy-dark-120);
-
-  --swm-landing-heading-selected: var(--swm-purple-light-100);
-  --swm-landing-heading-selected-border: var(--swm-navy-light-100);
-
+  --swm-landing-heading: var(--swm-navy-light-60);
+  --swm-landing-heading-accent: var(--swm-navy-light-100);
+  --swm-landing-cursor: var(--swm-navy-light-60);
   --swm-landing-subheading: var(--swm-navy-dark-100);
-
   --swm-landing-button: var(--swm-navy-dark-100);
-
   --swm-landing-feature-item: var(--swm-red-light-40);
   --swm-landing-feature-item-shadow: var(--swm-red-light-100);
-
   --swm-landing-sponsors-color: var(--ifm-font-color-base);
 
   /* Hire Us Section */
@@ -385,8 +379,8 @@
 
   /* Pagination */
   --swm-paginator-sublabel: var(--swm-navy-light-20);
-  --swm-paginator-label: var(--swm-purple-light-60);
-  --swm-paginator-label-hover: var(--swm-purple-light-40);
+  --swm-paginator-label: var(--swm-navy-light-60);
+  --swm-paginator-label-hover: var(--swm-navy-light-40);
 
   /* Footer */
   --swm-brand-copyright-color: var(--swm-navy-light-20);
@@ -422,16 +416,11 @@
   --swm-sidebar-backdrop: rgba(35, 39, 54, 0.5);
 
   /* Landing */
-  --swm-landing-heading-gradient-top: var(--swm-white);
-  --swm-landing-heading-gradient-bottom: #a9a9a9;
-
-  --swm-landing-heading-selected: var(--swm-purple-dark-40);
-  --swm-landing-heading-selected-border: var(--swm-navy-light-20);
-
-  --swm-landing-subheading: var(--swm-blue-light-100);
-
+  --swm-landing-heading: var(--swm-white);
+  --swm-landing-heading-accent: var(--swm-blue-light-60);
+  --swm-landing-cursor: var(--swm-white);
+  --swm-landing-subheading: var(--swm-blue-light-60);
   --swm-landing-button: var(--swm-blue-light-100);
-
   --swm-landing-feature-item: var(--swm-red-dark-100);
   --swm-landing-feature-item-shadow: var(--swm-red-dark-140);
 

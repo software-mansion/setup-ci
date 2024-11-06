@@ -5,7 +5,6 @@ import FooterBackground from '@site/src/components/FooterBackground'
 import HomepageStartScreen from '@site/src/components/Hero/StartScreen'
 import { HireUsSection } from '@swmansion/t-rex-ui'
 import styles from './styles.module.css'
-import Sponsors from '../components/Sponsors'
 
 export default function Home() {
   return (
