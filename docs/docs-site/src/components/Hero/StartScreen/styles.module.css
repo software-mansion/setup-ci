@@ -1,0 +1,145 @@
+.hero {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 12.25rem;
+  align-items: center;
+  min-width: 300px;
+  margin-top: 8rem;
+  gap: 2rem;
+}
+
+.heroLogoContainer {
+  margin-top: 5vh;
+  display: flex;
+  flex-direction: row;
+  width: 720px;
+  height: 165px;
+  align-items: center;
+  justify-content: start;
+}
+
+.heroLogo {
+  width: 23%;
+  margin-right: 4.5%;
+  height: auto;
+}
+
+.heroLogoText {
+  font-family: var(--swm-title-landing-font);
+  font-size: 81px;
+  font-weight: 500;
+  color: var(--swm-landing-heading);
+  letter-spacing: 2px;
+  text-wrap: nowrap;
+  overflow: hidden;
+  animation: changeWidth 3s steps(1) forwards;
+}
+
+.heroLogoText :nth-child(1) {
+  color: var(--swm-landing-heading-accent);
+}
+
+@keyframes changeWidth {
+  0%   { width: 0%; } 
+  8%   { width: 6.2%; } /* n */
+  16%  { width: 13.3%; } /* p */
+  24%  { width: 19.6%; } /* x */
+  32%  { width: 22.4%; } /* _ */
+  50%  { width: 28.6%; } /* s */
+  58%  { width: 35%; } /* e */
+  64%  { width: 40%; } /* t */
+  72%  { width: 45.7%; } /* u */
+  80%  { width: 52.8%; } /* p */
+  93%  { width: 58%; } /* - */
+  97%  { width: 64.5%; } /* c-*/
+  100%  { width: 68%; } /* i */
+}
+
+.cursor {
+  margin-top: 0.5em;
+  width: 3.5%;
+  margin-left: 1%;
+  height: 4.5em;
+  background-color: var(--swm-landing-cursor);
+  animation: blink 2s step-end infinite;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+.subheadingLabel {
+  font-size: 36px;
+  font-weight: 400;
+  letter-spacing: var(--swm-heading-letter-spacing-bigger);
+  text-align: center;
+  width: 100%;
+  color: var(--swm-landing-subheading);
+  margin-top: 30px;
+  text-wrap: nowrap;
+}
+
+.buttonsContainer {
+  width: 80%;
+  max-width: 650px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-top: 60px;
+  gap: 3rem;
+}
+
+@media (max-width: 996px) {
+  .hero {
+    margin-bottom: 8rem;
+    gap: 1rem;
+  }
+  .heroLogoContainer {
+    width: 590px;
+    height: 120px;
+  }
+  .heroLogoText {
+    font-size: 66px;
+  }
+  .cursor {
+    height: 3.8rem;
+  }
+  .subheadingLabel {
+    font-size: 32px;
+    text-wrap: balance;
+  }
+  .buttonsContainer {
+    width: 90%;
+    gap: 2.5rem;
+  }
+}
+
+@media (max-width: 660px) {
+  .heroLogo {
+    display: none; 
+  }
+  .heroLogoContainer {
+    display: flex;
+    justify-content: center;
+  }
+  .cursor {
+    display: none;
+  }
+}
+
+@media (max-width: 500px) {
+  .hero {
+    gap: 0.5rem;
+  }
+  .subheadingLabel {
+    font-size: 28px;
+    text-wrap: balance;
+  }
+  .buttonsContainer {
+    margin-top: 2.5rem;
+    width: 85%;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+}

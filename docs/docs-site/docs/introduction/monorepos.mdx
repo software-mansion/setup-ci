@@ -1,0 +1,97 @@
+---
+sidebar_position: 5
+---
+
+# Support for monorepos
+
+All the features provided by SCI are available in monorepos as well! The only difference is that the configuration will be adjusted to work in a monorepo structure.
+
+:::caution
+If you want to run SCI for a package in monorepo structure, **run it from the root of this package (where package's `package.json` is located)**, not the monorepo root directory.
+:::
+
+## Monorepo specific behavior
+
+SCI automatically detects if you run it in a monorepo and adjusts the configuration accordingly. It
+peforms all necessary changes on the package level and generates workflows in `.github/workflows` directory at the root of the monorepo.
+
+Workflows generated in monorepos are a bit different to ensure that they work correctly in monorepo structure. This difference involves both the name of workflow file
+and its content. Check out the following example usage for more details.
+
+## Example usage in monorepo
+
+Assume we have a monorepo with the following structure:
+
+```bash
+repo
+├── apps
+│   ├── package-a
+│   │   └── ...
+│   └── package-b
+│       └── ...
+├── package.json
+└── yarn.lock
+```
+
+Say that `package-a` is a react native app for which we want to set up GitHub actions for Prettier and Maestro. We can run:
+
+```bash
+cd apps/package-a
+npx setup-ci --preset --prettier --maestro
+```
+
+After running the script, we can see that a `.github/` directory has been created in monorepo root with the following content:
+
+```bash {2,3,4,5}
+repo
+├── .github
+│   └── workflows
+│       ├── package-a-maestro.yml
+│       └── package-a-prettier.yml
+├── apps
+│   ├── package-a
+│   │   └── file
+│   └── package-b
+│       └── file
+├── package.json
+└── yarn.lock
+```
+
+These are the workflows that SCI generated for `package-a`. Note that their name starts with the name of the package.
+This is to ensure that all workflows generated in monorepo have unique names and can be easily identified.
+
+If we inspect the contents of `package-a-prettier.yml`, we can see
+some quirks specific to workflows generated in monorepos.
+
+```yaml {5,6,19,26} title=".github/workflows/package-a-prettier.yml" showLineNumbers
+name: Prettier check
+
+on:
+  pull_request:
+    paths:
+      - apps/package-a/**
+
+jobs:
+  prettier-check:
+    name: Prettier check
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🏗 Setup repo
+        uses: actions/checkout@v4
+
+      - name: 🌿 Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: "apps/package-a/.nvmrc"
+          cache: "yarn"
+
+      - name: 📦 Install dependencies
+        run: yarn install --immutable
+
+      - name: ✨ Run Prettier check
+        run: yarn --cwd apps/package-a prettier:check
+```
+
+- Lines 5-6: the `paths` field ensures that the workflow runs only when changes are made in `apps/package-a` directory
+- Line 19: the path to `.nvmrc` file is adjusted to point to `package-a` directory
+- Line 26: the `yarn` command uses `--cwd` flag to specify in which package it should be run (for npm projects, the `npm run --prefix` option is used)
