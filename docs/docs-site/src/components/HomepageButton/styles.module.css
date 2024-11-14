@@ -74,8 +74,8 @@ a.homepageButtonLink:hover {
   color: var(--swm-landing-button);
 }
 
-[data-theme='dark'] .buttonTransparentStyling {
-  color: var(--swm-off-white);
+[data-theme="dark"] .buttonTransparentStyling {
+  color: var(--swm-landing-button);
 }
 
 .buttonTransparentStyling svg {
@@ -83,7 +83,7 @@ a.homepageButtonLink:hover {
 }
 
 [data-theme='dark'] .buttonTransparentStyling svg {
-  stroke: var(--swm-off-white);
+  stroke: var(--swm-landing-button);
 }
 
 .buttonTransparentStyling:hover {
@@ -91,8 +91,16 @@ a.homepageButtonLink:hover {
   color: var(--swm-off-white);
 }
 
+[data-theme='dark'] .buttonTransparentStyling:hover {
+  color: var(--black);
+}
+
 .buttonTransparentStyling:hover svg {
   stroke: var(--swm-off-white);
+}
+
+[data-theme='dark'] .buttonTransparentStyling:hover svg {
+  stroke: var(--black);
 }
 
 /* Button - navy styling */
