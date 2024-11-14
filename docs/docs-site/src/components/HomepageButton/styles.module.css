@@ -4,14 +4,11 @@
   font-weight: 500;
   font-size: 20px;
   text-wrap: nowrap;
-  color: var(--swm-off-white);
-  background-color: var(--swm-landing-button);
   cursor: pointer;
   transition: background-color 0.3s, color 0.3s;
-}
-
-[data-theme='dark'] .homepageButton {
-  color: var(--black);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .homepageButtonLink {
@@ -26,12 +23,6 @@
 
 a.homepageButtonLink:hover {
   text-decoration: none !important;
-}
-
-.homepageButton {
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 @media (max-width: 768px) {
@@ -67,75 +58,44 @@ a.homepageButtonLink:hover {
   left: 16px;
 }
 
-/* Button - transparent styling */
+/* Button - secondary styling */
+.buttonSecondary {
+  background-color: transparent;
+  color: var(--swm-landing-button);
+  border: 1px solid var(--swm-landing-button);
+}
 
-.buttonTransparentStyling {
+.buttonSecondary svg {
+  stroke: var(--swm-landing-button);
+}
+
+.buttonSecondary:hover svg {
+  stroke: var(--swm-landing-button-text-color);
+}
+
+.buttonSecondary:hover {
+  background-color: var(--swm-landing-button);
+  color: var(--swm-landing-button-text-color);
+}
+
+/* Button - primary styling */
+.buttonPrimary {
+  background-color: var(--swm-landing-button);
+  color: var(--swm-landing-button-text-color);
+  border: 1px solid var(--swm-landing-button);
+}
+
+.buttonPrimary:hover {
   background-color: transparent;
   color: var(--swm-landing-button);
 }
 
-[data-theme="dark"] .buttonTransparentStyling {
-  color: var(--swm-landing-button);
+.buttonPrimary svg {
+  stroke: var(--swm-landing-button-text-color);
 }
 
-.buttonTransparentStyling svg {
+.buttonPrimary:hover svg {
   stroke: var(--swm-landing-button);
-}
-
-[data-theme='dark'] .buttonTransparentStyling svg {
-  stroke: var(--swm-landing-button);
-}
-
-.buttonTransparentStyling:hover {
-  background-color: var(--swm-landing-button);
-  color: var(--swm-off-white);
-}
-
-[data-theme='dark'] .buttonTransparentStyling:hover {
-  color: var(--black);
-}
-
-.buttonTransparentStyling:hover svg {
-  stroke: var(--swm-off-white);
-}
-
-[data-theme='dark'] .buttonTransparentStyling:hover svg {
-  stroke: var(--black);
-}
-
-/* Button - navy styling */
-
-.buttonNavyStyling {
-  background-color: var(--swm-landing-button);
-  color: var(--swm-off-white);
-}
-
-.buttonNavyStyling svg {
-  stroke: var(--swm-off-white);
-}
-[data-theme='dark'] .buttonNavyStyling svg {
-  stroke: var(--black);
-}
-
-.buttonNavyStyling:hover {
-  background-color: transparent;
-  color: var(--swm-landing-button);
-}
-
-.buttonNavyStyling:hover svg {
-  stroke: var(--swm-landing-button);
-}
-
-.buttonNavyBorderStyling {
-  border: 1px solid var(--swm-landing-button);
-}
-
-.buttonTransparentBorderStyling {
-  border: 1px solid var(--swm-landing-button);
-}
-
-[data-theme='dark'] .buttonTransparentBorderStyling {
-  border: 1px solid var(--swm-off-white) !important;
 }
 
 .arrow {

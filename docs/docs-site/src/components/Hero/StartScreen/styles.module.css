@@ -18,6 +18,10 @@
   justify-content: start;
 }
 
+.heroLogoContainer svg {
+  fill: var(--swm-landing-logo-color);
+}
+
 .heroLogo {
   width: 23%;
   margin-right: 4.5%;
