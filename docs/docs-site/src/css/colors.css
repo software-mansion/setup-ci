@@ -210,7 +210,7 @@
 
   /* Footer */
   --swm-brand-copyright-color: var(--swm-navy-light-100);
-  --swm-copyright-color: var(--swm-navy-light-60);
+  --swm-copyright-color: var(--swm-light-off-navy);
 
   --swm-brand-copyright-color-landing: var(--swm-brand-copyright-color);
   --swm-copyright-color-landing: var(--swm-copyright-color);
@@ -244,9 +244,9 @@
   --swm-sidebar-backdrop: rgba(0, 26, 114, 0.5);
 
   /* Landing */
-  --swm-landing-heading: var(--swm-navy-light-60);
+  --swm-landing-heading: var(--swm-blue-light-100);
   --swm-landing-heading-accent: var(--swm-navy-light-100);
-  --swm-landing-cursor: var(--swm-navy-light-60);
+  --swm-landing-cursor: var(--swm-blue-light-100);
   --swm-landing-subheading: var(--swm-navy-dark-100);
   --swm-landing-button: var(--swm-navy-dark-100);
   --swm-landing-feature-item: var(--swm-red-light-40);
@@ -255,7 +255,7 @@
 
   /* Hire Us Section */
 
-  --swm-hire-us-section-title: var(--swm-navy-light-40);
+  --swm-hire-us-section-title: var(--swm-blue-light-100);
   --swm-hire-us-section: var(--swm-navy-light-100);
   --swm-hire-us-section-color: var(--swm-off-white);
   --swm-hire-us-toc: var(--swm-navy-light-100);
