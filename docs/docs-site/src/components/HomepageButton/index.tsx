@@ -4,47 +4,41 @@ import styles from './styles.module.css'
 import ArrowRight from '@site/static/img/arrow-right-hero.svg'
 import clsx from 'clsx'
 
-export const ButtonStyling = {
-  TO_NAVY: styles.buttonTransparentStyling,
-  TO_TRANSPARENT: styles.buttonNavyStyling,
-}
-
-export const BorderStyling = {
-  NAVY: styles.buttonNavyBorderStyling,
-  TRANSPARENT: styles.buttonTransparentBorderStyling,
+const ButtonStyling = {
+  PRIMARY: styles.buttonPrimary,
+  SECONDARY: styles.buttonSecondary
 }
 
 const HomepageButton: React.FC<{
   title: string
   href: string
+  type?: 'primary' | 'secondary'
   target?: '_blank' | '_parent' | '_self' | '_top'
-  backgroundStyling?: string
-  borderStyling?: string
   enlarged?: boolean
 }> = ({
   title,
   href,
+  type = 'primary',
   target = '_self',
-  backgroundStyling = ButtonStyling.TO_TRANSPARENT,
-  borderStyling = BorderStyling.NAVY,
 }) => {
-  return (
-    <a href={href} target={target} className={styles.homepageButtonLink}>
-      <div
-        className={clsx(
-          styles.homepageButton,
-          backgroundStyling,
-          borderStyling
-        )}
-      >
-        {title}
+    const buttonStyling = type === 'primary' ?
+      ButtonStyling.PRIMARY : ButtonStyling.SECONDARY
 
-        <div className={styles.arrow}>
-          <ArrowRight />
+    return (
+      <a href={href} target={target} className={styles.homepageButtonLink}>
+        <div
+          className={clsx(
+            styles.homepageButton,
+            buttonStyling
+          )}
+        >
+          {title}
+          <div className={styles.arrow}>
+            <ArrowRight />
+          </div>
         </div>
-      </div>
-    </a>
-  )
-}
+      </a>
+    )
+  }
 
 export default HomepageButton

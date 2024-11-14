@@ -249,9 +249,11 @@
   --swm-landing-cursor: var(--swm-blue-light-100);
   --swm-landing-subheading: var(--swm-navy-dark-100);
   --swm-landing-button: var(--swm-navy-dark-100);
+  --swm-landing-button-text-color: var(--swm-off-white);
   --swm-landing-feature-item: var(--swm-red-light-40);
   --swm-landing-feature-item-shadow: var(--swm-red-light-100);
   --swm-landing-sponsors-color: var(--ifm-font-color-base);
+  --swm-landing-logo-color: var(--swm-navy-light-100);
 
   /* Hire Us Section */
 
@@ -421,10 +423,11 @@
   --swm-landing-cursor: var(--swm-white);
   --swm-landing-subheading: var(--swm-blue-light-60);
   --swm-landing-button: var(--swm-blue-light-100);
+  --swm-landing-button-text-color: var(--black);
   --swm-landing-feature-item: var(--swm-red-dark-100);
   --swm-landing-feature-item-shadow: var(--swm-red-dark-140);
-
   --swm-landing-sponsors-color: var(--swm-off-white);
+  --swm-landing-logo-color: var(--swm-blue-light-20);
 
   /* Hire Us Section */
   --swm-hire-us-section-title: var(--swm-blue-light-100);
