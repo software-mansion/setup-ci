@@ -8,9 +8,9 @@
 
   background: linear-gradient(
     180deg,
-    var(--swm-navy-light-40) 0%,
-    var(--swm-navy-light-20) 10%,
-    var(--swm-navy-light-10) 26%,
+    var(--swm-blue-light-60) 0%,
+    var(--swm-blue-light-40) 10%,
+    var(--swm-blue-light-20) 26%,
     var(--swm-white) 46%
   );
 }

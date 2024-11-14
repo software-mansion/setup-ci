@@ -11,7 +11,7 @@
   background: linear-gradient(
     180deg,
     var(--swm-white) 40%,
-    var(--swm-navy-light-40) 80%
+    var(--swm-blue-light-40) 80%
   );
 }
 
@@ -40,7 +40,7 @@
     background: linear-gradient(
       180deg,
       var(--swm-white) 70%,
-      var(--swm-navy-light-40) 100%
+      var(--swm-blue-light-40) 100%
     );
   }
   [data-theme='dark'] .footerBackground {
@@ -63,7 +63,7 @@
     background: linear-gradient(
       180deg,
       var(--swm-white) 60%,
-      var(--swm-navy-light-40) 80%
+      var(--swm-blue-light-40) 80%
     );
   }
   [data-theme='dark'] .footerBackground {
