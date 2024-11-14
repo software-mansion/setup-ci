@@ -1,10 +1,9 @@
 import React from 'react'
 import styles from './styles.module.css'
-import HomepageButton from '@site/src/components/HomepageButton'
 import Logo from '@site/static/img/hero-logo.svg'
 import DarkLogo from '@site/static/img/hero-logo-dark.svg'
 import { useColorScheme } from '@mui/material'
-import CopyButton from '../../CopyButton'
+import HomepageButton, { ButtonStyling } from '../../HomepageButton'
 
 const StartScreen = () => {
   const colorScheme = useColorScheme()
@@ -36,6 +35,7 @@ const StartScreen = () => {
           target="_blank"
           href="https://github.com/software-mansion/setup-ci"
           title="GitHub"
+          backgroundStyling={ButtonStyling.TO_NAVY}
         />
       </div>
     </section>
