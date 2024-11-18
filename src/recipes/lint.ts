@@ -45,6 +45,7 @@ const execute = async (
 
   if (!isEslintConfiguredWithExpo) {
     await toolbox.dependencies.addDev('@react-native/eslint-config', context)
+    await toolbox.dependencies.addDev('eslint-plugin-ft-flow', context)
 
     await toolbox.scripts.add('lint', "eslint '**/*.{js,jsx,ts,tsx}'")
 
