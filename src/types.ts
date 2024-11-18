@@ -12,6 +12,30 @@ import { FurtherActionsExtension } from './extensions/furtherActions'
 import { ExpoExtension } from './extensions/expo'
 import { PrettierExtension } from './extensions/prettier'
 import { TelemetryExtension } from './extensions/telemetry'
+import { ConfigExtension } from './extensions/config'
+
+export enum CycliRecipeFlag {
+  ESLINT = 'lint',
+  JEST = 'jest',
+  TYPESCRIPT = 'ts',
+  PRETTIER = 'prettier',
+  DETOX = 'detox',
+  MAESTRO = 'maestro',
+  EAS = 'eas',
+}
+
+export interface RecipeMeta {
+  name: string
+  flag: CycliRecipeFlag
+  description: string
+  selectHint: string
+}
+
+export interface CycliRecipe {
+  meta: RecipeMeta
+  execute: (toolbox: CycliToolbox) => Promise<void>
+  validate?: (toolbox: CycliToolbox) => void
+}
 
 export const CycliError = (message: string): Error => {
   const error = new Error(message)
@@ -48,19 +72,6 @@ export type PackageManager =
 
 export type RunResult = ((toolbox: CycliToolbox) => Promise<string>) | null
 
-export interface RecipeMeta {
-  name: string
-  flag: string
-  description: string
-  selectHint: string
-}
-
-export interface CycliRecipe {
-  meta: RecipeMeta
-  execute: (toolbox: CycliToolbox) => Promise<void>
-  validate?: (toolbox: CycliToolbox) => void
-}
-
 export type Platform = 'android' | 'ios'
 export type Environment = 'development'
 
@@ -79,6 +90,7 @@ export type CycliToolbox = {
     : never]: GluegunToolbox[K]
 } & DependenciesExtension &
   InteractiveExtension &
+  ConfigExtension &
   ProjectConfigExtension &
   ContextExtension &
   ScriptsExtension &

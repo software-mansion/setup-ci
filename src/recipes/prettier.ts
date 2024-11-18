@@ -1,7 +1,5 @@
-import { CycliRecipe, CycliToolbox } from '../types'
+import { CycliRecipe, CycliRecipeFlag, CycliToolbox } from '../types'
 import { join } from 'path'
-
-export const FLAG = 'prettier'
 
 const existsPrettierConfiguration = (toolbox: CycliToolbox): boolean =>
   Boolean(toolbox.projectConfig.packageJson().prettier) ||
@@ -53,7 +51,7 @@ const execute = async (toolbox: CycliToolbox): Promise<void> => {
 export const recipe: CycliRecipe = {
   meta: {
     name: 'Prettier',
-    flag: FLAG,
+    flag: CycliRecipeFlag.PRETTIER,
     description: 'Generate Prettier check workflow to run on every PR',
     selectHint: 'check code format with prettier',
   },

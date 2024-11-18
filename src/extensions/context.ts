@@ -104,7 +104,6 @@ module.exports = (toolbox: CycliToolbox) => {
       absFromRepoRoot,
       repoFolderName,
     },
-    selectedOptions: [],
   }
 }
 
@@ -120,6 +119,5 @@ export interface ContextExtension {
       relFromRepoRoot: (path: string) => string // relative path from repoRoot to path
       absFromRepoRoot: (...paths: string[]) => string // absolute path (paths appended to repoRoot)
     }
-    selectedOptions: string[]
   }
 }

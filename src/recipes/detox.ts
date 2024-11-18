@@ -1,10 +1,9 @@
-import { CycliRecipe, CycliToolbox } from '../types'
+import { CycliRecipe, CycliRecipeFlag, CycliToolbox } from '../types'
 import { createBuildWorkflows } from './build'
 import { join } from 'path'
 
 const DETOX_BARE_PROJECT_CONFIG_URL = `https://wix.github.io/Detox/docs/next/introduction/project-setup/#step-4-additional-android-configuration`
 const DETOX_EXPO_PLUGIN = '@config-plugins/detox'
-const FLAG = 'detox'
 
 const addDetoxExpoPlugin = async (toolbox: CycliToolbox) => {
   const appJsonFile = toolbox.projectConfig.appJsonFile()
@@ -132,7 +131,7 @@ const execute = async (toolbox: CycliToolbox) => {
 export const recipe: CycliRecipe = {
   meta: {
     name: 'Detox',
-    flag: FLAG,
+    flag: CycliRecipeFlag.DETOX,
     description: 'Generate workflow to run Detox e2e tests on every PR',
     selectHint: 'run detox e2e tests suite',
   },

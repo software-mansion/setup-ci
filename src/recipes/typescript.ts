@@ -1,7 +1,5 @@
-import { CycliRecipe, CycliToolbox } from '../types'
+import { CycliRecipe, CycliRecipeFlag, CycliToolbox } from '../types'
 import { join } from 'path'
-
-const FLAG = 'ts'
 
 const execute = async (toolbox: CycliToolbox): Promise<void> => {
   toolbox.interactive.vspace()
@@ -30,7 +28,7 @@ const execute = async (toolbox: CycliToolbox): Promise<void> => {
 export const recipe: CycliRecipe = {
   meta: {
     name: 'TS check',
-    flag: FLAG,
+    flag: CycliRecipeFlag.TYPESCRIPT,
     description: 'Generate Typescript check workflow to run on every PR',
     selectHint: 'run typescript check to find compilation errors',
   },

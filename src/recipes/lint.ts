@@ -1,8 +1,5 @@
-import { CycliRecipe, CycliToolbox } from '../types'
+import { CycliRecipe, CycliRecipeFlag, CycliToolbox } from '../types'
 import { join } from 'path'
-import { FLAG as PRETTIER_FLAG } from './prettier'
-
-const FLAG = 'lint'
 
 const existsEslintConfiguration = (toolbox: CycliToolbox): boolean =>
   Boolean(toolbox.projectConfig.packageJson().eslintConfig) ||
@@ -25,7 +22,7 @@ const execute = async (toolbox: CycliToolbox): Promise<void> => {
   await toolbox.dependencies.addDev('@react-native/eslint-config')
 
   const withPrettier =
-    toolbox.context.selectedOptions.includes(PRETTIER_FLAG) ||
+    toolbox.config.selectedRecipes().includes(CycliRecipeFlag.PRETTIER) ||
     toolbox.dependencies.existsDev('prettier') ||
     toolbox.dependencies.exists('prettier')
 
@@ -58,7 +55,7 @@ const execute = async (toolbox: CycliToolbox): Promise<void> => {
 export const recipe: CycliRecipe = {
   meta: {
     name: 'ESLint',
-    flag: FLAG,
+    flag: CycliRecipeFlag.ESLINT,
     description: 'Generate ESLint workflow to run on every PR',
     selectHint: 'check code style with linter',
   },
