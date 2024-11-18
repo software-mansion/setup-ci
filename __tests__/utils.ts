@@ -64,11 +64,14 @@ export const cli = async (
   }
 ): Promise<string> => {
   const subprocessPromise = new Promise<string>((resolve, reject) => {
-    const subprocess = spawn(`node ${PATH_TO_BINARY} ${flags.join(' ')}`, {
-      shell: true,
-      cwd,
-      stdio: ['inherit', 'pipe', 'inherit'],
-    })
+    const subprocess = spawn(
+      `node ${PATH_TO_BINARY} --skip-telemetry ${flags.join(' ')}`,
+      {
+        shell: true,
+        cwd,
+        stdio: ['inherit', 'pipe', 'inherit'],
+      }
+    )
 
     let output = ''
 

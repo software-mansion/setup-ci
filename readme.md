@@ -1,4 +1,4 @@
-<img src="./docs/header.png" />
+<img src="./docs/assets/header.png" />
 
 ## 🤔 Why?
 
@@ -29,7 +29,7 @@ Let's try to use `npx setup-ci` to do the heavy lifting and generate all the nec
 <p align="center">
   <img 
     style="width: 80%;"
-    src="docs/example-usage.gif"/>
+    src="docs/assets/example-usage.gif"/>
 </p>
 
 Alternatively, we can use flags `--preset --ts --prettier` to avoid the interactive survey at the beginning of the script. You can check the section below for more information about available flags!
@@ -55,6 +55,10 @@ When using `npx setup-ci`, you can provide additional flags to modify its defaul
   <tr>
     <td style="vertical-align: middle;">--skip-git-check</td>
     <td style="vertical-align: middle;">By default, the script will prompt the user if there are uncommitted changes in the working repository. Use this flag to proceed without asking.</td>
+  </tr>
+  <tr>
+    <td style="vertical-align: middle;">--skip-telemetry</td>
+    <td style="vertical-align: middle;">Skip sending anonymous metrics.</td>
   </tr>
 </table>
 
@@ -121,9 +125,15 @@ as you will always be prompted to create secrets if necessary. The following tab
   </tr>
 </table>
 
-## 🔍 Troubleshooting 
+## 🔍 Troubleshooting
 
 For known issues with `npx setup-ci`, please check [Troubleshooting](docs/troubleshooting.md).
+
+## 📊 Metrics
+
+By default, `npx setup-ci` collects anonymous usage data that helps us improve the tool. You can disable it by using the `--skip-telemetry` option.
+Collected data consists of timestamp, tool version, selected options, whether the script has been run for the first time and whether it ended with an unexpected error (without stacktrace
+so that no sensitive PII can be accidentally leaked).
 
 ## 💬 Your feedback
 

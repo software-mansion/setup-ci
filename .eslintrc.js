@@ -21,5 +21,5 @@ module.exports = {
     ],
     '@typescript-eslint/no-var-requires': 'off',
   },
-  ignorePatterns: ['__tests__/test-projects'],
+  ignorePatterns: ['__tests__/test-projects', 'docs/docs-site'],
 }

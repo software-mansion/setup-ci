@@ -12,7 +12,7 @@ module.exports = (toolbox: CycliToolbox) => {
   let packageRoot: string | undefined = undefined
 
   const getPackageManager = (repoRoot: string): PackageManager => {
-    if (!packageManager) {
+    const findPackageManager = (): PackageManager => {
       const lockFiles =
         filesystem
           .list(repoRoot)
@@ -35,10 +35,14 @@ module.exports = (toolbox: CycliToolbox) => {
         )
       }
 
-      packageManager = LOCK_FILE_TO_MANAGER[lockFiles[0]]
+      return LOCK_FILE_TO_MANAGER[lockFiles[0]]
     }
 
-    return packageManager as PackageManager
+    if (!packageManager) {
+      packageManager = findPackageManager()
+    }
+
+    return packageManager
   }
 
   const getRepoRoot = (): string => {
@@ -77,9 +81,22 @@ module.exports = (toolbox: CycliToolbox) => {
 
   const isMonorepo = (): boolean => getRepoRoot() !== getPackageRoot()
 
+  // Check whether ~/.setup-ci exists and creates it if not.
+  const isFirstUse = (): boolean => {
+    const setupCiDir = join(filesystem.homedir(), '.setup-ci')
+
+    if (!filesystem.exists(setupCiDir)) {
+      filesystem.write(setupCiDir, '')
+      return true
+    }
+
+    return false
+  }
+
   toolbox.context = {
     packageManager: () => getPackageManager(getRepoRoot()),
     isMonorepo,
+    isFirstUse,
     path: {
       repoRoot: () => getRepoRoot(),
       packageRoot: () => getPackageRoot(),
@@ -95,6 +112,7 @@ export interface ContextExtension {
   context: {
     packageManager: () => PackageManager
     isMonorepo: () => boolean
+    isFirstUse: () => boolean
     path: {
       repoRoot: () => string // absolute path
       packageRoot: () => string // absolute path

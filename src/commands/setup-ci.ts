@@ -15,7 +15,9 @@ import {
   HELP_FLAG,
   PRESET_FLAG,
   REPOSITORY_FEATURES_HELP_URL,
+  REPOSITORY_METRICS_HELP_URL,
   REPOSITORY_TROUBLESHOOTING_URL,
+  SKIP_TELEMETRY_FLAG,
 } from '../constants'
 import { isCycliError, messageFromError } from '../utils/errors'
 
@@ -95,10 +97,7 @@ const validateProject = (toolbox: CycliToolbox) => {
   toolbox.context.path.packageRoot()
 }
 
-const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
-  toolbox.interactive.vspace()
-  toolbox.interactive.intro(' Welcome to npx setup-ci! ')
-
+const checkGit = async (toolbox: CycliToolbox) => {
   if (isGitDirty() == null) {
     throw CycliError('This is not a git repository.')
   }
@@ -132,8 +131,11 @@ const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
       }
     }
   }
+}
 
-  validateProject(toolbox)
+const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
+  toolbox.interactive.vspace()
+  toolbox.interactive.intro(' Welcome to npx setup-ci! ')
 
   const snapshotBefore = await toolbox.diff.gitStatus()
   toolbox.interactive.surveyStep(
@@ -180,8 +182,26 @@ const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
   }
 }
 
-const run = async (toolbox: GluegunToolbox) => {
+const run = async (toolbox: CycliToolbox) => {
+  toolbox.interactive.vspace()
+  toolbox.interactive.intro(` Welcome to npx ${CYCLI_COMMAND}! `)
+
+  if (!toolbox.options.skipTelemetry()) {
+    toolbox.interactive.surveyInfo(
+      [
+        `${CYCLI_COMMAND} collects anonymous usage data. You can disable it by using --skip-telemetry.`,
+        `Learn more at ${REPOSITORY_METRICS_HELP_URL}`,
+      ].join('\n'),
+      'dim'
+    )
+  }
+
+  let finishedWithUnexpectedError = false
+
   try {
+    await checkGit(toolbox as CycliToolbox)
+    validateProject(toolbox)
+
     await runReactNativeCiCli(toolbox as CycliToolbox)
   } catch (error: unknown) {
     toolbox.interactive.vspace()
@@ -193,12 +213,32 @@ const run = async (toolbox: GluegunToolbox) => {
         errMessage,
         `You can check ${REPOSITORY_TROUBLESHOOTING_URL} for potential solution.`,
       ].join('\n')
+
+      finishedWithUnexpectedError = true
     }
 
     toolbox.interactive.error(errMessage)
-  } finally {
-    process.exit()
   }
+
+  try {
+    if (!toolbox.options.skipTelemetry()) {
+      await toolbox.telemetry.sendLog({
+        version: toolbox.meta.version(),
+        firstUse: toolbox.context.isFirstUse(),
+        options: Object.fromEntries(
+          RECIPES.map((recipe) => [
+            recipe.meta.flag,
+            toolbox.context.selectedOptions.includes(recipe.meta.flag),
+          ])
+        ),
+        error: finishedWithUnexpectedError,
+      })
+    }
+  } catch (_: unknown) {
+    // ignore telemetry errors
+  }
+
+  process.exit()
 }
 
 const getFeatureOptions = (): Option[] => {
@@ -223,9 +263,13 @@ const command: CycliCommand = {
       description:
         'Run with preset. Combine with feature flags to specify generated workflows',
     },
+    {
+      flag: SKIP_TELEMETRY_FLAG,
+      description: 'Skip telemetry data collection',
+    },
   ],
   featureOptions: [...getFeatureOptions()],
-  run,
+  run: (toolbox: GluegunToolbox) => run(toolbox as CycliToolbox),
 }
 
 module.exports = command

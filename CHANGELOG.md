@@ -1,3 +1,12 @@
+# [0.6.0](https://github.com/software-mansion/setup-ci/compare/v0.5.0...v0.6.0) (2024-10-07)
+
+
+### Features
+
+* add telemetry ([#123](https://github.com/software-mansion/setup-ci/issues/123)) ([6ed7dbe](https://github.com/software-mansion/setup-ci/commit/6ed7dbeecbd3ab66c299dcc935757091554053a3))
+
+
+
 # [0.5.0](https://github.com/software-mansion/setup-ci/compare/v0.4.10...v0.5.0) (2024-09-23)
 
 
@@ -51,15 +60,6 @@
 ### Bug Fixes
 
 * add check read permissions to detox workflows ([#82](https://github.com/software-mansion/setup-ci/issues/82)) ([6aa5079](https://github.com/software-mansion/setup-ci/commit/6aa5079824fd0b5612b59150346ac0c6f564d564))
-
-
-
-## [0.4.7](https://github.com/software-mansion/setup-ci/compare/v0.4.6...v0.4.7) (2024-08-26)
-
-
-### Bug Fixes
-
-* add repository url ([621c19a](https://github.com/software-mansion/setup-ci/commit/621c19af3ac0fc63785b79f22c012ec4ae6bbb9b))
 
 
 
