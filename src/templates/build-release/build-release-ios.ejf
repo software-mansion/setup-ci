@@ -5,17 +5,12 @@ const install = {
   yarn: "yarn install --immutable",
   npm: "npm ci"
 }
-
-const build = {
-  yarn: `yarn ${(isMonorepo) ? `--cwd ${props.pathRelativeToRoot} ` : ""}build:release:ios`,
-  npm: `npm run build:release:ios ${(isMonorepo) ? `--prefix ${props.pathRelativeToRoot}` : ""}`
-}
 %>
 
 name: Build iOS Release App
 
 on:
-  pull_request: <%= (props.pathRelativeToRoot !== '.') ? `
+  pull_request: <%= (isMonorepo) ? `
     paths:
       - ${props.pathRelativeToRoot}/**` : "" %>
 
@@ -56,7 +51,9 @@ jobs:
           xcode-version: latest-stable
 
       - name: 🛠️ Build
-        run: <%= build[props.packageManager] %>
+        run: <%= props.packageManager %> run build:release:ios
+        <%= (isMonorepo) ?
+          `working-directory: ${props.pathRelativeToRoot}` : "" %>
 
       - name: 📁 Prepare cache folder 
         run: |

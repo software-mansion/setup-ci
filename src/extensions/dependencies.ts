@@ -1,16 +1,33 @@
 import { COLORS, CYCLI_COMMAND, REPOSITORY_ISSUES_URL } from '../constants'
-import { CycliToolbox, ProjectContext } from '../types'
+import { CycliToolbox, PackageManager, ProjectContext } from '../types'
 import { join, sep } from 'path'
 import { messageFromError } from '../utils/errors'
 
 module.exports = (toolbox: CycliToolbox) => {
-  const { packageManager } = toolbox
+  const { system } = toolbox
 
   const exists = (name: string): boolean =>
     Boolean(toolbox.projectConfig.packageJson().dependencies?.[name])
 
   const existsDev = (name: string): boolean =>
     Boolean(toolbox.projectConfig.packageJson().devDependencies?.[name])
+
+  const execInstall = async (
+    fullName: string,
+    packageManager: PackageManager,
+    dev: boolean
+  ) => {
+    const installCommand = (() => {
+      switch (packageManager) {
+        case 'npm':
+          return `npm install ${fullName}${dev ? ' --save-dev' : ''}`
+        case 'yarn':
+          return `yarn add ${fullName}${dev ? ' --dev' : ''}`
+      }
+    })()
+
+    await system.run(installCommand)
+  }
 
   const install = async (
     fullName: string,
@@ -24,10 +41,7 @@ module.exports = (toolbox: CycliToolbox) => {
     )
 
     try {
-      await packageManager.add(fullName, {
-        dev,
-        force: context.packageManager,
-      })
+      await execInstall(fullName, context.packageManager, dev)
     } catch (error: unknown) {
       spinner.stop()
 

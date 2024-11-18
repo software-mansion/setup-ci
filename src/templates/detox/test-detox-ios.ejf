@@ -5,17 +5,12 @@ const install = {
   yarn: "yarn install --immutable",
   npm: "npm ci"
 }
-
-const runTests = {
-  yarn: `yarn ${(isMonorepo) ? `--cwd ${props.pathRelativeToRoot} ` : ""}detox:test:ios`,
-  npm: `npm run detox:test:ios ${(isMonorepo) ? `--prefix ${props.pathRelativeToRoot}` : ""}`
-}
 %>
 
 name: Test Detox iOS
 
 on:
-  pull_request: <%= (props.pathRelativeToRoot !== '.') ? `
+  pull_request: <%= (isMonorepo) ? `
     paths:
       - ${props.pathRelativeToRoot}/**` : "" %>
 
@@ -66,4 +61,6 @@ jobs:
         run: mv ios-release-build ${props.pathRelativeToRoot}/ios-release-build` : "" %>
 
       - name: 📋 Run Detox tests
-        run: <%= runTests[props.packageManager] %>
+        run: <%= props.packageManager %> run detox:test:ios
+        <%= (isMonorepo) ?
+          `working-directory: ${props.pathRelativeToRoot}` : "" %>

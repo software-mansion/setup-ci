@@ -5,11 +5,6 @@ const install = {
   yarn: "yarn install --immutable",
   npm: "npm ci"
 }
-
-const run = {
-  yarn: `yarn ${(isMonorepo) ? `--cwd ${props.pathRelativeToRoot} ` : ""}prettier:check`,
-  npm: `npm run prettier:check ${(isMonorepo) ? `--prefix ${props.pathRelativeToRoot}` : ""}`
-}
 %>
 
 name: Prettier check
@@ -37,4 +32,6 @@ jobs:
         run: <%= install[props.packageManager] %>
 
       - name: ✨ Run Prettier check
-        run: <%= run[props.packageManager] %>
+        run: <%= props.packageManager %> run prettier:check
+        <%= (isMonorepo) ?
+          `working-directory: ${props.pathRelativeToRoot}` : "" %>

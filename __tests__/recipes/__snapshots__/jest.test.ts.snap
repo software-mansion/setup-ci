@@ -221,7 +221,8 @@ jobs:
         run: npm ci
 
       - name: 🎭 Run Jest
-        run: npm run test --prefix apps/expo-app
+        run: npm run test
+        working-directory: apps/expo-app
 "
 `;
 
@@ -291,7 +292,7 @@ jobs:
         run: yarn install --immutable
 
       - name: 🎭 Run Jest
-        run: yarn test
+        run: yarn run test
 "
 `;
 
@@ -376,6 +377,7 @@ jobs:
         run: yarn install --immutable
 
       - name: 🎭 Run Jest
-        run: yarn --cwd apps/expo-app test
+        run: yarn run test
+        working-directory: apps/expo-app
 "
 `;

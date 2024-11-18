@@ -55,4 +55,5 @@ jobs:
         with:
           profile: development
           branch: development
-          <%= (isMonorepo) ? `working-directory: ${props.pathRelativeToRoot}` : '' %>
+          <%= (isMonorepo) ? 
+            `working-directory: ${props.pathRelativeToRoot}` : '' %>

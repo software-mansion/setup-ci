@@ -219,7 +219,8 @@ jobs:
         run: npm ci
 
       - name: 🤓 Run ESLint
-        run: npm run lint --prefix apps/expo-app
+        run: npm run lint
+        working-directory: apps/expo-app
 "
 `;
 
@@ -299,7 +300,7 @@ jobs:
         run: yarn install --immutable
 
       - name: 🤓 Run ESLint
-        run: yarn lint
+        run: yarn run lint
 "
 `;
 
@@ -394,7 +395,8 @@ jobs:
         run: yarn install --immutable
 
       - name: 🤓 Run ESLint
-        run: yarn --cwd apps/expo-app lint
+        run: yarn run lint
+        working-directory: apps/expo-app
 "
 `;
 

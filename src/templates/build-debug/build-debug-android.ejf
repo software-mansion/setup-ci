@@ -5,11 +5,6 @@ const install = {
   yarn: "yarn install --immutable",
   npm: "npm ci"
 }
-
-const build = {
-  yarn: `yarn ${(isMonorepo) ? `--cwd ${props.pathRelativeToRoot} ` : ""}build:debug:android`,
-  npm: `npm run build:debug:android ${(isMonorepo) ? `--prefix ${props.pathRelativeToRoot}` : ""}`
-}
 %>
 
 name: Build Android Debug App
@@ -69,7 +64,9 @@ jobs:
         run: <%= install[props.packageManager] %>
 
       - name: 🛠️ Build
-        run: <%= build[props.packageManager] %>
+        run: <%= props.packageManager %> run build:debug:android
+        <%= (isMonorepo) ?
+          `working-directory: ${props.pathRelativeToRoot}` : "" %>
 
       - name: 📁 Prepare cache folder
         run: |

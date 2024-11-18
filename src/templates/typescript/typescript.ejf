@@ -5,17 +5,12 @@ const install = {
   yarn: "yarn install --immutable",
   npm: "npm ci"
 }
-
-const run = {
-  yarn: `yarn ${(isMonorepo) ? `--cwd ${props.pathRelativeToRoot} ` : ""}ts:check`,
-  npm: `npm run ts:check ${(isMonorepo) ? `--prefix ${props.pathRelativeToRoot}` : ""}`
-}
 %>
 
 name: Run Typescript
 
 on:
-  pull_request: <%= (props.pathRelativeToRoot !== '.') ? `
+  pull_request: <%= (isMonorepo) ? `
     paths:
       - ${props.pathRelativeToRoot}/**` : "" %>
 
@@ -37,4 +32,6 @@ jobs:
         run: <%= install[props.packageManager] %>
 
       - name: 🔍 Run Typescript check
-        run: <%= run[props.packageManager] %>
+        run: <%= props.packageManager %> run ts:check
+        <%= (isMonorepo) ?
+          `working-directory: ${props.pathRelativeToRoot}` : "" %>
