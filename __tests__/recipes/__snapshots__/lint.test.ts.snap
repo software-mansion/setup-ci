@@ -29,7 +29,7 @@ Object {
   "scripts": Object {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
-    "lint": "eslint \\"**/*.{js,jsx,ts,tsx}\\"",
+    "lint": "eslint '**/*.{js,jsx,ts,tsx}'",
     "start": "react-native start",
   },
   "version": "0.0.1",
@@ -93,7 +93,7 @@ Object {
   "scripts": Object {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
-    "lint": "eslint \\"**/*.{js,jsx,ts,tsx}\\"",
+    "lint": "eslint '**/*.{js,jsx,ts,tsx}'",
     "start": "react-native start",
   },
   "version": "0.0.1",
@@ -184,7 +184,7 @@ Object {
   "scripts": Object {
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "lint": "eslint \\"**/*.{js,jsx,ts,tsx}\\"",
+    "lint": "eslint '**/*.{js,jsx,ts,tsx}'",
     "reset-project": "node ./scripts/reset-project.js",
     "start": "expo start",
     "web": "expo start --web",
@@ -268,7 +268,7 @@ Object {
   "scripts": Object {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
-    "lint": "eslint \\"**/*.{js,jsx,ts,tsx}\\"",
+    "lint": "eslint '**/*.{js,jsx,ts,tsx}'",
     "start": "react-native start",
   },
   "version": "0.0.1",
@@ -359,7 +359,7 @@ Object {
   "scripts": Object {
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "lint": "eslint \\"**/*.{js,jsx,ts,tsx}\\"",
+    "lint": "eslint '**/*.{js,jsx,ts,tsx}'",
     "reset-project": "node ./scripts/reset-project.js",
     "start": "expo start",
     "web": "expo start --web",
@@ -443,7 +443,7 @@ Object {
   "scripts": Object {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
-    "lint": "eslint \\"**/*.{js,jsx,ts,tsx}\\"",
+    "lint": "eslint '**/*.{js,jsx,ts,tsx}'",
     "start": "react-native start",
   },
   "version": "0.0.1",
