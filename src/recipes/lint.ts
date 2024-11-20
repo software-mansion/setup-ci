@@ -25,7 +25,6 @@ const execute = async (
   // so we stick to ^8 for now.
   await toolbox.dependencies.addDev('eslint', context, { version: '^8' })
   await toolbox.dependencies.addDev('typescript', context)
-  await toolbox.dependencies.addDev('@react-native/eslint-config', context)
 
   const withPrettier =
     context.selectedOptions.includes(PRETTIER_FLAG) ||
@@ -37,20 +36,32 @@ const execute = async (
     await toolbox.dependencies.addDev('eslint-config-prettier', context)
   }
 
-  await toolbox.scripts.add('lint', 'eslint "**/*.{js,jsx,ts,tsx}"')
+  // We assume that if eslint-config-expo is present in package.json,
+  // ESLint is already configured using https://docs.expo.dev/guides/using-eslint/.
+  // Therefore we don't need to add @react-native/eslint-config, script nor configuration.
+  const isEslintConfiguredWithExpo =
+    toolbox.dependencies.existsDev('eslint-config-expo') ||
+    toolbox.dependencies.exists('eslint-config-expo')
 
-  if (!existsEslintConfiguration(toolbox)) {
-    await toolbox.template.generate({
-      template: join('lint', '.eslintrc.json.ejs'),
-      target: '.eslintrc.json',
-      props: {
-        withPrettier,
-      },
-    })
+  if (!isEslintConfiguredWithExpo) {
+    await toolbox.dependencies.addDev('@react-native/eslint-config', context)
+    await toolbox.dependencies.addDev('eslint-plugin-ft-flow', context)
 
-    toolbox.interactive.step(
-      'Created .eslintrc.json with default configuration.'
-    )
+    await toolbox.scripts.add('lint', "eslint '**/*.{js,jsx,ts,tsx}'")
+
+    if (!existsEslintConfiguration(toolbox)) {
+      await toolbox.template.generate({
+        template: join('lint', '.eslintrc.json.ejs'),
+        target: '.eslintrc.json',
+        props: {
+          withPrettier,
+        },
+      })
+
+      toolbox.interactive.step(
+        'Created .eslintrc.json with default configuration.'
+      )
+    }
   }
 
   await toolbox.workflows.generate(join('lint', 'lint.ejf'), context)
