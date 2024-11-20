@@ -172,11 +172,10 @@ Object {
   },
   "devDependencies": Object {
     "@babel/core": "",
-    "@react-native/eslint-config": "",
     "@types/react": "",
     "@types/react-test-renderer": "",
     "eslint": "",
-    "eslint-plugin-ft-flow": "",
+    "eslint-config-expo": "",
     "jest-expo": "",
     "react-test-renderer": "",
     "typescript": "",
@@ -229,16 +228,7 @@ jobs:
 
 exports[`lint recipe rn-setup-ci-npm-monorepo lint 3`] = `
 "{
-  \\"parserOptions\\": {
-    \\"ecmaVersion\\": \\"2020\\",
-    \\"sourceType\\": \\"module\\"
-  },
-  \\"extends\\": [\\"@react-native\\", \\"eslint:recommended\\"],
-  \\"env\\": {
-    \\"browser\\": true,
-    \\"node\\": true
-  },
-  \\"rules\\": {}
+  \\"extends\\": \\"expo\\"
 }
 "
 `;
@@ -350,11 +340,10 @@ Object {
   },
   "devDependencies": Object {
     "@babel/core": "",
-    "@react-native/eslint-config": "",
     "@types/react": "",
     "@types/react-test-renderer": "",
     "eslint": "",
-    "eslint-plugin-ft-flow": "",
+    "eslint-config-expo": "",
     "jest-expo": "",
     "react-test-renderer": "",
     "typescript": "",
@@ -407,16 +396,7 @@ jobs:
 
 exports[`lint recipe rn-setup-ci-yarn-monorepo lint 3`] = `
 "{
-  \\"parserOptions\\": {
-    \\"ecmaVersion\\": \\"2020\\",
-    \\"sourceType\\": \\"module\\"
-  },
-  \\"extends\\": [\\"@react-native\\", \\"eslint:recommended\\"],
-  \\"env\\": {
-    \\"browser\\": true,
-    \\"node\\": true
-  },
-  \\"rules\\": {}
+  \\"extends\\": \\"expo\\"
 }
 "
 `;
