@@ -5,17 +5,12 @@ const install = {
   yarn: "yarn install --immutable",
   npm: "npm ci"
 }
-
-const run = {
-  yarn: `yarn ${(isMonorepo) ? `--cwd ${props.pathRelativeToRoot} ` : ""}lint`,
-  npm: `npm run lint ${(isMonorepo) ? `--prefix ${props.pathRelativeToRoot}` : ""}`
-}
 %>
 
 name: Check ESLint
 
 on:
-  pull_request: <%= (props.pathRelativeToRoot !== '.') ? `
+  pull_request: <%= (isMonorepo) ? `
     paths:
       - ${props.pathRelativeToRoot}/**` : "" %>
  
@@ -37,4 +32,6 @@ jobs:
         run: <%= install[props.packageManager] %>
 
       - name: 🤓 Run ESLint
-        run: <%= run[props.packageManager] %>
+        run: <%= props.packageManager %> run lint
+        <%= (isMonorepo) ?
+          `working-directory: ${props.pathRelativeToRoot}` : "" %>

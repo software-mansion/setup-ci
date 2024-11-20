@@ -5,11 +5,6 @@ const install = {
   yarn: "yarn install --immutable",
   npm: "npm ci"
 }
-
-const build = {
-  yarn: `yarn ${(isMonorepo) ? `--cwd ${props.pathRelativeToRoot} ` : ""}build:release:android`,
-  npm: `npm run build:release:android ${(isMonorepo) ? `--prefix ${props.pathRelativeToRoot}` : ""}`
-}
 %>
 
 name: Build Android Release App
@@ -70,7 +65,9 @@ jobs:
           gradle-version: 8.8
 
       - name: 🛠️ Build
-        run: <%= build[props.packageManager] %>
+        run: <%= props.packageManager %> run build:release:android
+        <%= (isMonorepo) ?
+          `working-directory: ${props.pathRelativeToRoot}` : "" %>
 
       - name: 📁 Prepare cache folder 
         run: |

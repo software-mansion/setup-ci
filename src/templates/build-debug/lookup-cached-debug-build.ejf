@@ -6,10 +6,7 @@ const install = {
   npm: "npm ci"
 }
 
-const runFingerprint = {
-  yarn: `yarn ${(isMonorepo) ? `--cwd ${props.pathRelativeToRoot} ` : ""}` + 'fingerprint:${{ inputs.platform }}',
-  npm: 'npm run fingerprint:${{ inputs.platform }}' + ((isMonorepo) ? `--prefix ${props.pathRelativeToRoot}` : "")
-}
+const fingerprintScript = 'fingerprint:${{ inputs.platform }}'
 %>
 
 name: Lookup Cached Debug Build
@@ -61,10 +58,12 @@ jobs:
       - name: 🧬 Calculate fingerprint
         id: fingerprint
         run: |
-          FINGERPRINT=$(<%= runFingerprint[props.packageManager] %> | grep '^fingerprint:' | cut -d ' ' -f2-)
+          FINGERPRINT=$(<%= props.packageManager %> run <%= fingerprintScript %> | grep '^fingerprint:' | cut -d ' ' -f2-)
           echo "Fingerprint for ${{ inputs.platform }}: $FINGERPRINT"
           echo "FINGERPRINT=$FINGERPRINT" >> $GITHUB_ENV
           echo "fingerprint=$FINGERPRINT" >> $GITHUB_OUTPUT
+        <%= (isMonorepo) ?
+          `working-directory: ${props.pathRelativeToRoot}` : "" %>
 
       - name: 🐛 Try to restore build from cache
         id: debug-build-restore

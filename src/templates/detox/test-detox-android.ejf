@@ -5,17 +5,12 @@ const install = {
   yarn: "yarn install --immutable",
   npm: "npm ci"
 }
-
-const runTests = {
-  yarn: `yarn ${(isMonorepo) ? `--cwd ${props.pathRelativeToRoot} ` : ""}detox:test:android`,
-  npm: `npm run detox:test:android ${(isMonorepo) ? `--prefix ${props.pathRelativeToRoot}` : ""}`
-}
 %>
 
 name: Test Detox Android
 
 on:
-  pull_request: <%= (props.pathRelativeToRoot !== '.') ? `
+  pull_request: <%= (isMonorepo) ? `
     paths:
       - ${props.pathRelativeToRoot}/**` : "" %>
 
@@ -99,4 +94,6 @@ jobs:
           emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -camera-front none
           avd-name: e2e_emulator
           arch: x86_64
-          script: <%= runTests[props.packageManager] %>
+          script: <%= props.packageManager %> run detox:test:android
+          <%= (isMonorepo) ?
+            `working-directory: ${props.pathRelativeToRoot}` : "" %>

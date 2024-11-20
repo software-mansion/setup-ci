@@ -216,7 +216,8 @@ jobs:
         run: npm ci
 
       - name: ✨ Run Prettier check
-        run: npm run prettier:check --prefix apps/expo-app
+        run: npm run prettier:check
+        working-directory: apps/expo-app
 "
 `;
 
@@ -295,7 +296,7 @@ jobs:
         run: yarn install --immutable
 
       - name: ✨ Run Prettier check
-        run: yarn prettier:check
+        run: yarn run prettier:check
 "
 `;
 
@@ -389,7 +390,8 @@ jobs:
         run: yarn install --immutable
 
       - name: ✨ Run Prettier check
-        run: yarn --cwd apps/expo-app prettier:check
+        run: yarn run prettier:check
+        working-directory: apps/expo-app
 "
 `;
 

@@ -1107,7 +1107,8 @@ jobs:
           gradle-version: 8.8
 
       - name: 🛠️ Build
-        run: npm run build:release:android --prefix apps/expo-app
+        run: npm run build:release:android
+        working-directory: apps/expo-app
 
       - name: 📁 Prepare cache folder
         run: |
@@ -1169,7 +1170,8 @@ jobs:
           xcode-version: latest-stable
 
       - name: 🛠️ Build
-        run: npm run build:release:ios --prefix apps/expo-app
+        run: npm run build:release:ios
+        working-directory: apps/expo-app
 
       - name: 📁 Prepare cache folder
         run: |
@@ -1272,7 +1274,8 @@ jobs:
           emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -camera-front none
           avd-name: e2e_emulator
           arch: x86_64
-          script: npm run detox:test:android --prefix apps/expo-app
+          script: npm run detox:test:android
+          working-directory: apps/expo-app
 "
 `;
 
@@ -1330,7 +1333,8 @@ jobs:
         run: mv ios-release-build apps/expo-app/ios-release-build
 
       - name: 📋 Run Detox tests
-        run: npm run detox:test:ios --prefix apps/expo-app
+        run: npm run detox:test:ios
+        working-directory: apps/expo-app
 "
 `;
 
@@ -1527,7 +1531,7 @@ jobs:
           gradle-version: 8.8
 
       - name: 🛠️ Build
-        run: yarn build:release:android
+        run: yarn run build:release:android
 
       - name: 📁 Prepare cache folder
         run: |
@@ -1587,7 +1591,7 @@ jobs:
           xcode-version: latest-stable
 
       - name: 🛠️ Build
-        run: yarn build:release:ios
+        run: yarn run build:release:ios
 
       - name: 📁 Prepare cache folder
         run: |
@@ -1685,7 +1689,7 @@ jobs:
           emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -camera-front none
           avd-name: e2e_emulator
           arch: x86_64
-          script: yarn detox:test:android
+          script: yarn run detox:test:android
 "
 `;
 
@@ -1738,7 +1742,7 @@ jobs:
           key: ios-release-build-\${{ github.event.pull_request.head.sha }}
 
       - name: 📋 Run Detox tests
-        run: yarn detox:test:ios
+        run: yarn run detox:test:ios
 "
 `;
 
@@ -1994,7 +1998,8 @@ jobs:
           gradle-version: 8.8
 
       - name: 🛠️ Build
-        run: yarn --cwd apps/expo-app build:release:android
+        run: yarn run build:release:android
+        working-directory: apps/expo-app
 
       - name: 📁 Prepare cache folder
         run: |
@@ -2056,7 +2061,8 @@ jobs:
           xcode-version: latest-stable
 
       - name: 🛠️ Build
-        run: yarn --cwd apps/expo-app build:release:ios
+        run: yarn run build:release:ios
+        working-directory: apps/expo-app
 
       - name: 📁 Prepare cache folder
         run: |
@@ -2159,7 +2165,8 @@ jobs:
           emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -camera-front none
           avd-name: e2e_emulator
           arch: x86_64
-          script: yarn --cwd apps/expo-app detox:test:android
+          script: yarn run detox:test:android
+          working-directory: apps/expo-app
 "
 `;
 
@@ -2217,6 +2224,7 @@ jobs:
         run: mv ios-release-build apps/expo-app/ios-release-build
 
       - name: 📋 Run Detox tests
-        run: yarn --cwd apps/expo-app detox:test:ios
+        run: yarn run detox:test:ios
+        working-directory: apps/expo-app
 "
 `;
