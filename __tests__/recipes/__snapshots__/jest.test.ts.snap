@@ -139,6 +139,81 @@ jobs:
 "
 `;
 
+exports[`jest recipe rn-setup-ci-create-expo-stack-pnpm jest 1`] = `
+Object {
+  "dependencies": Object {
+    "react": "",
+    "react-native": "",
+  },
+  "devDependencies": Object {
+    "@babel/core": "",
+    "@babel/preset-env": "",
+    "@babel/runtime": "",
+    "@react-native/babel-preset": "",
+    "@react-native/metro-config": "",
+    "@react-native/typescript-config": "",
+    "@types/react": "",
+    "@types/react-test-renderer": "",
+    "jest": "",
+    "react-test-renderer": "",
+  },
+  "engines": Object {
+    "node": ">=18",
+  },
+  "name": "RnSetupCiYarnFlat",
+  "packageManager": "yarn@3.6.4",
+  "private": true,
+  "scripts": Object {
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
+    "start": "react-native start",
+    "test": "jest --passWithNoTests",
+  },
+  "version": "0.0.1",
+}
+`;
+
+exports[`jest recipe rn-setup-ci-create-expo-stack-pnpm jest 2`] = `
+"{
+  \\"preset\\": \\"react-native\\",
+  \\"modulePathIgnorePatterns\\": [\\"e2e\\"]
+}
+"
+`;
+
+exports[`jest recipe rn-setup-ci-create-expo-stack-pnpm jest 3`] = `
+"name: Run Jest tests
+
+on:
+  pull_request:
+
+jobs:
+  jest:
+    name: Jest
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🏗 Setup repo
+        uses: actions/checkout@v4
+
+      - name: 🐿️ Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: 🌿 Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'pnpm'
+
+      - name: 📦 Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: 🎭 Run Jest
+        run: pnpm run test
+"
+`;
+
 exports[`jest recipe rn-setup-ci-npm-flat jest 1`] = `
 Object {
   "dependencies": Object {

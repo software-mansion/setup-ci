@@ -23,6 +23,8 @@ jobs:
       - name: 🏗 Checkout repository
         uses: actions/checkout@v4
 
+      <%- include('../common/managerSetupStep', { props }); %>
+
       <%- include('../common/runtimeSetupStep', { props }); %>
 
       - name: 📦 Install dependencies

@@ -12,7 +12,9 @@ jobs:
     steps:
       - name: 🏗 Setup repo
         uses: actions/checkout@v4
-  
+
+      <%- include('../common/managerSetupStep', { props }); %>
+
       <%- include('../common/runtimeSetupStep', { props }); %>
 
       - name: 📦 Install dependencies

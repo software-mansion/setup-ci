@@ -25,6 +25,8 @@ module.exports = (toolbox: CycliToolbox) => {
           return `yarn add ${fullName}${dev ? ' --dev' : ''}`
         case 'bun':
           return `bun add ${fullName}${dev ? ' --dev' : ''}`
+        case 'pnpm':
+          return `pnpm add ${fullName}${dev ? ' --save-dev' : ''}`
       }
     })()
 
@@ -51,7 +53,7 @@ module.exports = (toolbox: CycliToolbox) => {
       const logFilePath = `${sep}${join(
         'tmp',
         `setup-ci-error.${Date.now()}.log`
-      )}`
+      )} `
       toolbox.filesystem.write(logFilePath, errorMessage)
 
       toolbox.interactive.vspace()
