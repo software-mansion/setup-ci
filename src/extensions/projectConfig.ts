@@ -9,6 +9,7 @@ import { join } from 'path'
 
 const APP_JSON_FILES = ['app.json', 'app.config.json']
 const DEFAULT_NODE_VERSION = 'v20.17.0'
+const DEFAULT_BUN_VERSION = '1.1.30'
 
 module.exports = (toolbox: CycliToolbox) => {
   const { filesystem } = toolbox
@@ -81,6 +82,46 @@ module.exports = (toolbox: CycliToolbox) => {
     return file
   }
 
+  const bunVersionFileInDirectory = (dir: string): string | undefined => {
+    if (filesystem.exists(join(dir, '.bun-version'))) {
+      return join(dir, '.bun-version')
+    }
+    return undefined
+  }
+
+  const bunVersionFile = (context: ProjectContext): string => {
+    const { repoRoot, packageRoot } = context.path
+
+    // First, we look for bun version in package root.
+    // If not found, we look for it in repository root (for monorepo support).
+    // If still not found, create .bun-version in package root with default node version (v1.1.30).
+    const file =
+      bunVersionFileInDirectory(packageRoot) ??
+      bunVersionFileInDirectory(repoRoot)
+
+    if (!file) {
+      filesystem.write(
+        join(packageRoot, '.bun-version'),
+        DEFAULT_BUN_VERSION + '\n'
+      )
+
+      toolbox.interactive.warning(
+        `No bun version file found. Created .bun-version with default bun version (${DEFAULT_BUN_VERSION}).`
+      )
+
+      toolbox.furtherActions.push(
+        [
+          `Couldn't retrieve your project's bun version. Generated .bun-version file with default bun version (${DEFAULT_BUN_VERSION}).`,
+          'Please check if it matches your project and update if necessary.',
+        ].join(' ')
+      )
+
+      return join(packageRoot, '.bun-version')
+    }
+
+    return file
+  }
+
   const isExpo = (): boolean => {
     const appConfig = appJson()
 
@@ -126,6 +167,7 @@ module.exports = (toolbox: CycliToolbox) => {
     appJsonFile,
     appJson,
     nodeVersionFile,
+    bunVersionFile,
     isExpo,
     getName,
     getAppId,
@@ -138,6 +180,7 @@ export interface ProjectConfigExtension {
     appJsonFile: () => string | undefined
     appJson: () => AppJson | undefined
     nodeVersionFile: (context: ProjectContext) => string
+    bunVersionFile: (context: ProjectContext) => string
     isExpo: () => boolean
     getName: () => string
     getAppId: () => string | undefined

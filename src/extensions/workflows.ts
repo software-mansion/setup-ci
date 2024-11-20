@@ -24,15 +24,29 @@ module.exports = (toolbox: CycliToolbox) => {
       context.path.packageRoot
     )
 
-    const nodeVersionFile = context.path.relFromRepoRoot(
-      toolbox.projectConfig.nodeVersionFile(context)
-    )
+    const isMonorepo = pathRelativeToRoot !== '.'
+
+    const nodeVersionFile =
+      context.packageManager !== 'bun'
+        ? context.path.relFromRepoRoot(
+            toolbox.projectConfig.nodeVersionFile(context)
+          )
+        : undefined
+
+    const bunVersionFile =
+      context.packageManager === 'bun'
+        ? context.path.relFromRepoRoot(
+            toolbox.projectConfig.bunVersionFile(context)
+          )
+        : undefined
 
     const workflowString = await toolbox.template.generate({
       template,
       props: {
+        isMonorepo,
         packageManager: context.packageManager,
         nodeVersionFile,
+        bunVersionFile,
         pathRelativeToRoot,
         ...props,
       },

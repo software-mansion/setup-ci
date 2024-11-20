@@ -1,16 +1,7 @@
-<%
-const isMonorepo = props.pathRelativeToRoot !== '.'
-
-const install = {
-  yarn: "yarn install --immutable",
-  npm: "npm ci"
-}
-%>
-
 name: Build Android Release App
 
 on:
-  pull_request: <%= (isMonorepo) ? `
+  pull_request: <%= (props.isMonorepo) ? `
     paths:
       - ${props.pathRelativeToRoot}/**` : "" %>
 
@@ -44,14 +35,10 @@ jobs:
       - name: 🏗 Checkout repository
         uses: actions/checkout@v4
 
-      - name: 🌿 Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: '<%= props.nodeVersionFile %>'
-          cache: '<%= props.packageManager %>'
+      <%- include('../common/runtimeSetupStep', { props }); %>
 
       - name: 📦 Install dependencies
-        run: <%= install[props.packageManager] %>
+        run: <%- include('../common/installCommand', { props }); %>
 
       - name: ☕ Set up JDK 17
         uses: actions/setup-java@v4
@@ -66,7 +53,7 @@ jobs:
 
       - name: 🛠️ Build
         run: <%= props.packageManager %> run build:release:android
-        <%= (isMonorepo) ?
+        <%= (props.isMonorepo) ?
           `working-directory: ${props.pathRelativeToRoot}` : "" %>
 
       - name: 📁 Prepare cache folder 

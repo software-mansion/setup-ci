@@ -1,12 +1,3 @@
-<%
-const isMonorepo = props.pathRelativeToRoot !== '.'
-
-const install = {
-  yarn: "yarn install --immutable",
-  npm: "npm ci"
-}
-%>
-
 name: Build iOS Debug App
 
 on:
@@ -35,11 +26,7 @@ jobs:
       - name: 🏗 Checkout repository
         uses: actions/checkout@v4
 
-      - name: 🌿 Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: '<%= props.nodeVersionFile %>'
-          cache: '<%= props.packageManager %>'
+      <%- include('../common/runtimeSetupStep', { props }); %>
 
       - name: 🔨 Use latest stable Xcode
         uses: maxim-lobanov/setup-xcode@v1
@@ -47,11 +34,11 @@ jobs:
           xcode-version: latest-stable
 
       - name: 📦 Install dependencies
-        run: <%= install[props.packageManager] %>
+        run: <%- include('../common/installCommand', { props }); %>
 
       - name: 🛠️ Build
         run: <%= props.packageManager %> run build:debug:ios
-        <%= (isMonorepo) ?
+        <%= (props.isMonorepo) ?
           `working-directory: ${props.pathRelativeToRoot}` : "" %>
 
       - name: 📁 Prepare cache folder

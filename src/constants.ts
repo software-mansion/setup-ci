@@ -49,6 +49,7 @@ export const SKIP_TELEMETRY_FLAG = 'skip-telemetry'
 export const LOCK_FILE_TO_MANAGER = {
   ['yarn.lock']: 'yarn',
   ['package-lock.json']: 'npm',
+  ['bun.lockb']: 'bun',
 } as const
 
 const REPOSITORY_URL = 'https://github.com/software-mansion/setup-ci'

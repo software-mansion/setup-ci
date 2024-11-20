@@ -1,16 +1,7 @@
-<%
-const isMonorepo = props.pathRelativeToRoot !== '.'
-
-const install = {
-  yarn: "yarn install --immutable",
-  npm: "npm ci"
-}
-%>
-
 name: Check ESLint
 
 on:
-  pull_request: <%= (isMonorepo) ? `
+  pull_request: <%= (props.isMonorepo) ? `
     paths:
       - ${props.pathRelativeToRoot}/**` : "" %>
  
@@ -21,17 +12,13 @@ jobs:
     steps:
       - name: 🏗 Setup repo
         uses: actions/checkout@v4
-
-      - name: 🌿 Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: '<%= props.nodeVersionFile %>'
-          cache: '<%= props.packageManager %>'
+  
+      <%- include('../common/runtimeSetupStep', { props }); %>
 
       - name: 📦 Install dependencies
-        run: <%= install[props.packageManager] %>
+        run: <%- include('../common/installCommand', { props }); %>
 
       - name: 🤓 Run ESLint
         run: <%= props.packageManager %> run lint
-        <%= (isMonorepo) ?
+        <%= (props.isMonorepo) ?
           `working-directory: ${props.pathRelativeToRoot}` : "" %>

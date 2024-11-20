@@ -78,6 +78,83 @@ jobs:
 "
 `;
 
+exports[`typescript check recipe rn-setup-ci-create-expo-stack-bun typescript check 1`] = `
+Object {
+  "dependencies": Object {
+    "react": "",
+    "react-native": "",
+  },
+  "devDependencies": Object {
+    "@babel/core": "",
+    "@babel/preset-env": "",
+    "@babel/runtime": "",
+    "@react-native/babel-preset": "",
+    "@react-native/metro-config": "",
+    "@react-native/typescript-config": "",
+    "@types/react": "",
+    "@types/react-test-renderer": "",
+    "react-test-renderer": "",
+    "typescript": "",
+  },
+  "engines": Object {
+    "node": ">=18",
+  },
+  "name": "RnSetupCiYarnFlat",
+  "packageManager": "yarn@3.6.4",
+  "private": true,
+  "scripts": Object {
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
+    "start": "react-native start",
+    "ts:check": "tsc -p . --noEmit",
+  },
+  "version": "0.0.1",
+}
+`;
+
+exports[`typescript check recipe rn-setup-ci-create-expo-stack-bun typescript check 2`] = `
+"{
+  \\"extends\\": \\"expo/tsconfig.base\\",
+  \\"compilerOptions\\": {
+    \\"strict\\": true,
+
+    \\"baseUrl\\": \\".\\",
+    \\"paths\\": {
+      \\"~/*\\": [\\"*\\"]
+    }
+  },
+  \\"include\\": [\\"**/*.ts\\", \\"**/*.tsx\\", \\".expo/types/**/*.ts\\", \\"expo-env.d.ts\\"]
+}
+"
+`;
+
+exports[`typescript check recipe rn-setup-ci-create-expo-stack-bun typescript check 3`] = `
+"name: Run Typescript
+
+on:
+  pull_request:
+
+jobs:
+  typescript-check:
+    name: Typescript check
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🏗 Setup repo
+        uses: actions/checkout@v4
+
+      - name: 🥟 Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: '.bun-version'
+
+      - name: 📦 Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: 🔍 Run Typescript check
+        run: bun run ts:check
+"
+`;
+
 exports[`typescript check recipe rn-setup-ci-npm-flat typescript check 1`] = `
 Object {
   "dependencies": Object {

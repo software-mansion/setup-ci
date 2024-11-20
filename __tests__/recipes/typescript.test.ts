@@ -20,6 +20,7 @@ describe('typescript check recipe', () => {
     'rn-setup-ci-yarn-monorepo',
     'rn-setup-ci-npm-monorepo',
     'rn-setup-ci-create-expo-stack',
+    'rn-setup-ci-create-expo-stack-bun',
   ]
 
   for (const projectName of PROJECTS) {

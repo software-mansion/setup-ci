@@ -1,16 +1,7 @@
-<%
-const isMonorepo = props.pathRelativeToRoot !== '.'
-
-const install = {
-  yarn: "yarn install --immutable",
-  npm: "npm ci"
-}
-%>
-
 name: Test Detox iOS
 
 on:
-  pull_request: <%= (isMonorepo) ? `
+  pull_request: <%= (props.isMonorepo) ? `
     paths:
       - ${props.pathRelativeToRoot}/**` : "" %>
 
@@ -32,14 +23,10 @@ jobs:
       - name: 🏗 Checkout repository
         uses: actions/checkout@v4
 
-      - name: 🌿 Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: '<%= props.nodeVersionFile %>'
-          cache: '<%= props.packageManager %>'
+      <%- include('../common/runtimeSetupStep', { props }); %>
 
       - name: 📦 Install dependencies
-        run: <%= install[props.packageManager] %>
+        run: <%- include('../common/installCommand', { props }); %>
 
       - name: 📦 Install macOS dependencies
         run: |
@@ -56,11 +43,11 @@ jobs:
           path: ios-release-build/
           key: ios-release-build-${{ github.event.pull_request.head.sha }}
 
-      <%= (isMonorepo) ?
+      <%= (props.isMonorepo) ?
      `- name: 📁 Move build to app root directory
         run: mv ios-release-build ${props.pathRelativeToRoot}/ios-release-build` : "" %>
 
       - name: 📋 Run Detox tests
         run: <%= props.packageManager %> run detox:test:ios
-        <%= (isMonorepo) ?
+        <%= (props.isMonorepo) ?
           `working-directory: ${props.pathRelativeToRoot}` : "" %>
