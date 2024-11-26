@@ -128,7 +128,7 @@ export interface ExpoExtension {
     prebuild: (
       context: ProjectContext,
       { cleanAfter }: { cleanAfter: boolean }
-    ) => void
+    ) => Promise<void>
     eas: {
       login: () => Promise<void>
       whoami: () => string | undefined
