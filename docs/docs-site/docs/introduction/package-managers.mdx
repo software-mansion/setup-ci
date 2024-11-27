@@ -4,11 +4,11 @@ sidebar_position: 3
 
 # Package Managers
 
-SCI will automatically detect your package manager based on the presence of a `yarn.lock` or `package-lock.json` file in the root of your repository.
+SCI will automatically detect your package manager based on the presence of a `yarn.lock`, `package-lock.json`, `pnpm-lock.yaml` or `bun.lockb` file in the root of your repository.
 This step is crucial to ensure that dependencies are installed properly and generated workflows work as expected.
 
 :::caution
-In case both `yarn.lock` and `package-lock.json` are detected, the script will default to one of them with undefined priority.
+In case more than one lock file is detected, the script will default to one of them with undefined priority.
 :::
 
 ## Supported package managers
@@ -17,5 +17,5 @@ In case both `yarn.lock` and `package-lock.json` are detected, the script will d
 | --------------- | ---------------- |
 | yarn            | ✅ full support  |
 | npm             | ✅ full support  |
-| pnpm            | ❌ not supported |
-| bun             | ❌ not supported |
+| pnpm            | ✅ full support  |
+| bun             | ✅ full support  |
