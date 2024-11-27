@@ -1,16 +1,7 @@
-<%
-const isMonorepo = props.pathRelativeToRoot !== '.'
-
-const install = {
-  yarn: "yarn install --immutable",
-  npm: "npm ci"
-}
-%>
-
 name: Preview with EAS
 
 on:
-  pull_request: <%= (isMonorepo) ? `
+pull_request: <%= (props.isMonorepo) ? `
     paths:
       - ${props.pathRelativeToRoot}/**` : "" %>
 
@@ -35,11 +26,7 @@ jobs:
       - name: 🏗 Setup repo
         uses: actions/checkout@v4
 
-      - name: 🌿 Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: '<%= props.nodeVersionFile %>'
-          cache: '<%= props.packageManager %>'
+      <%- include('../common/runtimeSetupStep', { props }); %>
 
       - name: Λ Setup EAS
         uses: expo/expo-github-action@v8
@@ -48,12 +35,12 @@ jobs:
           token: ${{ secrets.EXPO_TOKEN }}
 
       - name: 📦 Install dependencies
-        run: <%= install[props.packageManager] %>
+        run: <%- include('../common/installCommand', { props }); %>
 
       - name: 🚀 Create Preview with EAS Build and Update
         uses: expo/expo-github-action/continuous-deploy-fingerprint@main
         with:
           profile: development
           branch: development
-          <%= (isMonorepo) ? 
+          <%= (props.isMonorepo) ? 
             `working-directory: ${props.pathRelativeToRoot}` : '' %>

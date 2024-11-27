@@ -63,6 +63,68 @@ jobs:
 "
 `;
 
+exports[`prettier check recipe rn-setup-ci-create-expo-stack-bun prettier check 1`] = `
+Object {
+  "dependencies": Object {
+    "react": "",
+    "react-native": "",
+  },
+  "devDependencies": Object {
+    "@babel/core": "",
+    "@babel/preset-env": "",
+    "@babel/runtime": "",
+    "@react-native/babel-preset": "",
+    "@react-native/metro-config": "",
+    "@react-native/typescript-config": "",
+    "@types/react": "",
+    "@types/react-test-renderer": "",
+    "prettier": "",
+    "react-test-renderer": "",
+  },
+  "engines": Object {
+    "node": ">=18",
+  },
+  "name": "RnSetupCiYarnFlat",
+  "packageManager": "yarn@3.6.4",
+  "private": true,
+  "scripts": Object {
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
+    "prettier:check": "prettier --check \\"**/*.{ts,tsx,js,jsx,json,css,scss,md}\\"",
+    "prettier:write": "prettier --write \\"**/*.{ts,tsx,js,jsx,json,css,scss,md}\\"",
+    "start": "react-native start",
+  },
+  "version": "0.0.1",
+}
+`;
+
+exports[`prettier check recipe rn-setup-ci-create-expo-stack-bun prettier check 2`] = `
+"name: Prettier check
+
+on:
+  pull_request:
+
+jobs:
+  prettier-check:
+    name: Prettier check
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🏗 Setup repo
+        uses: actions/checkout@v4
+
+      - name: 🥟 Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: '.bun-version'
+
+      - name: 📦 Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: ✨ Run Prettier check
+        run: bun run prettier:check
+"
+`;
+
 exports[`prettier check recipe rn-setup-ci-npm-flat prettier check 1`] = `
 Object {
   "dependencies": Object {
