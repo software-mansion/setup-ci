@@ -10,13 +10,19 @@ const addDetoxExpoPlugin = async (toolbox: CycliToolbox) => {
   const currentExpoPlugins =
     toolbox.projectConfig.appJson()?.expo?.plugins || []
 
-  const patch = {
-    expo: {
-      plugins: [...currentExpoPlugins, DETOX_EXPO_PLUGIN],
-    },
-  }
+  const isDetoxExpoPluginAdded =
+    currentExpoPlugins.includes(DETOX_EXPO_PLUGIN) ||
+    toolbox.projectConfig.appJs()?.includes(DETOX_EXPO_PLUGIN)
 
-  await toolbox.projectConfig.patchAppConfig(patch)
+  if (!isDetoxExpoPluginAdded) {
+    const patch = {
+      expo: {
+        plugins: [...currentExpoPlugins, DETOX_EXPO_PLUGIN],
+      },
+    }
+
+    await toolbox.projectConfig.patchAppConfig(patch)
+  }
 }
 
 const execute = async (toolbox: CycliToolbox, context: ProjectContext) => {

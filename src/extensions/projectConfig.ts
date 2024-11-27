@@ -240,6 +240,7 @@ module.exports = (toolbox: CycliToolbox) => {
     packageJson,
     appJsonFile,
     appJson,
+    appJs,
     patchAppConfig,
     nodeVersionFile,
     isExpo,
@@ -254,6 +255,7 @@ export interface ProjectConfigExtension {
     packageJson: () => PackageJson
     appJsonFile: () => string | undefined
     appJson: () => AppJson | undefined
+    appJs: () => string | undefined
     patchAppConfig: (
       patch: Record<string, unknown>,
       allowChangeAfterScript?: boolean
