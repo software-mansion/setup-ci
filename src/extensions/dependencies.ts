@@ -53,7 +53,7 @@ module.exports = (toolbox: CycliToolbox) => {
       const logFilePath = `${sep}${join(
         'tmp',
         `setup-ci-error.${Date.now()}.log`
-      )} `
+      )}`
       toolbox.filesystem.write(logFilePath, errorMessage)
 
       toolbox.interactive.vspace()
