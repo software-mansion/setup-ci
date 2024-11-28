@@ -11,6 +11,7 @@ import sequentialPromiseMap from '../utils/sequentialPromiseMap'
 import { CycliError, CycliRecipe, CycliToolbox, ProjectContext } from '../types'
 import intersection from 'lodash/intersection'
 import {
+  COLORS,
   CYCLI_COMMAND,
   HELP_FLAG,
   PRESET_FLAG,
@@ -20,6 +21,8 @@ import {
   SKIP_TELEMETRY_FLAG,
 } from '../constants'
 import { isCycliError, messageFromError } from '../utils/errors'
+
+const FEEDBACK_SURVEY_URL = 'https://forms.gle/NYoPyPxnVzGheHcw6'
 
 const SKIP_GIT_CHECK_FLAG = 'skip-git-check'
 
@@ -141,6 +144,19 @@ const runReactNativeCiCli = async (
       `Next time you can specify a preset to reproduce this run using npx ${CYCLI_COMMAND} --${PRESET_FLAG} ${usedFlags}.`
     )
   }
+
+  toolbox.interactive.vspace()
+
+  toolbox.interactive.info(
+    [
+      `Thank you for using ${COLORS.cyan('setup-ci')} 💙`,
+      "We'd love to hear your feedback to make it even better.",
+      'Please take a moment to fill out our survey:\n',
+      `\t → ${FEEDBACK_SURVEY_URL}\n`,
+      'Your input is greatly appreciated! 🙏',
+    ].join('\n'),
+    'green'
+  )
 }
 
 const checkGit = async (toolbox: CycliToolbox) => {
