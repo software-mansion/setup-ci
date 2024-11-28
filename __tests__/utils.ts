@@ -16,6 +16,7 @@ const INSTALL_DEPENDENCIES_COMMAND = {
   yarn: 'yarn',
   npm: 'npm i',
   bun: 'bun install',
+  pnpm: 'pnpm install',
 }
 
 export const TEST_PROJECTS = {
@@ -55,6 +56,16 @@ export const TEST_PROJECTS = {
   },
   ['rn-setup-ci-create-expo-stack-bun']: {
     packageManager: 'bun',
+    repoRoot: PATH_TO_TEST_PROJECT,
+    appRoot: PATH_TO_TEST_PROJECT,
+    workflowNamePrefix: '',
+    existingConfig: {
+      eslint: 'package.json',
+      prettier: 'prettier.config.js',
+    },
+  },
+  ['rn-setup-ci-create-expo-stack-pnpm']: {
+    packageManager: 'pnpm',
     repoRoot: PATH_TO_TEST_PROJECT,
     appRoot: PATH_TO_TEST_PROJECT,
     workflowNamePrefix: '',

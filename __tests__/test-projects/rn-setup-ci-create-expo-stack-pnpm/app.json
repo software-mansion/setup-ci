@@ -1,0 +1,43 @@
+{
+  "expo": {
+    "name": "rn-setup-ci-create-expo-stack-pnpm",
+    "slug": "rn-setup-ci-create-expo-stack-pnpm",
+    "version": "1.0.0",
+
+    "scheme": "rn-setup-ci-create-expo-stack-pnpm",
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": ["expo-router"],
+    "experiments": {
+      "typedRoutes": true,
+
+      "tsconfigPaths": true
+    },
+
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+
+    "userInterfaceStyle": "light",
+
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.kmichno.rnsetupcicreateexpostackpnpm"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.kmichno.rnsetupcicreateexpostackpnpm"
+    }
+  }
+}

@@ -25,6 +25,8 @@ module.exports = (toolbox: CycliToolbox) => {
           return `yarn add ${fullName}${dev ? ' --dev' : ''}`
         case 'bun':
           return `bun add ${fullName}${dev ? ' --dev' : ''}`
+        case 'pnpm':
+          return `pnpm add ${fullName}${dev ? ' --save-dev' : ''}`
       }
     })()
 

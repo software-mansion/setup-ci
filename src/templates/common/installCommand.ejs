@@ -6,7 +6,9 @@
       case 'yarn':
         return 'yarn install --immutable';
       case 'bun':
-        return 'bun install --frozen-lockfile'
+        return 'bun install --frozen-lockfile';
+      case 'pnpm':
+        return 'pnpm install --frozen-lockfile';
     }
   })()
 %>
