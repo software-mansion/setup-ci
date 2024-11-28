@@ -6,8 +6,11 @@ import {
   ProjectContext,
 } from '../types'
 import { join } from 'path'
+import { recursiveAssign } from '../utils/recursiveAssign'
 
 const APP_JSON_FILES = ['app.json', 'app.config.json']
+const APP_JS_FILES = ['app.js', 'app.config.js']
+
 const DEFAULT_NODE_VERSION = 'v20.17.0'
 const DEFAULT_BUN_VERSION = '1.1.30'
 
@@ -28,6 +31,10 @@ module.exports = (toolbox: CycliToolbox) => {
     return APP_JSON_FILES.find((file) => filesystem.exists(file))
   }
 
+  const appJsFile = (): string | undefined => {
+    return APP_JS_FILES.find((file) => filesystem.exists(file))
+  }
+
   const appJson = (): AppJson | undefined => {
     const file = appJsonFile()
 
@@ -36,6 +43,53 @@ module.exports = (toolbox: CycliToolbox) => {
     }
 
     return undefined
+  }
+
+  const appJs = (): string | undefined => {
+    const file = appJsFile()
+
+    if (file) {
+      return filesystem.read(file)
+    }
+
+    return undefined
+  }
+
+  const patchAppConfig = async (
+    patch: Record<string, unknown>,
+    allowChangeAfterScript = true
+  ): Promise<void> => {
+    const configFile = appJsonFile()
+
+    if (!configFile) {
+      const dynamicConfigFile = appJsFile()
+      const prettyPatch = JSON.stringify(patch, null, 2)
+
+      let actionPromptMessage =
+        'Cannot write to dynamic config. ' +
+        `Please update ${dynamicConfigFile} with the following values:` +
+        `\n\n${prettyPatch}\n\n`
+
+      if (allowChangeAfterScript) {
+        actionPromptMessage +=
+          'You can do it now or after the script finishes.\n'
+      } else {
+        actionPromptMessage += 'Please do it before proceeding.\n'
+      }
+
+      await toolbox.interactive.actionPrompt(actionPromptMessage)
+
+      if (allowChangeAfterScript) {
+        toolbox.furtherActions.push(
+          `Update ${dynamicConfigFile} with` + `\n\n${prettyPatch}`
+        )
+      }
+    } else {
+      await toolbox.patching.update(
+        configFile,
+        (config: Record<string, unknown>) => recursiveAssign(config, patch)
+      )
+    }
   }
 
   const nodeVersionFileInDirectory = (dir: string): string | undefined => {
@@ -129,12 +183,10 @@ module.exports = (toolbox: CycliToolbox) => {
       return true
     }
 
-    if (filesystem.exists('app.config.js')) {
-      const appJs = filesystem.read('app.config.js')
+    const dynamicAppConfig = appJs()
 
-      if (appJs?.includes('expo:')) {
-        return true
-      }
+    if (dynamicAppConfig?.includes('expo:')) {
+      return true
     }
 
     return false
@@ -162,15 +214,81 @@ module.exports = (toolbox: CycliToolbox) => {
     return appId
   }
 
+  const validateAppName = (name: string): string | void => {
+    if (name.length === 0) {
+      return 'App name cannot be empty'
+    }
+    if (!name.match(/^[a-zA-Z]/)) {
+      return 'App name must start with a letter'
+    }
+    if (!name.match(/^[\w_\.]*$/)) {
+      return 'App name can consist only of alphanumeric characters, dots and underscores'
+    }
+    if (name.match(/\.[0-9_]/) || name[name.length - 1] === '.') {
+      return 'Each dot must be followed by a letter'
+    }
+  }
+
+  // Check if android package name and iOS bundle identifier is defined in app.json/js expo field.
+  // If not, prompt user to define them.
+  const checkAppNameInConfigOrGenerate = async (): Promise<void> => {
+    const isAndroidPackageNameDefined =
+      appJson()?.expo?.android?.package ||
+      appJs()?.match(/android:[\s\S]*package:/)
+
+    const isIOSBundleIdentifierDefined =
+      appJson()?.expo?.ios?.bundleIdentifier ||
+      appJs()?.match(/ios:[\s\S]*bundleIdentifier:/)
+
+    if (!isAndroidPackageNameDefined || !isIOSBundleIdentifierDefined) {
+      const suggestedAppName = [
+        'com',
+        (await toolbox.expo.eas.whoamiWithForcedLogin()) ?? 'yourusername',
+        appJson()?.expo?.slug ?? getName(),
+      ]
+        .join('.')
+        .replace(/-/g, '')
+
+      const patch = { expo: {} }
+
+      if (!isAndroidPackageNameDefined) {
+        const packageName = await toolbox.interactive.textInput(
+          'What would you like your Android package name to be?',
+          suggestedAppName,
+          suggestedAppName,
+          validateAppName
+        )
+
+        patch.expo['android'] = { package: packageName }
+      }
+
+      if (!isIOSBundleIdentifierDefined) {
+        const bundleIdentifier = await toolbox.interactive.textInput(
+          'What would you like your iOS bundle identifier to be?',
+          suggestedAppName,
+          suggestedAppName,
+          validateAppName
+        )
+
+        patch.expo['ios'] = { bundleIdentifier }
+      }
+
+      await patchAppConfig(patch, false)
+    }
+  }
+
   toolbox.projectConfig = {
     packageJson,
     appJsonFile,
     appJson,
+    appJs,
+    patchAppConfig,
     nodeVersionFile,
     bunVersionFile,
     isExpo,
     getName,
     getAppId,
+    checkAppNameInConfigOrGenerate,
   }
 }
 
@@ -179,10 +297,16 @@ export interface ProjectConfigExtension {
     packageJson: () => PackageJson
     appJsonFile: () => string | undefined
     appJson: () => AppJson | undefined
+    appJs: () => string | undefined
+    patchAppConfig: (
+      patch: Record<string, unknown>,
+      allowChangeAfterScript?: boolean
+    ) => Promise<void>
     nodeVersionFile: (context: ProjectContext) => string
     bunVersionFile: (context: ProjectContext) => string
     isExpo: () => boolean
     getName: () => string
     getAppId: () => string | undefined
+    checkAppNameInConfigOrGenerate: () => Promise<void>
   }
 }

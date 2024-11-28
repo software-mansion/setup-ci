@@ -112,7 +112,8 @@ export const createBuildWorkflows = async (
   const existsIOsDir = toolbox.filesystem.exists('ios')
 
   if (expo) {
-    toolbox.expo.prebuild(context, { cleanAfter: false })
+    await toolbox.projectConfig.checkAppNameInConfigOrGenerate()
+    await toolbox.expo.prebuild(context, { cleanAfter: false })
   }
 
   const iOSAppName = toolbox.filesystem

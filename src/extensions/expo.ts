@@ -1,7 +1,8 @@
+import { execSync } from 'child_process'
 import { CycliToolbox, ProjectContext, Platform, Environment } from '../types'
 
 module.exports = (toolbox: CycliToolbox) => {
-  const prebuild = (
+  const prebuild = async (
     context: ProjectContext,
     { cleanAfter }: { cleanAfter: boolean }
   ) => {
@@ -10,7 +11,7 @@ module.exports = (toolbox: CycliToolbox) => {
 
     toolbox.print.info('⚙️ Running expo prebuild to setup app configuration.')
 
-    toolbox.interactive.spawnSubprocess(
+    await toolbox.interactive.spawnSubprocess(
       'Expo prebuild',
       `npx expo prebuild --${context.packageManager}`,
       { alwaysPrintStderr: true }
@@ -23,24 +24,46 @@ module.exports = (toolbox: CycliToolbox) => {
   }
 
   const buildConfigure = async (): Promise<void> => {
-    toolbox.interactive.spawnSubprocess(
+    await toolbox.interactive.spawnSubprocess(
       'EAS Build configuration',
-      'npx eas-cli build:configure -p all'
+      'npx eas-cli build:configure -p all',
+      {
+        onError: async () => {
+          await toolbox.interactive.actionPrompt(
+            [
+              'EAS Build configuration failed. If the reason is missing configuration in dynamic file,',
+              'please update it manually before proceeding.\n',
+            ].join(' ')
+          )
+          return true
+        },
+      }
     )
 
     toolbox.interactive.step('Created default EAS Build configuration.')
   }
 
   const updateConfigure = async () => {
-    toolbox.interactive.spawnSubprocess(
+    await toolbox.interactive.spawnSubprocess(
       'EAS Update configuration',
-      'npx eas-cli update:configure'
+      'npx eas-cli update:configure',
+      {
+        onError: async () => {
+          await toolbox.interactive.actionPrompt(
+            [
+              'EAS Update configuration failed. If the reason is missing configuration in dynamic file,',
+              'please update it manually before proceeding.\n',
+            ].join(' ')
+          )
+          return true
+        },
+      }
     )
 
     toolbox.interactive.step('Created default EAS Update configuration.')
   }
 
-  const credentialsConfigureBuild = ({
+  const credentialsConfigureBuild = async ({
     platform,
     environment,
   }: {
@@ -49,7 +72,7 @@ module.exports = (toolbox: CycliToolbox) => {
   }) => {
     const platformName = platform === 'android' ? 'Android' : 'iOS'
 
-    toolbox.interactive.spawnSubprocess(
+    await toolbox.interactive.spawnSubprocess(
       `EAS Credentials configuration for ${platformName}`,
       `npx eas-cli credentials:configure-build -p ${platform} -e ${environment}`
     )
@@ -57,9 +80,42 @@ module.exports = (toolbox: CycliToolbox) => {
     toolbox.interactive.step(`Configured EAS Credentials for ${platformName}.`)
   }
 
+  const login = async (): Promise<void> => {
+    await toolbox.interactive.spawnSubprocess('EAS Login', 'npx eas-cli login')
+    toolbox.interactive.step(`Successfully logged in to EAS.`)
+  }
+
+  const whoami = (): string | undefined => {
+    let username: string | undefined = undefined
+
+    try {
+      username = execSync('npx eas-cli whoami', {
+        stdio: ['ignore', 'pipe', 'ignore'],
+      })
+        .toString()
+        .trim()
+    } catch (error: unknown) {}
+
+    return username
+  }
+
+  const whoamiWithForcedLogin = async (): Promise<string | undefined> => {
+    const username = whoami()
+
+    if (!username) {
+      await login()
+      return whoami()
+    }
+
+    return username
+  }
+
   toolbox.expo = {
     prebuild,
     eas: {
+      login,
+      whoami,
+      whoamiWithForcedLogin,
       buildConfigure,
       updateConfigure,
       credentialsConfigureBuild,
@@ -72,17 +128,20 @@ export interface ExpoExtension {
     prebuild: (
       context: ProjectContext,
       { cleanAfter }: { cleanAfter: boolean }
-    ) => void
+    ) => Promise<void>
     eas: {
-      buildConfigure: () => void
-      updateConfigure: () => void
+      login: () => Promise<void>
+      whoami: () => string | undefined
+      whoamiWithForcedLogin: () => Promise<string | undefined>
+      buildConfigure: () => Promise<void>
+      updateConfigure: () => Promise<void>
       credentialsConfigureBuild: ({
         platform,
         environment,
       }: {
         platform: Platform
         environment: Environment
-      }) => void
+      }) => Promise<void>
     }
   }
 }

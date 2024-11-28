@@ -68,7 +68,11 @@ export type Environment = 'development'
 
 export interface AppJson {
   expo?: {
+    slug?: string
     plugins?: string[]
+    ios?: {
+      bundleIdentifier?: string
+    }
     android?: {
       package?: string
     }
