@@ -26,8 +26,16 @@ in case your package manager is `npm`, `yarn` or `pnpm`, and like this:
 
 if your project uses `bun`.
 
-For more information about check [actions/setup-node](https://github.com/actions/setup-node) 
+For more information, check [actions/setup-node](https://github.com/actions/setup-node) 
 and [actions/setup-bun](https://github.com/oven-sh/setup-bun).
+
+## Caching global package manager data
+
+Note the field `cache` in setup step. It is set to your package manager to enable caching of global packages data.
+
+:::caution
+`node_modules` is not cached. 
+:::
 
 ## Node version file
 
@@ -48,7 +56,3 @@ Also, the workflow step will have the field `cache` set to your package manager 
 Similarly to how SCI detects node version and creates `.nvmrc` file in case of failure, if your
 projects uses `bun` and SCI fails to detect `.bun-version` file, it will create it with default bun version,
 which will be provided in generated workflows in the `bun-version-file` field.
-
-:::caution
-`node_modules` is not cached. 
-:::
