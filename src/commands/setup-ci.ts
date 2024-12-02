@@ -18,6 +18,7 @@ import {
   REPOSITORY_FEATURES_HELP_URL,
   REPOSITORY_METRICS_HELP_URL,
   REPOSITORY_TROUBLESHOOTING_URL,
+  REPOSITORY_URL,
   SKIP_TELEMETRY_FLAG,
 } from '../constants'
 import { isCycliError, messageFromError } from '../utils/errors'
@@ -196,13 +197,22 @@ const checkGit = async (toolbox: CycliToolbox) => {
 }
 
 const run = async (toolbox: CycliToolbox) => {
-  toolbox.interactive.vspace()
-  toolbox.interactive.intro(` Welcome to npx ${CYCLI_COMMAND}! `)
+  toolbox.interactive.surveyInfo(
+    [
+      `${COLORS.cyan(
+        `npx ${CYCLI_COMMAND}`
+      )} aims to help you set up CI workflows for your React Native app.`,
+      `If you find the project useful, you can give us a ⭐ on GitHub:`,
+      '',
+      `\t\t → ${REPOSITORY_URL}`,
+    ].join('\n'),
+    'green'
+  )
 
   if (!toolbox.options.skipTelemetry()) {
     toolbox.interactive.surveyInfo(
       [
-        `${CYCLI_COMMAND} collects anonymous usage data. You can disable it by using --skip-telemetry.`,
+        `This script collects anonymous usage data. You can disable it by using --skip-telemetry.`,
         `Learn more at ${REPOSITORY_METRICS_HELP_URL}`,
       ].join('\n'),
       'dim'
