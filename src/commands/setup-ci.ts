@@ -13,9 +13,9 @@ import intersection from 'lodash/intersection'
 import {
   COLORS,
   CYCLI_COMMAND,
+  DOCS_WORKFLOWS_URL,
   HELP_FLAG,
   PRESET_FLAG,
-  REPOSITORY_FEATURES_HELP_URL,
   REPOSITORY_METRICS_HELP_URL,
   REPOSITORY_TROUBLESHOOTING_URL,
   REPOSITORY_URL,
@@ -73,7 +73,7 @@ const getSelectedOptions = async (toolbox: CycliToolbox): Promise<string[]> => {
   } else {
     return await toolbox.interactive.multiselect(
       'Select workflows you want to run on every PR',
-      `Learn more about PR workflows: ${REPOSITORY_FEATURES_HELP_URL}`,
+      `Learn more about PR workflows: ${DOCS_WORKFLOWS_URL}`,
       RECIPES.map(
         ({ validate, meta: { name, flag, selectHint } }: CycliRecipe) => {
           let validationError = ''

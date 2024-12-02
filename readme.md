@@ -37,7 +37,7 @@ Alternatively, we can use flags `--preset --ts --prettier` to avoid the interact
 ## ⚙️ Features
 
 - **Currently, only GitHub actions are supported as your CI.**
-- **npm** and **yarn** are supported as package managers, and they will be detected automatically.
+- **npm**, **yarn**, **pnpm** and **bun** are supported as package managers, and they will be detected automatically.
 - Monorepo structure is supported, but make sure you run the script from the app directory,
   not the monorepo root.
 
