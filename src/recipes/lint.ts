@@ -14,6 +14,41 @@ const existsEslintConfiguration = (toolbox: CycliToolbox): boolean =>
       )
   )
 
+const generateConfigForBareReactNative = async (
+  toolbox: CycliToolbox,
+  context: ProjectContext,
+  withPrettier: boolean
+): Promise<void> => {
+  await toolbox.dependencies.addDev('@react-native/eslint-config', context)
+  await toolbox.dependencies.addDev('eslint-plugin-ft-flow', context)
+
+  await toolbox.template.generate({
+    template: join('lint', '.eslintrc.json.ejs'),
+    target: '.eslintrc.json',
+    props: {
+      withPrettier,
+    },
+  })
+
+  toolbox.interactive.step('Created .eslintrc.json with default configuration.')
+}
+
+const generateConfigForExpo = async (
+  toolbox: CycliToolbox,
+  context: ProjectContext
+): Promise<void> => {
+  await toolbox.dependencies.addDev('eslint-config-expo', context)
+
+  await toolbox.template.generate({
+    template: join('lint', '.eslintrc-expo.json.ejs'),
+    target: '.eslintrc.json',
+  })
+
+  toolbox.interactive.step(
+    'Created .eslintrc.json with Expo specific configuration.'
+  )
+}
+
 const execute = async (
   toolbox: CycliToolbox,
   context: ProjectContext
@@ -37,32 +72,23 @@ const execute = async (
   }
 
   // We assume that if eslint-config-expo is present in package.json,
-  // ESLint is already configured using https://docs.expo.dev/guides/using-eslint/.
-  // Therefore we don't need to add @react-native/eslint-config, script nor configuration.
-  const isEslintConfiguredWithExpo =
+  // user wants to use configuration from https://docs.expo.dev/guides/using-eslint/.
+  const isEslintConfigExpoInstalled =
     toolbox.dependencies.existsDev('eslint-config-expo') ||
     toolbox.dependencies.exists('eslint-config-expo')
 
-  if (!isEslintConfiguredWithExpo) {
-    await toolbox.dependencies.addDev('@react-native/eslint-config', context)
-    await toolbox.dependencies.addDev('eslint-plugin-ft-flow', context)
+  if (!existsEslintConfiguration(toolbox)) {
+    const generateExpoSpecificConfig =
+      isEslintConfigExpoInstalled || toolbox.projectConfig.isExpo()
 
-    await toolbox.scripts.add('lint', "eslint '**/*.{js,jsx,ts,tsx}'")
-
-    if (!existsEslintConfiguration(toolbox)) {
-      await toolbox.template.generate({
-        template: join('lint', '.eslintrc.json.ejs'),
-        target: '.eslintrc.json',
-        props: {
-          withPrettier,
-        },
-      })
-
-      toolbox.interactive.step(
-        'Created .eslintrc.json with default configuration.'
-      )
+    if (generateExpoSpecificConfig) {
+      await generateConfigForExpo(toolbox, context)
+    } else {
+      await generateConfigForBareReactNative(toolbox, context, withPrettier)
     }
   }
+
+  await toolbox.scripts.add('lint', "eslint '**/*.{js,jsx,ts,tsx}'")
 
   await toolbox.workflows.generate(join('lint', 'lint.ejf'), context)
 
