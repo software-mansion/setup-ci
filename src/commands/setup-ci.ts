@@ -43,37 +43,6 @@ const RECIPES = [
   maestro,
 ]
 
-const printBanner = (toolbox: CycliToolbox) => {
-  // disable line wrapping
-  toolbox.interactive.info('\x1B[?7l')
-
-  toolbox.interactive.info(
-    COLORS.green(
-      [
-        '  88d888b. 88d888b. dP.  .dP',
-        "  88'  `88 88'  `88  `8bd8'",
-        '  88    88 88.  .88  .d88b.',
-        "  dP    dP 88Y888P' dP'  `dP",
-        '           88',
-        '           dP',
-      ].join('\n')
-    ) +
-      [
-        '         dP                                       oo',
-        '                      88',
-        '  .d8888b. .d8888b. d8888P dP    dP 88d888b.          .d8888b. dP',
-        "  Y8ooooo. 88ooood8   88   88    88 88'  `88 88888888 88'  `'' 88",
-        '        88 88.  ...   88   88.  .88 88.  .88          88.  ... 88',
-        "  `88888P' `88888P'   dP   `88888P' 88Y888P'          `88888P' dP",
-        '                                    88',
-        '                                    dP',
-      ].join('\n')
-  )
-
-  // Enable line wrapping again
-  toolbox.interactive.info('\x1B[?7h')
-}
-
 const getSelectedOptions = async (toolbox: CycliToolbox): Promise<string[]> => {
   if (toolbox.options.isPreset()) {
     const featureFlags = RECIPES.map((option) => option.meta.flag)
@@ -213,10 +182,6 @@ const checkGit = async (toolbox: CycliToolbox) => {
 }
 
 const run = async (toolbox: CycliToolbox) => {
-  toolbox.interactive.vspace()
-
-  printBanner(toolbox)
-
   toolbox.interactive.surveyInfo(
     [
       `${COLORS.cyan(
