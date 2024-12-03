@@ -1,13 +1,5 @@
 <%
-const install = {
-  yarn: "yarn install --immutable",
-  npm: "npm ci"
-}
-
-const runFingerprint = {
-  yarn: `yarn ${(props.isMonorepo) ? `--cwd ${props.pathRelativeToRoot} ` : ""}` + 'fingerprint:${{ inputs.platform }}',
-  npm: 'npm run fingerprint:${{ inputs.platform }}' + ((props.isMonorepo) ? `--prefix ${props.pathRelativeToRoot}` : "")
-}
+const fingerprintScript = 'fingerprint:${{ inputs.platform }}'
 %>
 
 name: Lookup Cached Debug Build
@@ -47,22 +39,22 @@ jobs:
       - name: 🏗 Checkout repository
         uses: actions/checkout@v4
 
-      - name: 🌿 Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: '<%= props.nodeVersionFile %>'
-          cache: '<%= props.packageManager %>'
+      <%- include('../common/managerSetupStep', { props }); %>
+
+      <%- include('../common/runtimeSetupStep', { props }); %>
 
       - name: 📦 Install dependencies
-        run: <%= install[props.packageManager] %>
+        run: <%- include('../common/installCommand', { props }); %>
 
       - name: 🧬 Calculate fingerprint
         id: fingerprint
         run: |
-          FINGERPRINT=$(<%= runFingerprint[props.packageManager] %> | grep '^fingerprint:' | cut -d ' ' -f2-)
+          FINGERPRINT=$(<%= props.packageManager %> run <%= fingerprintScript %> | grep '^fingerprint:' | cut -d ' ' -f2-)
           echo "Fingerprint for ${{ inputs.platform }}: $FINGERPRINT"
           echo "FINGERPRINT=$FINGERPRINT" >> $GITHUB_ENV
           echo "fingerprint=$FINGERPRINT" >> $GITHUB_OUTPUT
+        <%= (props.isMonorepo) ?
+          `working-directory: ${props.pathRelativeToRoot}` : "" %>
 
       - name: 🐛 Try to restore build from cache
         id: debug-build-restore

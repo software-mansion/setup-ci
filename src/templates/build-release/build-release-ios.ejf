@@ -1,15 +1,3 @@
-<%
-const install = {
-  yarn: "yarn install --immutable",
-  npm: "npm ci"
-}
-
-const build = {
-  yarn: `yarn ${(props.isMonorepo) ? `--cwd ${props.pathRelativeToRoot} ` : ""}build:release:ios`,
-  npm: `npm run build:release:ios ${(props.isMonorepo) ? `--prefix ${props.pathRelativeToRoot}` : ""}`
-}
-%>
-
 name: Build iOS Release App
 
 on:
@@ -39,14 +27,12 @@ jobs:
       - name: 🏗 Checkout repository
         uses: actions/checkout@v4
 
-      - name: 🌿 Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: '<%= props.nodeVersionFile %>'
-          cache: '<%= props.packageManager %>'
+      <%- include('../common/managerSetupStep', { props }); %>
+
+      <%- include('../common/runtimeSetupStep', { props }); %>
 
       - name: 📦 Install dependencies
-        run: <%= install[props.packageManager] %>
+        run: <%- include('../common/installCommand', { props }); %>
 
       - name: 🔨 Use latest stable Xcode
         uses: maxim-lobanov/setup-xcode@v1
@@ -54,7 +40,9 @@ jobs:
           xcode-version: latest-stable
 
       - name: 🛠️ Build
-        run: <%= build[props.packageManager] %>
+        run: <%= props.packageManager %> run build:release:ios
+        <%= (props.isMonorepo) ?
+          `working-directory: ${props.pathRelativeToRoot}` : "" %>
 
       - name: 📁 Prepare cache folder 
         run: |

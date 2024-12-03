@@ -2,6 +2,7 @@ import assignWith from 'lodash/assignWith'
 
 type Value =
   | string
+  | string[]
   | number
   | boolean
   | null

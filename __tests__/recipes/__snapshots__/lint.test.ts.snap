@@ -17,6 +17,7 @@ Object {
     "@types/react": "",
     "@types/react-test-renderer": "",
     "eslint": "",
+    "eslint-plugin-ft-flow": "",
     "react-test-renderer": "",
     "typescript": "",
   },
@@ -29,7 +30,7 @@ Object {
   "scripts": Object {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
-    "lint": "eslint \\"**/*.{js,jsx,ts,tsx}\\"",
+    "lint": "eslint '**/*.{js,jsx,ts,tsx}'",
     "start": "react-native start",
   },
   "version": "0.0.1",
@@ -64,6 +65,140 @@ jobs:
 "
 `;
 
+exports[`lint recipe rn-setup-ci-create-expo-stack-bun lint 1`] = `
+Object {
+  "dependencies": Object {
+    "react": "",
+    "react-native": "",
+  },
+  "devDependencies": Object {
+    "@babel/core": "",
+    "@babel/preset-env": "",
+    "@babel/runtime": "",
+    "@react-native/babel-preset": "",
+    "@react-native/eslint-config": "",
+    "@react-native/metro-config": "",
+    "@react-native/typescript-config": "",
+    "@types/react": "",
+    "@types/react-test-renderer": "",
+    "eslint": "",
+    "eslint-plugin-ft-flow": "",
+    "react-test-renderer": "",
+    "typescript": "",
+  },
+  "engines": Object {
+    "node": ">=18",
+  },
+  "name": "RnSetupCiYarnFlat",
+  "packageManager": "yarn@3.6.4",
+  "private": true,
+  "scripts": Object {
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
+    "lint": "eslint '**/*.{js,jsx,ts,tsx}'",
+    "start": "react-native start",
+  },
+  "version": "0.0.1",
+}
+`;
+
+exports[`lint recipe rn-setup-ci-create-expo-stack-bun lint 2`] = `
+"name: Check ESLint
+
+on:
+  pull_request:
+
+jobs:
+  eslint:
+    name: ESLint
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🏗 Setup repo
+        uses: actions/checkout@v4
+
+      - name: 🥟 Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: '.bun-version'
+
+      - name: 📦 Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: 🤓 Run ESLint
+        run: bun run lint
+"
+`;
+
+exports[`lint recipe rn-setup-ci-create-expo-stack-pnpm lint 1`] = `
+Object {
+  "dependencies": Object {
+    "react": "",
+    "react-native": "",
+  },
+  "devDependencies": Object {
+    "@babel/core": "",
+    "@babel/preset-env": "",
+    "@babel/runtime": "",
+    "@react-native/babel-preset": "",
+    "@react-native/eslint-config": "",
+    "@react-native/metro-config": "",
+    "@react-native/typescript-config": "",
+    "@types/react": "",
+    "@types/react-test-renderer": "",
+    "eslint": "",
+    "eslint-plugin-ft-flow": "",
+    "react-test-renderer": "",
+    "typescript": "",
+  },
+  "engines": Object {
+    "node": ">=18",
+  },
+  "name": "RnSetupCiYarnFlat",
+  "packageManager": "yarn@3.6.4",
+  "private": true,
+  "scripts": Object {
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
+    "lint": "eslint '**/*.{js,jsx,ts,tsx}'",
+    "start": "react-native start",
+  },
+  "version": "0.0.1",
+}
+`;
+
+exports[`lint recipe rn-setup-ci-create-expo-stack-pnpm lint 2`] = `
+"name: Check ESLint
+
+on:
+  pull_request:
+
+jobs:
+  eslint:
+    name: ESLint
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🏗 Setup repo
+        uses: actions/checkout@v4
+
+      - name: 🐿️ Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: 🌿 Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'pnpm'
+
+      - name: 📦 Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: 🤓 Run ESLint
+        run: pnpm run lint
+"
+`;
+
 exports[`lint recipe rn-setup-ci-npm-flat lint 1`] = `
 Object {
   "dependencies": Object {
@@ -81,6 +216,7 @@ Object {
     "@types/react": "",
     "@types/react-test-renderer": "",
     "eslint": "",
+    "eslint-plugin-ft-flow": "",
     "react-test-renderer": "",
     "typescript": "",
   },
@@ -93,7 +229,7 @@ Object {
   "scripts": Object {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
-    "lint": "eslint \\"**/*.{js,jsx,ts,tsx}\\"",
+    "lint": "eslint '**/*.{js,jsx,ts,tsx}'",
     "start": "react-native start",
   },
   "version": "0.0.1",
@@ -170,10 +306,10 @@ Object {
   },
   "devDependencies": Object {
     "@babel/core": "",
-    "@react-native/eslint-config": "",
     "@types/react": "",
     "@types/react-test-renderer": "",
     "eslint": "",
+    "eslint-config-expo": "",
     "jest-expo": "",
     "react-test-renderer": "",
     "typescript": "",
@@ -184,7 +320,7 @@ Object {
   "scripts": Object {
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "lint": "eslint \\"**/*.{js,jsx,ts,tsx}\\"",
+    "lint": "eslint '**/*.{js,jsx,ts,tsx}'",
     "reset-project": "node ./scripts/reset-project.js",
     "start": "expo start",
     "web": "expo start --web",
@@ -219,22 +355,14 @@ jobs:
         run: npm ci
 
       - name: 🤓 Run ESLint
-        run: npm run lint --prefix apps/expo-app
+        run: npm run lint
+        working-directory: apps/expo-app
 "
 `;
 
 exports[`lint recipe rn-setup-ci-npm-monorepo lint 3`] = `
 "{
-  \\"parserOptions\\": {
-    \\"ecmaVersion\\": \\"2020\\",
-    \\"sourceType\\": \\"module\\"
-  },
-  \\"extends\\": [\\"@react-native\\", \\"eslint:recommended\\"],
-  \\"env\\": {
-    \\"browser\\": true,
-    \\"node\\": true
-  },
-  \\"rules\\": {}
+  \\"extends\\": \\"expo\\"
 }
 "
 `;
@@ -256,6 +384,7 @@ Object {
     "@types/react": "",
     "@types/react-test-renderer": "",
     "eslint": "",
+    "eslint-plugin-ft-flow": "",
     "react-test-renderer": "",
     "typescript": "",
   },
@@ -268,7 +397,7 @@ Object {
   "scripts": Object {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
-    "lint": "eslint \\"**/*.{js,jsx,ts,tsx}\\"",
+    "lint": "eslint '**/*.{js,jsx,ts,tsx}'",
     "start": "react-native start",
   },
   "version": "0.0.1",
@@ -299,7 +428,7 @@ jobs:
         run: yarn install --immutable
 
       - name: 🤓 Run ESLint
-        run: yarn lint
+        run: yarn run lint
 "
 `;
 
@@ -345,10 +474,10 @@ Object {
   },
   "devDependencies": Object {
     "@babel/core": "",
-    "@react-native/eslint-config": "",
     "@types/react": "",
     "@types/react-test-renderer": "",
     "eslint": "",
+    "eslint-config-expo": "",
     "jest-expo": "",
     "react-test-renderer": "",
     "typescript": "",
@@ -359,7 +488,7 @@ Object {
   "scripts": Object {
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "lint": "eslint \\"**/*.{js,jsx,ts,tsx}\\"",
+    "lint": "eslint '**/*.{js,jsx,ts,tsx}'",
     "reset-project": "node ./scripts/reset-project.js",
     "start": "expo start",
     "web": "expo start --web",
@@ -394,22 +523,14 @@ jobs:
         run: yarn install --immutable
 
       - name: 🤓 Run ESLint
-        run: yarn --cwd apps/expo-app lint
+        run: yarn run lint
+        working-directory: apps/expo-app
 "
 `;
 
 exports[`lint recipe rn-setup-ci-yarn-monorepo lint 3`] = `
 "{
-  \\"parserOptions\\": {
-    \\"ecmaVersion\\": \\"2020\\",
-    \\"sourceType\\": \\"module\\"
-  },
-  \\"extends\\": [\\"@react-native\\", \\"eslint:recommended\\"],
-  \\"env\\": {
-    \\"browser\\": true,
-    \\"node\\": true
-  },
-  \\"rules\\": {}
+  \\"extends\\": \\"expo\\"
 }
 "
 `;
@@ -431,6 +552,7 @@ Object {
     "@types/react": "",
     "@types/react-test-renderer": "",
     "eslint": "",
+    "eslint-plugin-ft-flow": "",
     "react-test-renderer": "",
     "typescript": "",
   },
@@ -443,7 +565,7 @@ Object {
   "scripts": Object {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
-    "lint": "eslint \\"**/*.{js,jsx,ts,tsx}\\"",
+    "lint": "eslint '**/*.{js,jsx,ts,tsx}'",
     "start": "react-native start",
   },
   "version": "0.0.1",

@@ -1,15 +1,3 @@
-<%
-const install = {
-  yarn: "yarn install --immutable",
-  npm: "npm ci"
-}
-
-const runTests = {
-  yarn: `yarn ${(props.isMonorepo) ? `--cwd ${props.pathRelativeToRoot} ` : ""}detox:test:android`,
-  npm: `npm run detox:test:android ${(props.isMonorepo) ? `--prefix ${props.pathRelativeToRoot}` : ""}`
-}
-%>
-
 name: Test Detox Android
 
 on:
@@ -37,14 +25,12 @@ jobs:
       - name: 🏗 Checkout repository
         uses: actions/checkout@v4
 
-      - name: 🌿 Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: '<%= props.nodeVersionFile %>'
-          cache: '<%= props.packageManager %>'
+      <%- include('../common/managerSetupStep', { props }); %>
+
+      <%- include('../common/runtimeSetupStep', { props }); %>
 
       - name: 📦 Install dependencies
-        run: <%= install[props.packageManager] %>
+        run: <%- include('../common/installCommand', { props }); %>
 
       - name: 📦 Install AVD dependencies
         run: |
@@ -97,4 +83,6 @@ jobs:
           emulator-options: -no-snapshot -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -camera-front none
           avd-name: e2e_emulator
           arch: x86_64
-          script: <%= runTests[props.packageManager] %>
+          script: <%= props.packageManager %> run detox:test:android
+          <%= (props.isMonorepo) ?
+            `working-directory: ${props.pathRelativeToRoot}` : "" %>

@@ -31,7 +31,7 @@ const patchEasJson = async (
     }
   }
 
-  await toolbox.patching.update('eas.json', (config) =>
+  await toolbox.patching.update('eas.json', (config: Record<string, unknown>) =>
     recursiveAssign(config, patch)
   )
 
@@ -47,22 +47,7 @@ const patchAppJson = async (toolbox: CycliToolbox): Promise<void> => {
     },
   }
 
-  const appJsonFile = toolbox.projectConfig.appJsonFile()
-
-  if (!appJsonFile) {
-    toolbox.interactive.warning(
-      `Cannot write to dynamic config. Make sure to set "expo.runtimeVersion.policy" to "fingerprint" in app.config.js.`
-    )
-    toolbox.furtherActions.push(
-      `Set "expo.runtimeVersion.policy" to "fingerprint" in app.config.js.`
-    )
-  } else {
-    await toolbox.patching.update(appJsonFile, (config) =>
-      recursiveAssign(config, patch)
-    )
-  }
-
-  toolbox.interactive.step('Set runtimeVersion policy to "fingerprint".')
+  await toolbox.projectConfig.patchAppConfig(patch)
 }
 
 const execute = async (toolbox: CycliToolbox): Promise<void> => {
@@ -73,17 +58,11 @@ const execute = async (toolbox: CycliToolbox): Promise<void> => {
   await toolbox.dependencies.add('expo-dev-client')
   await toolbox.dependencies.add('expo-updates')
 
-  if (!toolbox.filesystem.exists('eas.json')) {
-    toolbox.expo.eas.buildConfigure()
-  } else {
-    toolbox.interactive.step(
-      'Detected eas.json file, skipping EAS Build configuration.'
-    )
-  }
+  await toolbox.projectConfig.checkAppNameInConfigOrGenerate()
 
-  toolbox.expo.prebuild({ cleanAfter: true })
+  await toolbox.expo.eas.buildConfigure()
 
-  toolbox.expo.eas.credentialsConfigureBuild({
+  await toolbox.expo.eas.credentialsConfigureBuild({
     platform: 'android',
     environment: 'development',
   })
@@ -101,13 +80,13 @@ const execute = async (toolbox: CycliToolbox): Promise<void> => {
   )
 
   if (withIOSCredentials) {
-    toolbox.expo.eas.credentialsConfigureBuild({
+    await toolbox.expo.eas.credentialsConfigureBuild({
       platform: 'ios',
       environment: 'development',
     })
   }
 
-  toolbox.expo.eas.updateConfigure()
+  await toolbox.expo.eas.updateConfigure()
 
   await patchEasJson(toolbox, withIOSCredentials)
   await patchAppJson(toolbox)

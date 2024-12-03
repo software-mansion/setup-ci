@@ -1,0 +1,35 @@
+{
+  "cesVersion": "2.11.25",
+  "projectName": "rn-setup-ci-create-expo-stack-pnpm",
+  "packages": [
+    {
+      "name": "expo-router",
+      "type": "navigation",
+      "options": {
+        "type": "stack"
+      }
+    },
+    {
+      "name": "stylesheet",
+      "type": "styling"
+    }
+  ],
+  "flags": {
+    "noGit": false,
+    "noInstall": false,
+    "overwrite": false,
+    "importAlias": true,
+    "packageManager": "pnpm",
+    "eas": false
+  },
+  "packageManager": {
+    "type": "pnpm",
+    "version": "9.14.2"
+  },
+  "os": {
+    "type": "Darwin",
+    "platform": "darwin",
+    "arch": "arm64",
+    "kernelVersion": "24.0.0"
+  }
+}

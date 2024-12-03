@@ -6,7 +6,7 @@ import {
 } from '../types'
 import intersection from 'lodash/intersection'
 import { messageFromError } from '../utils/errors'
-import { REPOSITORY_FEATURES_HELP_URL } from '../constants'
+import { DOCS_WORKFLOWS_URL } from '../constants'
 
 module.exports = (toolbox: CycliToolbox) => {
   // State for caching the config
@@ -40,7 +40,7 @@ module.exports = (toolbox: CycliToolbox) => {
     } else {
       selectedRecipes = (await toolbox.interactive.multiselect(
         'Select workflows you want to run on every PR',
-        `Learn more about PR workflows: ${REPOSITORY_FEATURES_HELP_URL}`,
+        `Learn more about PR workflows: ${DOCS_WORKFLOWS_URL}`,
         allRecipes.map(
           ({ validate, meta: { name, flag, selectHint } }: CycliRecipe) => {
             let validationError = ''

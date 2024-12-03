@@ -21,6 +21,8 @@ describe('lint recipe', () => {
     'rn-setup-ci-yarn-monorepo',
     'rn-setup-ci-npm-monorepo',
     'rn-setup-ci-create-expo-stack',
+    'rn-setup-ci-create-expo-stack-bun',
+    'rn-setup-ci-create-expo-stack-pnpm',
   ]
 
   for (const projectName of PROJECTS) {

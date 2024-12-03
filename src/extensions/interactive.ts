@@ -4,6 +4,7 @@ import {
   intro as clackIntro,
   isCancel,
   log as clackLog,
+  text,
 } from '@clack/prompts'
 import { ConfirmPrompt, MultiSelectPrompt, SelectPrompt } from '@clack/core'
 import { execSync } from 'child_process'
@@ -221,6 +222,21 @@ module.exports = (toolbox: CycliToolbox) => {
     }
 
     return Boolean(confirmed)
+  }
+
+  const textInput = async (
+    message: string,
+    placeholder?: string,
+    initialValue?: string,
+    validate?: (input: string) => string | void
+  ): Promise<string> => {
+    const input = await text({ message, placeholder, initialValue, validate })
+
+    if (isCancel(input)) {
+      throw CYCLI_ERROR_CANCEL
+    }
+
+    return input as string
   }
 
   const multiselect = async (
@@ -450,11 +466,17 @@ module.exports = (toolbox: CycliToolbox) => {
     info(`${S_UR}\n${S_DL}${S_VBAR.repeat(width - 1)}`, color)
   }
 
-  const spawnSubprocess = (
+  const spawnSubprocess = async (
     processName: string,
     command: string,
-    { alwaysPrintStderr = false }: { alwaysPrintStderr?: boolean } = {}
-  ) => {
+    {
+      alwaysPrintStderr = false,
+      onError,
+    }: {
+      alwaysPrintStderr?: boolean
+      onError?: (stderr: string) => Promise<boolean>
+    } = {}
+  ): Promise<void> => {
     vspace()
     sectionHeader(`Running ${processName}...`, { color: 'dim' })
 
@@ -469,17 +491,21 @@ module.exports = (toolbox: CycliToolbox) => {
         throw Error(`Failed to execute command ${COLORS.bold(command)}.`)
       }
 
-      error(`${processName} exiter with error status code ${e.status}.`)
-
       if (
         'stderr' in e &&
         (typeof e.stderr === 'string' || e.stderr instanceof Buffer)
       ) {
         const stderr = e.stderr.toString()
-        if (!alwaysPrintStderr && stderr) {
+        // In no specific onError callback was provided, just print stderr to console.
+        if (!onError && !alwaysPrintStderr && stderr) {
           info(stderr, 'red')
+        } else if (onError && (await onError(stderr))) {
+          // If onError returns true, the error was handled so we don't throw exception.
+          return
         }
       }
+
+      error(`${processName} exited with error status code ${e.status}.`)
 
       throw Error(
         `Failed to execute command ${COLORS.bold(
@@ -495,6 +521,7 @@ module.exports = (toolbox: CycliToolbox) => {
   toolbox.interactive = {
     actionPrompt,
     confirm,
+    textInput,
     multiselect,
     surveyStep,
     surveyWarning,
@@ -530,6 +557,12 @@ export interface InteractiveExtension {
       message: string,
       options: { type: 'normal' | 'warning' }
     ) => Promise<boolean>
+    textInput: (
+      message: string,
+      placeholder?: string,
+      initialValue?: string,
+      validate?: (input: string) => string | void
+    ) => Promise<string>
     actionPrompt: (message: string) => Promise<void>
     surveyStep: (message: string) => void
     surveyWarning: (message: string) => void
@@ -551,7 +584,10 @@ export interface InteractiveExtension {
     spawnSubprocess: (
       processName: string,
       command: string,
-      options?: { alwaysPrintStderr?: boolean }
-    ) => void
+      options?: {
+        alwaysPrintStderr?: boolean
+        onError?: (stderr: string) => Promise<boolean>
+      }
+    ) => Promise<void>
   }
 }

@@ -10,14 +10,18 @@ import isGitDirty from 'is-git-dirty'
 import sequentialPromiseMap from '../utils/sequentialPromiseMap'
 import { CycliError, CycliRecipe, CycliToolbox } from '../types'
 import {
+  COLORS,
   CYCLI_COMMAND,
   HELP_FLAG,
   PRESET_FLAG,
   REPOSITORY_METRICS_HELP_URL,
   REPOSITORY_TROUBLESHOOTING_URL,
+  REPOSITORY_URL,
   SKIP_TELEMETRY_FLAG,
 } from '../constants'
 import { isCycliError, messageFromError } from '../utils/errors'
+
+const FEEDBACK_SURVEY_URL = 'https://forms.gle/NYoPyPxnVzGheHcw6'
 
 const SKIP_GIT_CHECK_FLAG = 'skip-git-check'
 
@@ -38,49 +42,6 @@ const RECIPES = [
   detox,
   maestro,
 ]
-
-// Try to obtain package manager and package root path.
-// In case of failure, an error is thrown and cli exits early.
-const validateProject = (toolbox: CycliToolbox) => {
-  toolbox.context.packageManager()
-  toolbox.context.path.packageRoot()
-}
-
-const checkGit = async (toolbox: CycliToolbox) => {
-  if (isGitDirty() == null) {
-    throw CycliError('This is not a git repository.')
-  }
-
-  if (isGitDirty()) {
-    if (toolbox.parameters.options[SKIP_GIT_CHECK_FLAG]) {
-      toolbox.interactive.surveyWarning(
-        `Proceeding with dirty git repository as --${SKIP_GIT_CHECK_FLAG} option is enabled.`
-      )
-    } else {
-      if (toolbox.options.isPreset()) {
-        throw CycliError(
-          `You have to commit your changes before running with preset or use --${SKIP_GIT_CHECK_FLAG}.`
-        )
-      }
-
-      const proceed = await toolbox.interactive.confirm(
-        [
-          `It is advised to commit all your changes before running ${CYCLI_COMMAND}.`,
-          'Running the script with uncommitted changes may have destructive consequences.',
-          'Do you want to proceed anyway?\n',
-        ].join('\n'),
-        { type: 'warning' }
-      )
-
-      if (!proceed) {
-        toolbox.interactive.outro(
-          'Please commit your changes before running this command.'
-        )
-        return
-      }
-    }
-  }
-}
 
 const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
   const snapshotBefore = await toolbox.diff.gitStatus()
@@ -129,14 +90,66 @@ const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
   }
 }
 
+const checkGit = async (toolbox: CycliToolbox) => {
+  if (isGitDirty() == null) {
+    throw CycliError('This is not a git repository.')
+  }
+
+  if (isGitDirty()) {
+    if (toolbox.parameters.options[SKIP_GIT_CHECK_FLAG]) {
+      toolbox.interactive.surveyWarning(
+        `Proceeding with dirty git repository as --${SKIP_GIT_CHECK_FLAG} option is enabled.`
+      )
+    } else {
+      if (toolbox.options.isPreset()) {
+        throw CycliError(
+          `You have to commit your changes before running with preset or use --${SKIP_GIT_CHECK_FLAG}.`
+        )
+      }
+
+      const proceed = await toolbox.interactive.confirm(
+        [
+          `It is advised to commit all your changes before running ${CYCLI_COMMAND}.`,
+          'Running the script with uncommitted changes may have destructive consequences.',
+          'Do you want to proceed anyway?\n',
+        ].join('\n'),
+        { type: 'warning' }
+      )
+
+      if (!proceed) {
+        toolbox.interactive.outro(
+          'Please commit your changes before running this command.'
+        )
+        return
+      }
+    }
+  }
+}
+
+// Try to obtain package manager and package root path.
+// In case of failure, an error is thrown and cli exits early.
+const validateProject = (toolbox: CycliToolbox) => {
+  toolbox.context.packageManager()
+  toolbox.context.path.packageRoot()
+}
+
 const run = async (toolbox: CycliToolbox) => {
-  toolbox.interactive.vspace()
-  toolbox.interactive.intro(` Welcome to npx ${CYCLI_COMMAND}! `)
+  toolbox.interactive.surveyInfo(
+    [
+      `${COLORS.cyan(
+        `npx ${CYCLI_COMMAND}`
+      )} aims to help you set up CI workflows for your React Native app.`,
+      `If you find the project useful, you can give us a ⭐ on GitHub:`,
+      '',
+      `\t\t → ${REPOSITORY_URL}`,
+    ].join('\n'),
+    'green'
+  )
 
   if (!toolbox.options.skipTelemetry()) {
     toolbox.interactive.surveyInfo(
       [
-        `${CYCLI_COMMAND} collects anonymous usage data. You can disable it by using --skip-telemetry.`,
+        `This script collects anonymous usage data. You can disable it by using --skip-telemetry.`,
         `Learn more at ${REPOSITORY_METRICS_HELP_URL}`,
       ].join('\n'),
       'dim'
@@ -147,6 +160,7 @@ const run = async (toolbox: CycliToolbox) => {
 
   try {
     await checkGit(toolbox as CycliToolbox)
+
     validateProject(toolbox)
 
     await runReactNativeCiCli(toolbox as CycliToolbox)
@@ -184,6 +198,19 @@ const run = async (toolbox: CycliToolbox) => {
   } catch (_: unknown) {
     // ignore telemetry errors
   }
+
+  toolbox.interactive.vspace()
+
+  toolbox.interactive.info(
+    [
+      `Thank you for using ${COLORS.cyan('setup-ci')} 💙`,
+      "We'd love to hear your feedback to make it even better.",
+      'Please take a moment to fill out our survey:\n',
+      `\t → ${FEEDBACK_SURVEY_URL}\n`,
+      'Your input is greatly appreciated! 🙏',
+    ].join('\n'),
+    'green'
+  )
 
   process.exit()
 }

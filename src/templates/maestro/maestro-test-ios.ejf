@@ -1,17 +1,8 @@
 <%
-const install = {
-  yarn: "yarn install --immutable",
-  npm: "npm ci"
-}
-
 const startBundler = {
   yarn: `yarn ${(props.isMonorepo) ? `--cwd ${props.pathRelativeToRoot} ` : ""}start`,
-  npm: `npm run start ${(props.isMonorepo) ? `--prefix ${props.pathRelativeToRoot}` : ""}`
-}
-
-const runTests = {
-  yarn: `yarn ${(props.isMonorepo) ? `--cwd ${props.pathRelativeToRoot} ` : ""}maestro:test`,
-  npm: `npm run maestro:test ${(props.isMonorepo) ? `--prefix ${props.pathRelativeToRoot}` : ""}`
+  npm: `npm run start ${(props.isMonorepo) ? `--prefix ${props.pathRelativeToRoot}` : ""}`,
+  bun: `bun run ${(props.isMonorepo) ? `--cwd ${props.pathRelativeToRoot} ` : ""}start`,
 }
 %>
 
@@ -48,11 +39,9 @@ jobs:
           path: ios-debug-build/
           key: ${{ needs.build-debug-ios.outputs.build-cache-key }}
 
-      - name: 🌿 Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: '<%= props.nodeVersionFile %>'
-          cache: '<%= props.packageManager %>'
+      <%- include('../common/managerSetupStep', { props }); %>
+
+      <%- include('../common/runtimeSetupStep', { props }); %>
 
       - name: ☕ Setup JDK 17
         uses: actions/setup-java@v4
@@ -61,7 +50,7 @@ jobs:
           distribution: 'zulu'
 
       - name: 📦 Install dependencies
-        run: <%= install[props.packageManager] %>
+        run: <%- include('../common/installCommand', { props }); %>
 
       - name: 📦 Install macOS dependencies
         run: |
@@ -123,9 +112,11 @@ jobs:
       - name: 🧪 Run Maestro tests
         run: |
           xcrun simctl install booted ios-debug-build/ios-debug.app
-          <%= runTests[props.packageManager] %>
+          <%= props.packageManager %> run maestro:test
         env:
           MAESTRO_DRIVER_STARTUP_TIMEOUT: 120000
+        <%= (props.isMonorepo) ?
+          `working-directory: ${props.pathRelativeToRoot}` : "" %>
 
       - name: 📤 Store debug output if failed
         if: failure()
