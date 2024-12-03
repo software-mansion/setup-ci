@@ -24,12 +24,12 @@ const execute = async (
 
   await toolbox.scripts.add(
     'prettier:check',
-    'prettier --check "**/*.{ts,tsx,js,jsx,json,css,scss,md}"'
+    "prettier --check '**/*.{ts,tsx,js,jsx,json,css,scss,md}'"
   )
 
   await toolbox.scripts.add(
     'prettier:write',
-    'prettier --write "**/*.{ts,tsx,js,jsx,json,css,scss,md}"'
+    "prettier --write '**/*.{ts,tsx,js,jsx,json,css,scss,md}'"
   )
 
   await toolbox.workflows.generate(join('prettier', 'prettier.ejf'), context)
