@@ -61,7 +61,15 @@ const execute = async (toolbox: CycliToolbox) => {
   await toolbox.dependencies.addDev('@types/jest')
 
   if (expo) {
-    await toolbox.dependencies.addDev(DETOX_EXPO_PLUGIN)
+    const configPluginVersion = toolbox.dependencies.versionSatisfies(
+      'expo',
+      '>=52'
+    )
+      ? '^9'
+      : '^8'
+    await toolbox.dependencies.addDev(DETOX_EXPO_PLUGIN, {
+      version: configPluginVersion,
+    })
     await addDetoxExpoPlugin(toolbox)
   }
 

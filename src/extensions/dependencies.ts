@@ -6,6 +6,18 @@ import { messageFromError } from '../utils/errors'
 module.exports = (toolbox: CycliToolbox) => {
   const { system } = toolbox
 
+  const versionSatisfies = (name: string, req: string): boolean => {
+    const version =
+      toolbox.projectConfig.packageJson().dependencies?.[name] ??
+      toolbox.projectConfig.packageJson().devDependencies?.[name]
+
+    if (!version) {
+      return false
+    }
+
+    return toolbox.semver.satisfies(version, req)
+  }
+
   const exists = (name: string): boolean =>
     Boolean(toolbox.projectConfig.packageJson().dependencies?.[name])
 
@@ -128,6 +140,7 @@ module.exports = (toolbox: CycliToolbox) => {
   }
 
   toolbox.dependencies = {
+    versionSatisfies,
     exists,
     existsDev,
     add,
@@ -137,6 +150,7 @@ module.exports = (toolbox: CycliToolbox) => {
 
 export interface DependenciesExtension {
   dependencies: {
+    versionSatisfies: (name: string, req: string) => boolean
     exists: (name: string) => boolean
     existsDev: (name: string) => boolean
     add: (
