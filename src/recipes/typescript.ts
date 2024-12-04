@@ -1,4 +1,4 @@
-import { CycliRecipe, CycliRecipeFlag, CycliToolbox } from '../types'
+import { CycliRecipe, CycliRecipeType, CycliToolbox } from '../types'
 import { join } from 'path'
 
 const execute = async (toolbox: CycliToolbox): Promise<void> => {
@@ -28,7 +28,7 @@ const execute = async (toolbox: CycliToolbox): Promise<void> => {
 export const recipe: CycliRecipe = {
   meta: {
     name: 'TS check',
-    flag: CycliRecipeFlag.TYPESCRIPT,
+    flag: CycliRecipeType.TYPESCRIPT,
     description: 'Generate Typescript check workflow to run on every PR',
     selectHint: 'run typescript check to find compilation errors',
   },

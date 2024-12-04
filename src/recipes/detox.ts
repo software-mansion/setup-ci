@@ -1,4 +1,4 @@
-import { CycliRecipe, CycliRecipeFlag, CycliToolbox } from '../types'
+import { CycliRecipe, CycliRecipeType, CycliToolbox } from '../types'
 import { createBuildWorkflows } from './build'
 import { join } from 'path'
 
@@ -118,7 +118,7 @@ const execute = async (toolbox: CycliToolbox) => {
 export const recipe: CycliRecipe = {
   meta: {
     name: 'Detox',
-    flag: CycliRecipeFlag.DETOX,
+    flag: CycliRecipeType.DETOX,
     description: 'Generate workflow to run Detox e2e tests on every PR',
     selectHint: 'run detox e2e tests suite',
   },

@@ -2,7 +2,7 @@ import { REPOSITORY_SECRETS_HELP_URL } from '../constants'
 import {
   CycliError,
   CycliRecipe,
-  CycliRecipeFlag,
+  CycliRecipeType,
   CycliToolbox,
 } from '../types'
 import { join } from 'path'
@@ -112,7 +112,7 @@ const validate = (toolbox: CycliToolbox): void => {
 export const recipe: CycliRecipe = {
   meta: {
     name: 'Preview with EAS',
-    flag: CycliRecipeFlag.EAS,
+    flag: CycliRecipeType.EAS,
     description:
       'Generate Preview with EAS workflow to run on every PR (Expo projects only)',
     selectHint: 'generate preview with EAS',

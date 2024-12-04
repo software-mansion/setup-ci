@@ -14,7 +14,7 @@ import { PrettierExtension } from './extensions/prettier'
 import { TelemetryExtension } from './extensions/telemetry'
 import { ConfigExtension } from './extensions/config'
 
-export enum CycliRecipeFlag {
+export enum CycliRecipeType {
   ESLINT = 'lint',
   JEST = 'jest',
   TYPESCRIPT = 'ts',
@@ -26,7 +26,7 @@ export enum CycliRecipeFlag {
 
 export interface RecipeMeta {
   name: string
-  flag: CycliRecipeFlag
+  flag: CycliRecipeType
   description: string
   selectHint: string
 }
@@ -90,8 +90,8 @@ export interface AppJson {
 
 export type CycliToolbox = {
   [K in keyof GluegunToolbox as K extends `${infer _}`
-    ? K
-    : never]: GluegunToolbox[K]
+  ? K
+  : never]: GluegunToolbox[K]
 } & DependenciesExtension &
   InteractiveExtension &
   ConfigExtension &

@@ -1,5 +1,5 @@
 import { join } from 'path'
-import { CycliRecipe, CycliRecipeFlag, CycliToolbox } from '../types'
+import { CycliRecipe, CycliRecipeType, CycliToolbox } from '../types'
 
 const existsJestConfiguration = (toolbox: CycliToolbox): boolean =>
   Boolean(toolbox.projectConfig.packageJson().jest) ||
@@ -32,7 +32,7 @@ const execute = async (toolbox: CycliToolbox): Promise<void> => {
 export const recipe: CycliRecipe = {
   meta: {
     name: 'Jest',
-    flag: CycliRecipeFlag.JEST,
+    flag: CycliRecipeType.JEST,
     description: 'Generate Jest workflow to run on every PR',
     selectHint: 'run tests with Jest',
   },

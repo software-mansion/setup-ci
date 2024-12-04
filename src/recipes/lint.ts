@@ -1,4 +1,4 @@
-import { CycliRecipe, CycliRecipeFlag, CycliToolbox } from '../types'
+import { CycliRecipe, CycliRecipeType, CycliToolbox } from '../types'
 import { join } from 'path'
 
 const existsEslintConfiguration = (toolbox: CycliToolbox): boolean =>
@@ -52,7 +52,7 @@ const execute = async (toolbox: CycliToolbox): Promise<void> => {
   await toolbox.dependencies.addDev('typescript')
 
   const withPrettier =
-    toolbox.config.selectedRecipes().includes(CycliRecipeFlag.PRETTIER) ||
+    toolbox.config.getSelectedRecipes().includes(CycliRecipeType.PRETTIER) ||
     toolbox.dependencies.existsDev('prettier') ||
     toolbox.dependencies.exists('prettier')
 
@@ -88,7 +88,7 @@ const execute = async (toolbox: CycliToolbox): Promise<void> => {
 export const recipe: CycliRecipe = {
   meta: {
     name: 'ESLint',
-    flag: CycliRecipeFlag.ESLINT,
+    flag: CycliRecipeType.ESLINT,
     description: 'Generate ESLint workflow to run on every PR',
     selectHint: 'check code style with linter',
   },

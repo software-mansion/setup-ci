@@ -49,10 +49,10 @@ const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
     'Created snapshot of project state before execution.'
   )
 
-  await toolbox.config.obtain(RECIPES)
+  await toolbox.config.prompt(RECIPES)
 
   const executors = RECIPES.filter((recipe: CycliRecipe) =>
-    toolbox.config.selectedRecipes().includes(recipe.meta.flag)
+    toolbox.config.getSelectedRecipes().includes(recipe.meta.flag)
   ).map((recipe: CycliRecipe) => recipe.execute)
 
   if (executors.length === 0) {
@@ -68,15 +68,14 @@ const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
 
   const snapshotAfter = await toolbox.diff.gitStatus()
   const diff = toolbox.diff.compare(snapshotBefore, snapshotAfter)
+  toolbox.diff.print(diff)
 
   toolbox.prettier.formatFiles(Array.from(diff.keys()))
-
-  toolbox.diff.print(diff)
 
   toolbox.furtherActions.print()
 
   const usedFlags = toolbox.config
-    .selectedRecipes()
+    .getSelectedRecipes()
     .map((flag: string) => `--${flag}`)
     .join(' ')
 
@@ -88,6 +87,19 @@ const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
       `Next time you can specify a preset to reproduce this run using npx ${CYCLI_COMMAND} --${PRESET_FLAG} ${usedFlags}.`
     )
   }
+
+  toolbox.interactive.vspace()
+
+  toolbox.interactive.info(
+    [
+      `Thank you for using ${COLORS.cyan('setup-ci')} 💙`,
+      "We'd love to hear your feedback to make it even better.",
+      'Please take a moment to fill out our survey:\n',
+      `\t → ${FEEDBACK_SURVEY_URL}\n`,
+      'Your input is greatly appreciated! 🙏',
+    ].join('\n'),
+    'green'
+  )
 }
 
 const checkGit = async (toolbox: CycliToolbox) => {
@@ -189,7 +201,7 @@ const run = async (toolbox: CycliToolbox) => {
         options: Object.fromEntries(
           RECIPES.map((recipe) => [
             recipe.meta.flag,
-            toolbox.config.selectedRecipes().includes(recipe.meta.flag),
+            toolbox.config.getSelectedRecipes().includes(recipe.meta.flag),
           ])
         ),
         error: finishedWithUnexpectedError,
@@ -198,19 +210,6 @@ const run = async (toolbox: CycliToolbox) => {
   } catch (_: unknown) {
     // ignore telemetry errors
   }
-
-  toolbox.interactive.vspace()
-
-  toolbox.interactive.info(
-    [
-      `Thank you for using ${COLORS.cyan('setup-ci')} 💙`,
-      "We'd love to hear your feedback to make it even better.",
-      'Please take a moment to fill out our survey:\n',
-      `\t → ${FEEDBACK_SURVEY_URL}\n`,
-      'Your input is greatly appreciated! 🙏',
-    ].join('\n'),
-    'green'
-  )
 
   process.exit()
 }

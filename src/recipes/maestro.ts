@@ -1,4 +1,4 @@
-import { CycliRecipe, CycliRecipeFlag, CycliToolbox } from '../types'
+import { CycliRecipe, CycliRecipeType, CycliToolbox } from '../types'
 import { createBuildWorkflows } from './build'
 import { join } from 'path'
 
@@ -62,7 +62,7 @@ const execute = async (toolbox: CycliToolbox) => {
 export const recipe: CycliRecipe = {
   meta: {
     name: 'Maestro',
-    flag: CycliRecipeFlag.MAESTRO,
+    flag: CycliRecipeType.MAESTRO,
     description: 'Generate workflow to run Maestro e2e tests on every PR',
     selectHint: 'run maestro e2e tests suite',
   },

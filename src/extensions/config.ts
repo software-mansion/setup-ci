@@ -1,7 +1,7 @@
 import {
   CycliError,
   CycliRecipe,
-  CycliRecipeFlag,
+  CycliRecipeType,
   CycliToolbox,
 } from '../types'
 import intersection from 'lodash/intersection'
@@ -10,17 +10,17 @@ import { DOCS_WORKFLOWS_URL } from '../constants'
 
 module.exports = (toolbox: CycliToolbox) => {
   // State for caching the config
-  let selectedRecipes: CycliRecipeFlag[] | undefined = undefined
+  let selectedRecipes: CycliRecipeType[] | undefined = undefined
 
-  const obtain = async (allRecipes: CycliRecipe[]): Promise<void> => {
+  const prompt = async (allRecipes: CycliRecipe[]): Promise<void> => {
     if (toolbox.options.isPreset()) {
-      const allFlags = Object.values(CycliRecipeFlag)
+      const allFlags = Object.values(CycliRecipeType)
 
       selectedRecipes = intersection(
         allFlags,
         Object.keys(toolbox.parameters.options)
-          .filter((option) => allFlags.includes(option as CycliRecipeFlag))
-          .map((flag) => flag as CycliRecipeFlag)
+          .filter((option) => allFlags.includes(option as CycliRecipeType))
+          .map((flag) => flag as CycliRecipeType)
       )
 
       allRecipes.forEach((recipe: CycliRecipe) => {
@@ -59,23 +59,23 @@ module.exports = (toolbox: CycliToolbox) => {
             }
           }
         )
-      )) as CycliRecipeFlag[]
+      )) as CycliRecipeType[]
     }
   }
 
-  const getSelectedRecipes = (): CycliRecipeFlag[] => {
+  const getSelectedRecipes = (): CycliRecipeType[] => {
     return selectedRecipes || []
   }
 
   toolbox.config = {
-    obtain,
-    selectedRecipes: getSelectedRecipes,
+    prompt,
+    getSelectedRecipes,
   }
 }
 
 export interface ConfigExtension {
   config: {
-    obtain: (allRecipes: CycliRecipe[]) => Promise<void>
-    selectedRecipes: () => CycliRecipeFlag[]
+    prompt: (allRecipes: CycliRecipe[]) => Promise<void>
+    getSelectedRecipes: () => CycliRecipeType[]
   }
 }
