@@ -1,10 +1,4 @@
-import {
-  AppJson,
-  CycliError,
-  CycliToolbox,
-  PackageJson,
-  ProjectContext,
-} from '../types'
+import { AppJson, CycliError, CycliToolbox, PackageJson } from '../types'
 import { join } from 'path'
 import { recursiveAssign } from '../utils/recursiveAssign'
 
@@ -106,8 +100,9 @@ module.exports = (toolbox: CycliToolbox) => {
     return undefined
   }
 
-  const nodeVersionFile = (context: ProjectContext): string => {
-    const { repoRoot, packageRoot } = context.path
+  const nodeVersionFile = (): string => {
+    const packageRoot = toolbox.context.path.packageRoot()
+    const repoRoot = toolbox.context.path.repoRoot()
 
     // First, we look for node version in package root.
     // If not found, we look for it in repository root (for monorepo support).
@@ -143,8 +138,9 @@ module.exports = (toolbox: CycliToolbox) => {
     return undefined
   }
 
-  const bunVersionFile = (context: ProjectContext): string => {
-    const { repoRoot, packageRoot } = context.path
+  const bunVersionFile = (): string => {
+    const packageRoot = toolbox.context.path.packageRoot()
+    const repoRoot = toolbox.context.path.repoRoot()
 
     // First, we look for bun version in package root.
     // If not found, we look for it in repository root (for monorepo support).
@@ -297,13 +293,13 @@ export interface ProjectConfigExtension {
     packageJson: () => PackageJson
     appJsonFile: () => string | undefined
     appJson: () => AppJson | undefined
+    nodeVersionFile: () => string
+    bunVersionFile: () => string
     appJs: () => string | undefined
     patchAppConfig: (
       patch: Record<string, unknown>,
       allowChangeAfterScript?: boolean
     ) => Promise<void>
-    nodeVersionFile: (context: ProjectContext) => string
-    bunVersionFile: (context: ProjectContext) => string
     isExpo: () => boolean
     getName: () => string
     getAppId: () => string | undefined

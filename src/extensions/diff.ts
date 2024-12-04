@@ -1,4 +1,4 @@
-import { CycliToolbox, ProjectContext } from '../types'
+import { CycliToolbox } from '../types'
 import { createHash } from 'crypto'
 import { createReadStream } from 'fs'
 import { join, sep } from 'path'
@@ -38,10 +38,10 @@ module.exports = (toolbox: CycliToolbox) => {
     }
   }
 
-  const gitStatus = async (context: ProjectContext): Promise<Snapshot> => {
+  const gitStatus = async (): Promise<Snapshot> => {
     const pathsList: [Status, string][] = await toolbox.system
       .exec('git status --porcelain', {
-        cwd: context.path.absFromRepoRoot(),
+        cwd: toolbox.context.path.repoRoot(),
       })
       .then((output) =>
         output
@@ -56,8 +56,8 @@ module.exports = (toolbox: CycliToolbox) => {
     for (const [status, path] of pathsList) {
       const expandedPaths =
         status === 'deleted'
-          ? [context.path.absFromRepoRoot(path)]
-          : await expandDirectory(context.path.absFromRepoRoot(path))
+          ? [toolbox.context.path.absFromRepoRoot(path)]
+          : await expandDirectory(toolbox.context.path.absFromRepoRoot(path))
 
       expandedPathsList = expandedPathsList.concat(
         expandedPaths.map((expandedPath) => [status, expandedPath])
@@ -114,7 +114,7 @@ module.exports = (toolbox: CycliToolbox) => {
     ].join(sep)
   }
 
-  const print = (diff: Diff, context: ProjectContext): void => {
+  const print = (diff: Diff): void => {
     toolbox.interactive.vspace()
 
     if (diff.size === 0) {
@@ -132,8 +132,8 @@ module.exports = (toolbox: CycliToolbox) => {
         Array.from(diff.entries()).map(([path, { status }]) =>
           colorizeDiffPath(
             join(
-              context.path.repoFolderName,
-              path.substring(context.path.absFromRepoRoot().length + 1)
+              toolbox.context.path.repoFolderName(),
+              path.substring(toolbox.context.path.repoRoot().length + 1)
             ),
             status
           )
@@ -162,8 +162,8 @@ type Diff = Map<
 
 export interface DiffExtension {
   diff: {
-    gitStatus: (context: ProjectContext) => Promise<Snapshot>
+    gitStatus: () => Promise<Snapshot>
     compare: (before: Snapshot, after: Snapshot) => Diff
-    print: (diff: Diff, context: ProjectContext) => void
+    print: (diff: Diff) => void
   }
 }

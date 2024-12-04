@@ -1,4 +1,4 @@
-import { CycliError, CycliToolbox, Platform, ProjectContext } from '../types'
+import { CycliError, CycliToolbox, Platform } from '../types'
 import { join } from 'path'
 
 const BuildMode = {
@@ -10,7 +10,6 @@ type BuildModeType = (typeof BuildMode)[keyof typeof BuildMode]
 
 const createBuildWorkflowForAndroid = async (
   toolbox: CycliToolbox,
-  context: ProjectContext,
   { mode, expo }: { mode: BuildModeType; expo: boolean },
   workflowProps: Record<string, string> = {}
 ): Promise<string> => {
@@ -31,14 +30,13 @@ const createBuildWorkflowForAndroid = async (
   ].join(' ')
 
   if (expo) {
-    script = `npx expo prebuild --${context.packageManager} && ${script}`
+    script = `npx expo prebuild --${toolbox.context.packageManager()} && ${script}`
   }
 
   await toolbox.scripts.add(`build:${mode}:android`, script)
 
   const workflowFileName = await toolbox.workflows.generate(
     join(`build-${mode}`, `build-${mode}-android.ejf`),
-    context,
     workflowProps
   )
 
@@ -49,7 +47,6 @@ const createBuildWorkflowForAndroid = async (
 
 const createBuildWorkflowForIOS = async (
   toolbox: CycliToolbox,
-  context: ProjectContext,
   {
     mode,
     iOSAppName,
@@ -82,7 +79,7 @@ const createBuildWorkflowForIOS = async (
   ].join(' ')
 
   if (expo) {
-    script = `npx expo prebuild --${context.packageManager} && ${script}`
+    script = `npx expo prebuild --${toolbox.context.packageManager()} && ${script}`
   } else {
     script = `cd ios && pod install && cd .. && ${script}`
   }
@@ -91,7 +88,6 @@ const createBuildWorkflowForIOS = async (
 
   const workflowFileName = await toolbox.workflows.generate(
     join(`build-${mode}`, `build-${mode}-ios.ejf`),
-    context,
     {
       iOSAppName,
       ...workflowProps,
@@ -105,7 +101,6 @@ const createBuildWorkflowForIOS = async (
 
 export const createBuildWorkflows = async (
   toolbox: CycliToolbox,
-  context: ProjectContext,
   { mode, expo }: { mode: BuildModeType; expo: boolean }
 ): Promise<{ [key in Platform]: string }> => {
   const existsAndroidDir = toolbox.filesystem.exists('android')
@@ -113,7 +108,7 @@ export const createBuildWorkflows = async (
 
   if (expo) {
     await toolbox.projectConfig.checkAppNameInConfigOrGenerate()
-    await toolbox.expo.prebuild(context, { cleanAfter: false })
+    await toolbox.expo.prebuild({ cleanAfter: false })
   }
 
   const iOSAppName = toolbox.filesystem
@@ -131,8 +126,7 @@ export const createBuildWorkflows = async (
 
   if (mode === BuildMode.Debug) {
     lookupDebugBuildWorkflowFileName = await toolbox.workflows.generate(
-      join('build-debug', 'lookup-cached-debug-build.ejf'),
-      context
+      join('build-debug', 'lookup-cached-debug-build.ejf')
     )
 
     await toolbox.scripts.add(
@@ -148,14 +142,12 @@ export const createBuildWorkflows = async (
 
   const androidBuildWorkflowFileName = await createBuildWorkflowForAndroid(
     toolbox,
-    context,
     { mode, expo },
     { lookupDebugBuildWorkflowFileName }
   )
 
   const iOSBuildWorkflowFileName = await createBuildWorkflowForIOS(
     toolbox,
-    context,
     {
       mode,
       iOSAppName,

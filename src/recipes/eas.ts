@@ -1,9 +1,12 @@
 import { REPOSITORY_SECRETS_HELP_URL } from '../constants'
-import { CycliError, CycliRecipe, CycliToolbox, ProjectContext } from '../types'
+import {
+  CycliError,
+  CycliRecipe,
+  CycliRecipeType,
+  CycliToolbox,
+} from '../types'
 import { join } from 'path'
 import { recursiveAssign } from '../utils/recursiveAssign'
-
-const FLAG = 'eas'
 
 const patchEasJson = async (
   toolbox: CycliToolbox,
@@ -47,16 +50,13 @@ const patchAppJson = async (toolbox: CycliToolbox): Promise<void> => {
   await toolbox.projectConfig.patchAppConfig(patch)
 }
 
-const execute = async (
-  toolbox: CycliToolbox,
-  context: ProjectContext
-): Promise<void> => {
+const execute = async (toolbox: CycliToolbox): Promise<void> => {
   toolbox.interactive.vspace()
   toolbox.interactive.sectionHeader('Generating Preview with EAS workflow')
 
-  await toolbox.dependencies.add('expo', context)
-  await toolbox.dependencies.add('expo-dev-client', context)
-  await toolbox.dependencies.add('expo-updates', context)
+  await toolbox.dependencies.add('expo')
+  await toolbox.dependencies.add('expo-dev-client')
+  await toolbox.dependencies.add('expo-updates')
 
   await toolbox.projectConfig.checkAppNameInConfigOrGenerate()
 
@@ -91,7 +91,7 @@ const execute = async (
   await patchEasJson(toolbox, withIOSCredentials)
   await patchAppJson(toolbox)
 
-  await toolbox.workflows.generate(join('eas', 'eas.ejf'), context)
+  await toolbox.workflows.generate(join('eas', 'eas.ejf'))
 
   toolbox.interactive.success('Created Preview with EAS workflow.')
 
@@ -112,7 +112,7 @@ const validate = (toolbox: CycliToolbox): void => {
 export const recipe: CycliRecipe = {
   meta: {
     name: 'Preview with EAS',
-    flag: FLAG,
+    flag: CycliRecipeType.EAS,
     description:
       'Generate Preview with EAS workflow to run on every PR (Expo projects only)',
     selectHint: 'generate preview with EAS',

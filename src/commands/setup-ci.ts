@@ -8,12 +8,10 @@ import detox from '../recipes/detox'
 import maestro from '../recipes/maestro'
 import isGitDirty from 'is-git-dirty'
 import sequentialPromiseMap from '../utils/sequentialPromiseMap'
-import { CycliError, CycliRecipe, CycliToolbox, ProjectContext } from '../types'
-import intersection from 'lodash/intersection'
+import { CycliError, CycliRecipe, CycliToolbox } from '../types'
 import {
   COLORS,
   CYCLI_COMMAND,
-  DOCS_WORKFLOWS_URL,
   HELP_FLAG,
   PRESET_FLAG,
   REPOSITORY_METRICS_HELP_URL,
@@ -45,70 +43,16 @@ const RECIPES = [
   maestro,
 ]
 
-const getSelectedOptions = async (toolbox: CycliToolbox): Promise<string[]> => {
-  if (toolbox.options.isPreset()) {
-    const featureFlags = RECIPES.map((option) => option.meta.flag)
-
-    const selectedOptions = intersection(
-      featureFlags,
-      Object.keys(toolbox.parameters.options)
-    )
-
-    RECIPES.forEach((recipe: CycliRecipe) => {
-      if (selectedOptions.includes(recipe.meta.flag)) {
-        try {
-          recipe.validate?.(toolbox)
-        } catch (error: unknown) {
-          const validationError = messageFromError(error)
-
-          // adding context to validation error reason (used in multiselect menu hint)
-          throw CycliError(
-            `Cannot generate ${recipe.meta.name} workflow in your project.\nReason: ${validationError}`
-          )
-        }
-      }
-    })
-
-    return selectedOptions
-  } else {
-    return await toolbox.interactive.multiselect(
-      'Select workflows you want to run on every PR',
-      `Learn more about PR workflows: ${DOCS_WORKFLOWS_URL}`,
-      RECIPES.map(
-        ({ validate, meta: { name, flag, selectHint } }: CycliRecipe) => {
-          let validationError = ''
-          try {
-            validate?.(toolbox)
-          } catch (error: unknown) {
-            validationError = messageFromError(error)
-          }
-          const hint = validationError || selectHint
-          const disabled = Boolean(validationError)
-          return {
-            label: name,
-            value: flag,
-            hint,
-            disabled,
-          }
-        }
-      )
-    )
-  }
-}
-
-const runReactNativeCiCli = async (
-  toolbox: CycliToolbox,
-  context: ProjectContext
-) => {
-  const snapshotBefore = await toolbox.diff.gitStatus(context)
+const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
+  const snapshotBefore = await toolbox.diff.gitStatus()
   toolbox.interactive.surveyStep(
     'Created snapshot of project state before execution.'
   )
 
-  context.selectedOptions = await getSelectedOptions(toolbox)
+  await toolbox.config.prompt(RECIPES)
 
   const executors = RECIPES.filter((recipe: CycliRecipe) =>
-    context.selectedOptions.includes(recipe.meta.flag)
+    toolbox.config.getSelectedRecipes().includes(recipe.meta.flag)
   ).map((recipe: CycliRecipe) => recipe.execute)
 
   if (executors.length === 0) {
@@ -117,23 +61,21 @@ const runReactNativeCiCli = async (
   }
 
   toolbox.interactive.surveyStep(
-    `Detected ${context.packageManager} as your package manager.`
+    `Detected ${toolbox.context.packageManager()} as your package manager.`
   )
 
-  await sequentialPromiseMap(executors, (executor) =>
-    executor(toolbox, context)
-  )
+  await sequentialPromiseMap(executors, (executor) => executor(toolbox))
 
-  const snapshotAfter = await toolbox.diff.gitStatus(context)
+  const snapshotAfter = await toolbox.diff.gitStatus()
   const diff = toolbox.diff.compare(snapshotBefore, snapshotAfter)
+  toolbox.diff.print(diff)
 
   toolbox.prettier.formatFiles(Array.from(diff.keys()))
 
-  toolbox.diff.print(diff, context)
-
   toolbox.furtherActions.print()
 
-  const usedFlags = context.selectedOptions
+  const usedFlags = toolbox.config
+    .getSelectedRecipes()
     .map((flag: string) => `--${flag}`)
     .join(' ')
 
@@ -196,6 +138,13 @@ const checkGit = async (toolbox: CycliToolbox) => {
   }
 }
 
+// Try to obtain package manager and package root path.
+// In case of failure, an error is thrown and cli exits early.
+const validateProject = (toolbox: CycliToolbox) => {
+  toolbox.context.packageManager()
+  toolbox.context.path.packageRoot()
+}
+
 const run = async (toolbox: CycliToolbox) => {
   toolbox.interactive.surveyInfo(
     [
@@ -220,18 +169,13 @@ const run = async (toolbox: CycliToolbox) => {
   }
 
   let finishedWithUnexpectedError = false
-  let context: ProjectContext | undefined
 
   try {
     await checkGit(toolbox as CycliToolbox)
 
-    context = toolbox.projectContext.obtain()
-    toolbox.interactive.surveyStep('Obtained project context.')
+    validateProject(toolbox)
 
-    await runReactNativeCiCli(
-      toolbox as CycliToolbox,
-      context as ProjectContext
-    )
+    await runReactNativeCiCli(toolbox as CycliToolbox)
   } catch (error: unknown) {
     toolbox.interactive.vspace()
     let errMessage = messageFromError(error)
@@ -253,17 +197,13 @@ const run = async (toolbox: CycliToolbox) => {
     if (!toolbox.options.skipTelemetry()) {
       await toolbox.telemetry.sendLog({
         version: toolbox.meta.version(),
-        firstUse: context?.firstUse,
-        options:
-          context &&
-          Object.fromEntries(
-            RECIPES.map((recipe) => [
-              recipe.meta.flag,
-              (context as ProjectContext).selectedOptions.includes(
-                recipe.meta.flag
-              ),
-            ])
-          ),
+        firstUse: toolbox.context.isFirstUse(),
+        options: Object.fromEntries(
+          RECIPES.map((recipe) => [
+            recipe.meta.flag,
+            toolbox.config.getSelectedRecipes().includes(recipe.meta.flag),
+          ])
+        ),
         error: finishedWithUnexpectedError,
       })
     }

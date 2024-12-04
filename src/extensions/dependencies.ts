@@ -1,10 +1,22 @@
 import { COLORS, CYCLI_COMMAND, REPOSITORY_ISSUES_URL } from '../constants'
-import { CycliToolbox, PackageManager, ProjectContext } from '../types'
+import { CycliToolbox, PackageManager } from '../types'
 import { join, sep } from 'path'
 import { messageFromError } from '../utils/errors'
 
 module.exports = (toolbox: CycliToolbox) => {
   const { system } = toolbox
+
+  const versionSatisfies = (name: string, req: string): boolean => {
+    const version =
+      toolbox.projectConfig.packageJson().dependencies?.[name] ??
+      toolbox.projectConfig.packageJson().devDependencies?.[name]
+
+    if (!version) {
+      return false
+    }
+
+    return toolbox.semver.satisfies(version, req)
+  }
 
   const exists = (name: string): boolean =>
     Boolean(toolbox.projectConfig.packageJson().dependencies?.[name])
@@ -33,11 +45,7 @@ module.exports = (toolbox: CycliToolbox) => {
     await system.run(installCommand)
   }
 
-  const install = async (
-    fullName: string,
-    context: ProjectContext,
-    { dev }: { dev: boolean }
-  ) => {
+  const install = async (fullName: string, { dev }: { dev: boolean }) => {
     const type = dev ? 'devDependency' : 'dependency'
 
     const spinner = toolbox.interactive.spin(
@@ -45,7 +53,7 @@ module.exports = (toolbox: CycliToolbox) => {
     )
 
     try {
-      await execInstall(fullName, context.packageManager, dev)
+      await execInstall(fullName, toolbox.context.packageManager(), dev)
     } catch (error: unknown) {
       spinner.stop()
 
@@ -81,7 +89,6 @@ module.exports = (toolbox: CycliToolbox) => {
 
   const add = async (
     name: string,
-    context: ProjectContext,
     {
       version = '',
       skipInstalledCheck = false,
@@ -99,12 +106,11 @@ module.exports = (toolbox: CycliToolbox) => {
 
     const fullName = version ? [name, version].join('@') : name
 
-    await install(fullName, context, { dev: false })
+    await install(fullName, { dev: false })
   }
 
   const addDev = async (
     name: string,
-    context: ProjectContext,
     {
       version = '',
       skipInstalledCheck = false,
@@ -117,7 +123,7 @@ module.exports = (toolbox: CycliToolbox) => {
       toolbox.interactive.warning(
         `Detected package ${name} in "dependencies", but shouldn't it be in "devDependencies"?`
       )
-      await add(name, context, { version, skipInstalledCheck })
+      await add(name, { version, skipInstalledCheck })
       return
     }
 
@@ -130,10 +136,11 @@ module.exports = (toolbox: CycliToolbox) => {
 
     const fullName = version ? [name, version].join('@') : name
 
-    await install(fullName, context, { dev: true })
+    await install(fullName, { dev: true })
   }
 
   toolbox.dependencies = {
+    versionSatisfies,
     exists,
     existsDev,
     add,
@@ -143,11 +150,11 @@ module.exports = (toolbox: CycliToolbox) => {
 
 export interface DependenciesExtension {
   dependencies: {
+    versionSatisfies: (name: string, req: string) => boolean
     exists: (name: string) => boolean
     existsDev: (name: string) => boolean
     add: (
       name: string,
-      context: ProjectContext,
       options?: {
         version?: string
         skipInstalledCheck?: boolean
@@ -155,7 +162,6 @@ export interface DependenciesExtension {
     ) => Promise<void>
     addDev: (
       name: string,
-      context: ProjectContext,
       options?: {
         version?: string
         skipInstalledCheck?: boolean

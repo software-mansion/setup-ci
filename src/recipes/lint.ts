@@ -1,8 +1,5 @@
-import { CycliRecipe, CycliToolbox, ProjectContext } from '../types'
+import { CycliRecipe, CycliRecipeType, CycliToolbox } from '../types'
 import { join } from 'path'
-import { FLAG as PRETTIER_FLAG } from './prettier'
-
-const FLAG = 'lint'
 
 const existsEslintConfiguration = (toolbox: CycliToolbox): boolean =>
   Boolean(toolbox.projectConfig.packageJson().eslintConfig) ||
@@ -16,11 +13,10 @@ const existsEslintConfiguration = (toolbox: CycliToolbox): boolean =>
 
 const generateConfigForBareReactNative = async (
   toolbox: CycliToolbox,
-  context: ProjectContext,
   withPrettier: boolean
 ): Promise<void> => {
-  await toolbox.dependencies.addDev('@react-native/eslint-config', context)
-  await toolbox.dependencies.addDev('eslint-plugin-ft-flow', context)
+  await toolbox.dependencies.addDev('@react-native/eslint-config')
+  await toolbox.dependencies.addDev('eslint-plugin-ft-flow')
 
   await toolbox.template.generate({
     template: join('lint', '.eslintrc.json.ejs'),
@@ -33,11 +29,8 @@ const generateConfigForBareReactNative = async (
   toolbox.interactive.step('Created .eslintrc.json with default configuration.')
 }
 
-const generateConfigForExpo = async (
-  toolbox: CycliToolbox,
-  context: ProjectContext
-): Promise<void> => {
-  await toolbox.dependencies.addDev('eslint-config-expo', context)
+const generateConfigForExpo = async (toolbox: CycliToolbox): Promise<void> => {
+  await toolbox.dependencies.addDev('eslint-config-expo')
 
   await toolbox.template.generate({
     template: join('lint', '.eslintrc-expo.json.ejs'),
@@ -49,26 +42,23 @@ const generateConfigForExpo = async (
   )
 }
 
-const execute = async (
-  toolbox: CycliToolbox,
-  context: ProjectContext
-): Promise<void> => {
+const execute = async (toolbox: CycliToolbox): Promise<void> => {
   toolbox.interactive.vspace()
   toolbox.interactive.sectionHeader('Generating ESLint workflow')
 
   // eslint@9 introduces new configuration format that is not supported by widely used plugins yet,
   // so we stick to ^8 for now.
-  await toolbox.dependencies.addDev('eslint', context, { version: '^8' })
-  await toolbox.dependencies.addDev('typescript', context)
+  await toolbox.dependencies.addDev('eslint', { version: '^8' })
+  await toolbox.dependencies.addDev('typescript')
 
   const withPrettier =
-    context.selectedOptions.includes(PRETTIER_FLAG) ||
+    toolbox.config.getSelectedRecipes().includes(CycliRecipeType.PRETTIER) ||
     toolbox.dependencies.existsDev('prettier') ||
     toolbox.dependencies.exists('prettier')
 
   if (withPrettier) {
-    await toolbox.dependencies.addDev('eslint-plugin-prettier', context)
-    await toolbox.dependencies.addDev('eslint-config-prettier', context)
+    await toolbox.dependencies.addDev('eslint-plugin-prettier')
+    await toolbox.dependencies.addDev('eslint-config-prettier')
   }
 
   // We assume that if eslint-config-expo is present in package.json,
@@ -82,15 +72,15 @@ const execute = async (
       isEslintConfigExpoInstalled || toolbox.projectConfig.isExpo()
 
     if (generateExpoSpecificConfig) {
-      await generateConfigForExpo(toolbox, context)
+      await generateConfigForExpo(toolbox)
     } else {
-      await generateConfigForBareReactNative(toolbox, context, withPrettier)
+      await generateConfigForBareReactNative(toolbox, withPrettier)
     }
   }
 
   await toolbox.scripts.add('lint', "eslint '**/*.{js,jsx,ts,tsx}'")
 
-  await toolbox.workflows.generate(join('lint', 'lint.ejf'), context)
+  await toolbox.workflows.generate(join('lint', 'lint.ejf'))
 
   toolbox.interactive.success('Created ESLint workflow.')
 }
@@ -98,7 +88,7 @@ const execute = async (
 export const recipe: CycliRecipe = {
   meta: {
     name: 'ESLint',
-    flag: FLAG,
+    flag: CycliRecipeType.ESLINT,
     description: 'Generate ESLint workflow to run on every PR',
     selectHint: 'check code style with linter',
   },

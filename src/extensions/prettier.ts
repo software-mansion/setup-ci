@@ -5,7 +5,7 @@ import { execSync } from 'child_process'
 const FORMATTABLE_FILES_EXTENSIONS = ['.js', '.ts', '.json', '.yml']
 
 module.exports = (toolbox: CycliToolbox) => {
-  const formatFiles = async (files: string[]) => {
+  const formatFiles = (files: string[]) => {
     const spinner = toolbox.interactive.spin(
       'Formatting modified files with Prettier...'
     )
