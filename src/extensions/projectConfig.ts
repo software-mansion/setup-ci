@@ -9,7 +9,7 @@ import { join } from 'path'
 import { recursiveAssign } from '../utils/recursiveAssign'
 
 const APP_JSON_FILES = ['app.json', 'app.config.json']
-const APP_JS_FILES = ['app.js', 'app.config.js']
+const APP_JS_FILES = ['app.js', 'app.config.js', 'app.ts', 'app.config.ts']
 
 const DEFAULT_NODE_VERSION = 'v20.17.0'
 const DEFAULT_BUN_VERSION = '1.1.30'
