@@ -1,0 +1,800 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`biome recipe rn-setup-ci-create-expo-stack lint 1`] = `
+Object {
+  "dependencies": Object {
+    "react": "",
+    "react-native": "",
+  },
+  "devDependencies": Object {
+    "@babel/core": "",
+    "@babel/preset-env": "",
+    "@babel/runtime": "",
+    "@biomejs/biome": "",
+    "@react-native/babel-preset": "",
+    "@react-native/metro-config": "",
+    "@react-native/typescript-config": "",
+    "@types/react": "",
+    "@types/react-test-renderer": "",
+    "react-test-renderer": "",
+  },
+  "engines": Object {
+    "node": ">=18",
+  },
+  "name": "RnSetupCiYarnFlat",
+  "packageManager": "yarn@3.6.4",
+  "private": true,
+  "scripts": Object {
+    "android": "react-native run-android",
+    "biome:check": "biome check",
+    "biome:ci": "biome ci",
+    "biome:write": "biome check --write",
+    "ios": "react-native run-ios",
+    "start": "react-native start",
+  },
+  "version": "0.0.1",
+}
+`;
+
+exports[`biome recipe rn-setup-ci-create-expo-stack lint 2`] = `
+"name: Biome check
+
+on:
+  pull_request:
+
+jobs:
+  eslint:
+    name: Biome
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🏗 Setup repo
+        uses: actions/checkout@v4
+
+      - name: 🌿 Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🌊 Run Biome
+        run: npm run biome:ci
+"
+`;
+
+exports[`biome recipe rn-setup-ci-create-expo-stack lint 3`] = `
+"{
+  \\"$schema\\": \\"https://biomejs.dev/schemas/1.9.4/schema.json\\",
+  \\"vcs\\": {
+    \\"enabled\\": false,
+    \\"clientKind\\": \\"git\\",
+    \\"useIgnoreFile\\": false
+  },
+  \\"files\\": {
+    \\"ignoreUnknown\\": false,
+    \\"ignore\\": [
+      \\"node_modules\\",
+      \\"ios\\",
+      \\"android\\",
+      \\"build\\",
+      \\"dist\\",
+      \\"coverage\\",
+      \\".expo\\",
+      \\".expo-shared\\",
+      \\".expo-shared/assets.json\\",
+      \\".expo-shared/assetlinks\\"
+    ]
+  },
+  \\"formatter\\": {
+    \\"enabled\\": true,
+    \\"indentStyle\\": \\"tab\\"
+  },
+  \\"organizeImports\\": {
+    \\"enabled\\": true
+  },
+  \\"linter\\": {
+    \\"enabled\\": true,
+    \\"rules\\": {
+      \\"recommended\\": true
+    }
+  },
+  \\"javascript\\": {
+    \\"formatter\\": {
+      \\"quoteStyle\\": \\"double\\"
+    }
+  }
+}
+"
+`;
+
+exports[`biome recipe rn-setup-ci-create-expo-stack-bun lint 1`] = `
+Object {
+  "dependencies": Object {
+    "react": "",
+    "react-native": "",
+  },
+  "devDependencies": Object {
+    "@babel/core": "",
+    "@babel/preset-env": "",
+    "@babel/runtime": "",
+    "@biomejs/biome": "",
+    "@react-native/babel-preset": "",
+    "@react-native/metro-config": "",
+    "@react-native/typescript-config": "",
+    "@types/react": "",
+    "@types/react-test-renderer": "",
+    "react-test-renderer": "",
+  },
+  "engines": Object {
+    "node": ">=18",
+  },
+  "name": "RnSetupCiYarnFlat",
+  "packageManager": "yarn@3.6.4",
+  "private": true,
+  "scripts": Object {
+    "android": "react-native run-android",
+    "biome:check": "biome check",
+    "biome:ci": "biome ci",
+    "biome:write": "biome check --write",
+    "ios": "react-native run-ios",
+    "start": "react-native start",
+  },
+  "version": "0.0.1",
+}
+`;
+
+exports[`biome recipe rn-setup-ci-create-expo-stack-bun lint 2`] = `
+"name: Biome check
+
+on:
+  pull_request:
+
+jobs:
+  eslint:
+    name: Biome
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🏗 Setup repo
+        uses: actions/checkout@v4
+
+      - name: 🥟 Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: '.bun-version'
+
+      - name: 📦 Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: 🌊 Run Biome
+        run: bun run biome:ci
+"
+`;
+
+exports[`biome recipe rn-setup-ci-create-expo-stack-bun lint 3`] = `
+"{
+  \\"$schema\\": \\"https://biomejs.dev/schemas/1.9.4/schema.json\\",
+  \\"vcs\\": {
+    \\"enabled\\": false,
+    \\"clientKind\\": \\"git\\",
+    \\"useIgnoreFile\\": false
+  },
+  \\"files\\": {
+    \\"ignoreUnknown\\": false,
+    \\"ignore\\": [
+      \\"node_modules\\",
+      \\"ios\\",
+      \\"android\\",
+      \\"build\\",
+      \\"dist\\",
+      \\"coverage\\",
+      \\".expo\\",
+      \\".expo-shared\\",
+      \\".expo-shared/assets.json\\",
+      \\".expo-shared/assetlinks\\"
+    ]
+  },
+  \\"formatter\\": {
+    \\"enabled\\": true,
+    \\"indentStyle\\": \\"tab\\"
+  },
+  \\"organizeImports\\": {
+    \\"enabled\\": true
+  },
+  \\"linter\\": {
+    \\"enabled\\": true,
+    \\"rules\\": {
+      \\"recommended\\": true
+    }
+  },
+  \\"javascript\\": {
+    \\"formatter\\": {
+      \\"quoteStyle\\": \\"double\\"
+    }
+  }
+}
+"
+`;
+
+exports[`biome recipe rn-setup-ci-create-expo-stack-pnpm lint 1`] = `
+Object {
+  "dependencies": Object {
+    "react": "",
+    "react-native": "",
+  },
+  "devDependencies": Object {
+    "@babel/core": "",
+    "@babel/preset-env": "",
+    "@babel/runtime": "",
+    "@biomejs/biome": "",
+    "@react-native/babel-preset": "",
+    "@react-native/metro-config": "",
+    "@react-native/typescript-config": "",
+    "@types/react": "",
+    "@types/react-test-renderer": "",
+    "react-test-renderer": "",
+  },
+  "engines": Object {
+    "node": ">=18",
+  },
+  "name": "RnSetupCiYarnFlat",
+  "packageManager": "yarn@3.6.4",
+  "private": true,
+  "scripts": Object {
+    "android": "react-native run-android",
+    "biome:check": "biome check",
+    "biome:ci": "biome ci",
+    "biome:write": "biome check --write",
+    "ios": "react-native run-ios",
+    "start": "react-native start",
+  },
+  "version": "0.0.1",
+}
+`;
+
+exports[`biome recipe rn-setup-ci-create-expo-stack-pnpm lint 2`] = `
+"name: Biome check
+
+on:
+  pull_request:
+
+jobs:
+  eslint:
+    name: Biome
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🏗 Setup repo
+        uses: actions/checkout@v4
+
+      - name: 🐿️ Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: 🌿 Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'pnpm'
+
+      - name: 📦 Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: 🌊 Run Biome
+        run: pnpm run biome:ci
+"
+`;
+
+exports[`biome recipe rn-setup-ci-create-expo-stack-pnpm lint 3`] = `
+"{
+  \\"$schema\\": \\"https://biomejs.dev/schemas/1.9.4/schema.json\\",
+  \\"vcs\\": {
+    \\"enabled\\": false,
+    \\"clientKind\\": \\"git\\",
+    \\"useIgnoreFile\\": false
+  },
+  \\"files\\": {
+    \\"ignoreUnknown\\": false,
+    \\"ignore\\": [
+      \\"node_modules\\",
+      \\"ios\\",
+      \\"android\\",
+      \\"build\\",
+      \\"dist\\",
+      \\"coverage\\",
+      \\".expo\\",
+      \\".expo-shared\\",
+      \\".expo-shared/assets.json\\",
+      \\".expo-shared/assetlinks\\"
+    ]
+  },
+  \\"formatter\\": {
+    \\"enabled\\": true,
+    \\"indentStyle\\": \\"tab\\"
+  },
+  \\"organizeImports\\": {
+    \\"enabled\\": true
+  },
+  \\"linter\\": {
+    \\"enabled\\": true,
+    \\"rules\\": {
+      \\"recommended\\": true
+    }
+  },
+  \\"javascript\\": {
+    \\"formatter\\": {
+      \\"quoteStyle\\": \\"double\\"
+    }
+  }
+}
+"
+`;
+
+exports[`biome recipe rn-setup-ci-npm-flat lint 1`] = `
+Object {
+  "dependencies": Object {
+    "react": "",
+    "react-native": "",
+  },
+  "devDependencies": Object {
+    "@babel/core": "",
+    "@babel/preset-env": "",
+    "@babel/runtime": "",
+    "@biomejs/biome": "",
+    "@react-native/babel-preset": "",
+    "@react-native/metro-config": "",
+    "@react-native/typescript-config": "",
+    "@types/react": "",
+    "@types/react-test-renderer": "",
+    "react-test-renderer": "",
+  },
+  "engines": Object {
+    "node": ">=18",
+  },
+  "name": "RnSetupCiYarnFlat",
+  "packageManager": "yarn@3.6.4",
+  "private": true,
+  "scripts": Object {
+    "android": "react-native run-android",
+    "biome:check": "biome check",
+    "biome:ci": "biome ci",
+    "biome:write": "biome check --write",
+    "ios": "react-native run-ios",
+    "start": "react-native start",
+  },
+  "version": "0.0.1",
+}
+`;
+
+exports[`biome recipe rn-setup-ci-npm-flat lint 2`] = `
+"name: Biome check
+
+on:
+  pull_request:
+
+jobs:
+  eslint:
+    name: Biome
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🏗 Setup repo
+        uses: actions/checkout@v4
+
+      - name: 🌿 Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: 'package.json'
+          cache: 'npm'
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🌊 Run Biome
+        run: npm run biome:ci
+"
+`;
+
+exports[`biome recipe rn-setup-ci-npm-flat lint 3`] = `
+"{
+  \\"$schema\\": \\"https://biomejs.dev/schemas/1.9.4/schema.json\\",
+  \\"vcs\\": {
+    \\"enabled\\": false,
+    \\"clientKind\\": \\"git\\",
+    \\"useIgnoreFile\\": false
+  },
+  \\"files\\": {
+    \\"ignoreUnknown\\": false,
+    \\"ignore\\": [
+      \\"node_modules\\",
+      \\"ios\\",
+      \\"android\\",
+      \\"build\\",
+      \\"dist\\",
+      \\"coverage\\",
+      \\".expo\\",
+      \\".expo-shared\\",
+      \\".expo-shared/assets.json\\",
+      \\".expo-shared/assetlinks\\"
+    ]
+  },
+  \\"formatter\\": {
+    \\"enabled\\": true,
+    \\"indentStyle\\": \\"tab\\"
+  },
+  \\"organizeImports\\": {
+    \\"enabled\\": true
+  },
+  \\"linter\\": {
+    \\"enabled\\": true,
+    \\"rules\\": {
+      \\"recommended\\": true
+    }
+  },
+  \\"javascript\\": {
+    \\"formatter\\": {
+      \\"quoteStyle\\": \\"double\\"
+    }
+  }
+}
+"
+`;
+
+exports[`biome recipe rn-setup-ci-npm-monorepo lint 1`] = `
+Object {
+  "dependencies": Object {
+    "@expo/vector-icons": "",
+    "@react-navigation/native": "",
+    "expo": "",
+    "expo-constants": "",
+    "expo-font": "",
+    "expo-linking": "",
+    "expo-router": "",
+    "expo-splash-screen": "",
+    "expo-status-bar": "",
+    "expo-system-ui": "",
+    "expo-updates": "",
+    "expo-web-browser": "",
+    "react": "",
+    "react-dom": "",
+    "react-native": "",
+    "react-native-gesture-handler": "",
+    "react-native-reanimated": "",
+    "react-native-safe-area-context": "",
+    "react-native-screens": "",
+    "react-native-web": "",
+  },
+  "devDependencies": Object {
+    "@babel/core": "",
+    "@biomejs/biome": "",
+    "@types/react": "",
+    "@types/react-test-renderer": "",
+    "jest-expo": "",
+    "react-test-renderer": "",
+  },
+  "main": "expo-router/entry",
+  "name": "expo-app",
+  "private": true,
+  "scripts": Object {
+    "android": "expo start --android",
+    "biome:check": "biome check",
+    "biome:ci": "biome ci",
+    "biome:write": "biome check --write",
+    "ios": "expo start --ios",
+    "reset-project": "node ./scripts/reset-project.js",
+    "start": "expo start",
+    "web": "expo start --web",
+  },
+  "version": "1.0.0",
+}
+`;
+
+exports[`biome recipe rn-setup-ci-npm-monorepo lint 2`] = `
+"name: Biome check
+
+on:
+  pull_request:
+    paths:
+      - apps/expo-app/**
+
+jobs:
+  eslint:
+    name: Biome
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🏗 Setup repo
+        uses: actions/checkout@v4
+
+      - name: 🌿 Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: 'apps/expo-app/.nvmrc'
+          cache: 'npm'
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🌊 Run Biome
+        run: npm run biome:ci
+        working-directory: apps/expo-app
+"
+`;
+
+exports[`biome recipe rn-setup-ci-npm-monorepo lint 3`] = `
+"{
+  \\"$schema\\": \\"https://biomejs.dev/schemas/1.9.4/schema.json\\",
+  \\"vcs\\": {
+    \\"enabled\\": false,
+    \\"clientKind\\": \\"git\\",
+    \\"useIgnoreFile\\": false
+  },
+  \\"files\\": {
+    \\"ignoreUnknown\\": false,
+    \\"ignore\\": [
+      \\"node_modules\\",
+      \\"ios\\",
+      \\"android\\",
+      \\"build\\",
+      \\"dist\\",
+      \\"coverage\\",
+      \\".expo\\",
+      \\".expo-shared\\",
+      \\".expo-shared/assets.json\\",
+      \\".expo-shared/assetlinks\\"
+    ]
+  },
+  \\"formatter\\": {
+    \\"enabled\\": true,
+    \\"indentStyle\\": \\"tab\\"
+  },
+  \\"organizeImports\\": {
+    \\"enabled\\": true
+  },
+  \\"linter\\": {
+    \\"enabled\\": true,
+    \\"rules\\": {
+      \\"recommended\\": true
+    }
+  },
+  \\"javascript\\": {
+    \\"formatter\\": {
+      \\"quoteStyle\\": \\"double\\"
+    }
+  }
+}
+"
+`;
+
+exports[`biome recipe rn-setup-ci-yarn-flat lint 1`] = `
+Object {
+  "dependencies": Object {
+    "react": "",
+    "react-native": "",
+  },
+  "devDependencies": Object {
+    "@babel/core": "",
+    "@babel/preset-env": "",
+    "@babel/runtime": "",
+    "@biomejs/biome": "",
+    "@react-native/babel-preset": "",
+    "@react-native/metro-config": "",
+    "@react-native/typescript-config": "",
+    "@types/react": "",
+    "@types/react-test-renderer": "",
+    "react-test-renderer": "",
+  },
+  "engines": Object {
+    "node": ">=18",
+  },
+  "name": "RnSetupCiYarnFlat",
+  "packageManager": "yarn@3.6.4",
+  "private": true,
+  "scripts": Object {
+    "android": "react-native run-android",
+    "biome:check": "biome check",
+    "biome:ci": "biome ci",
+    "biome:write": "biome check --write",
+    "ios": "react-native run-ios",
+    "start": "react-native start",
+  },
+  "version": "0.0.1",
+}
+`;
+
+exports[`biome recipe rn-setup-ci-yarn-flat lint 2`] = `
+"name: Biome check
+
+on:
+  pull_request:
+
+jobs:
+  eslint:
+    name: Biome
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🏗 Setup repo
+        uses: actions/checkout@v4
+
+      - name: 🌿 Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: 'package.json'
+          cache: 'yarn'
+
+      - name: 📦 Install dependencies
+        run: yarn install --immutable
+
+      - name: 🌊 Run Biome
+        run: yarn run biome:ci
+"
+`;
+
+exports[`biome recipe rn-setup-ci-yarn-flat lint 3`] = `
+"{
+  \\"$schema\\": \\"https://biomejs.dev/schemas/1.9.4/schema.json\\",
+  \\"vcs\\": {
+    \\"enabled\\": false,
+    \\"clientKind\\": \\"git\\",
+    \\"useIgnoreFile\\": false
+  },
+  \\"files\\": {
+    \\"ignoreUnknown\\": false,
+    \\"ignore\\": [
+      \\"node_modules\\",
+      \\"ios\\",
+      \\"android\\",
+      \\"build\\",
+      \\"dist\\",
+      \\"coverage\\",
+      \\".expo\\",
+      \\".expo-shared\\",
+      \\".expo-shared/assets.json\\",
+      \\".expo-shared/assetlinks\\"
+    ]
+  },
+  \\"formatter\\": {
+    \\"enabled\\": true,
+    \\"indentStyle\\": \\"tab\\"
+  },
+  \\"organizeImports\\": {
+    \\"enabled\\": true
+  },
+  \\"linter\\": {
+    \\"enabled\\": true,
+    \\"rules\\": {
+      \\"recommended\\": true
+    }
+  },
+  \\"javascript\\": {
+    \\"formatter\\": {
+      \\"quoteStyle\\": \\"double\\"
+    }
+  }
+}
+"
+`;
+
+exports[`biome recipe rn-setup-ci-yarn-monorepo lint 1`] = `
+Object {
+  "dependencies": Object {
+    "@expo/vector-icons": "",
+    "@react-navigation/native": "",
+    "expo": "",
+    "expo-constants": "",
+    "expo-font": "",
+    "expo-linking": "",
+    "expo-router": "",
+    "expo-splash-screen": "",
+    "expo-status-bar": "",
+    "expo-system-ui": "",
+    "expo-updates": "",
+    "expo-web-browser": "",
+    "react": "",
+    "react-dom": "",
+    "react-native": "",
+    "react-native-gesture-handler": "",
+    "react-native-reanimated": "",
+    "react-native-safe-area-context": "",
+    "react-native-screens": "",
+    "react-native-web": "",
+  },
+  "devDependencies": Object {
+    "@babel/core": "",
+    "@biomejs/biome": "",
+    "@types/react": "",
+    "@types/react-test-renderer": "",
+    "jest-expo": "",
+    "react-test-renderer": "",
+  },
+  "main": "expo-router/entry",
+  "name": "expo-app",
+  "private": true,
+  "scripts": Object {
+    "android": "expo start --android",
+    "biome:check": "biome check",
+    "biome:ci": "biome ci",
+    "biome:write": "biome check --write",
+    "ios": "expo start --ios",
+    "reset-project": "node ./scripts/reset-project.js",
+    "start": "expo start",
+    "web": "expo start --web",
+  },
+  "version": "1.0.0",
+}
+`;
+
+exports[`biome recipe rn-setup-ci-yarn-monorepo lint 2`] = `
+"name: Biome check
+
+on:
+  pull_request:
+    paths:
+      - apps/expo-app/**
+
+jobs:
+  eslint:
+    name: Biome
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🏗 Setup repo
+        uses: actions/checkout@v4
+
+      - name: 🌿 Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: 'apps/expo-app/.nvmrc'
+          cache: 'yarn'
+
+      - name: 📦 Install dependencies
+        run: yarn install --immutable
+
+      - name: 🌊 Run Biome
+        run: yarn run biome:ci
+        working-directory: apps/expo-app
+"
+`;
+
+exports[`biome recipe rn-setup-ci-yarn-monorepo lint 3`] = `
+"{
+  \\"$schema\\": \\"https://biomejs.dev/schemas/1.9.4/schema.json\\",
+  \\"vcs\\": {
+    \\"enabled\\": false,
+    \\"clientKind\\": \\"git\\",
+    \\"useIgnoreFile\\": false
+  },
+  \\"files\\": {
+    \\"ignoreUnknown\\": false,
+    \\"ignore\\": [
+      \\"node_modules\\",
+      \\"ios\\",
+      \\"android\\",
+      \\"build\\",
+      \\"dist\\",
+      \\"coverage\\",
+      \\".expo\\",
+      \\".expo-shared\\",
+      \\".expo-shared/assets.json\\",
+      \\".expo-shared/assetlinks\\"
+    ]
+  },
+  \\"formatter\\": {
+    \\"enabled\\": true,
+    \\"indentStyle\\": \\"tab\\"
+  },
+  \\"organizeImports\\": {
+    \\"enabled\\": true
+  },
+  \\"linter\\": {
+    \\"enabled\\": true,
+    \\"rules\\": {
+      \\"recommended\\": true
+    }
+  },
+  \\"javascript\\": {
+    \\"formatter\\": {
+      \\"quoteStyle\\": \\"double\\"
+    }
+  }
+}
+"
+`;
