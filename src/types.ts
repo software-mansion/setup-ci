@@ -1,7 +1,7 @@
 import { GluegunToolbox } from 'gluegun/build/types/domain/toolbox'
 import { DependenciesExtension } from './extensions/dependencies'
 import { InteractiveExtension } from './extensions/interactive'
-import { ProjectContextExtension } from './extensions/projectContext'
+import { ContextExtension } from './extensions/context'
 import { ScriptsExtension } from './extensions/scripts'
 import { WorkflowsExtension } from './extensions/workflows'
 import { ProjectConfigExtension } from './extensions/projectConfig'
@@ -12,6 +12,30 @@ import { FurtherActionsExtension } from './extensions/furtherActions'
 import { ExpoExtension } from './extensions/expo'
 import { PrettierExtension } from './extensions/prettier'
 import { TelemetryExtension } from './extensions/telemetry'
+import { ConfigExtension } from './extensions/config'
+
+export enum CycliRecipeType {
+  ESLINT = 'lint',
+  JEST = 'jest',
+  TYPESCRIPT = 'ts',
+  PRETTIER = 'prettier',
+  DETOX = 'detox',
+  MAESTRO = 'maestro',
+  EAS = 'eas',
+}
+
+export interface RecipeMeta {
+  name: string
+  flag: CycliRecipeType
+  description: string
+  selectHint: string
+}
+
+export interface CycliRecipe {
+  meta: RecipeMeta
+  execute: (toolbox: CycliToolbox) => Promise<void>
+  validate?: (toolbox: CycliToolbox) => void
+}
 
 export const CycliError = (message: string): Error => {
   const error = new Error(message)
@@ -46,22 +70,7 @@ export type LockFile = keyof typeof LOCK_FILE_TO_MANAGER
 export type PackageManager =
   (typeof LOCK_FILE_TO_MANAGER)[keyof typeof LOCK_FILE_TO_MANAGER]
 
-export type RunResult =
-  | ((toolbox: CycliToolbox, context: ProjectContext) => Promise<string>)
-  | null
-
-export interface RecipeMeta {
-  name: string
-  flag: string
-  description: string
-  selectHint: string
-}
-
-export interface CycliRecipe {
-  meta: RecipeMeta
-  execute: (toolbox: CycliToolbox, context: ProjectContext) => Promise<void>
-  validate?: (toolbox: CycliToolbox) => void
-}
+export type RunResult = ((toolbox: CycliToolbox) => Promise<string>) | null
 
 export type Platform = 'android' | 'ios'
 export type Environment = 'development'
@@ -79,27 +88,15 @@ export interface AppJson {
   }
 }
 
-export interface ProjectContext {
-  packageManager: PackageManager
-  path: {
-    repoRoot: string
-    packageRoot: string
-    repoFolderName: string
-    relFromRepoRoot: (p: string) => string
-    absFromRepoRoot: (...p: string[]) => string
-  }
-  selectedOptions: string[]
-  firstUse: boolean
-}
-
 export type CycliToolbox = {
   [K in keyof GluegunToolbox as K extends `${infer _}`
     ? K
     : never]: GluegunToolbox[K]
 } & DependenciesExtension &
   InteractiveExtension &
+  ConfigExtension &
   ProjectConfigExtension &
-  ProjectContextExtension &
+  ContextExtension &
   ScriptsExtension &
   OptionsExtension &
   WorkflowsExtension &

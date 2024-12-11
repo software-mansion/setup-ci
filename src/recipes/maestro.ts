@@ -1,10 +1,8 @@
-import { CycliRecipe, CycliToolbox, ProjectContext } from '../types'
+import { CycliRecipe, CycliRecipeType, CycliToolbox } from '../types'
 import { createBuildWorkflows } from './build'
 import { join } from 'path'
 
-const FLAG = 'maestro'
-
-const execute = async (toolbox: CycliToolbox, context: ProjectContext) => {
+const execute = async (toolbox: CycliToolbox) => {
   toolbox.interactive.vspace()
   toolbox.interactive.sectionHeader('Genereating Maestro workflow')
 
@@ -13,7 +11,7 @@ const execute = async (toolbox: CycliToolbox, context: ProjectContext) => {
   const {
     android: androidDebugBuildWorkflowFileName,
     ios: iOSDebugBuildWorkflowFileName,
-  } = await createBuildWorkflows(toolbox, context, {
+  } = await createBuildWorkflows(toolbox, {
     mode: 'debug',
     expo,
   })
@@ -49,19 +47,14 @@ const execute = async (toolbox: CycliToolbox, context: ProjectContext) => {
 
   await toolbox.workflows.generate(
     join('maestro', 'maestro-test-android.ejf'),
-    context,
     {
       androidDebugBuildWorkflowFileName,
     }
   )
 
-  await toolbox.workflows.generate(
-    join('maestro', 'maestro-test-ios.ejf'),
-    context,
-    {
-      iOSDebugBuildWorkflowFileName,
-    }
-  )
+  await toolbox.workflows.generate(join('maestro', 'maestro-test-ios.ejf'), {
+    iOSDebugBuildWorkflowFileName,
+  })
 
   toolbox.interactive.success('Created Maestro workflow.')
 }
@@ -69,7 +62,7 @@ const execute = async (toolbox: CycliToolbox, context: ProjectContext) => {
 export const recipe: CycliRecipe = {
   meta: {
     name: 'Maestro',
-    flag: FLAG,
+    flag: CycliRecipeType.MAESTRO,
     description: 'Generate workflow to run Maestro e2e tests on every PR',
     selectHint: 'run maestro e2e tests suite',
   },

@@ -1,11 +1,8 @@
 import { execSync } from 'child_process'
-import { CycliToolbox, ProjectContext, Platform, Environment } from '../types'
+import { CycliToolbox, Platform, Environment } from '../types'
 
 module.exports = (toolbox: CycliToolbox) => {
-  const prebuild = async (
-    context: ProjectContext,
-    { cleanAfter }: { cleanAfter: boolean }
-  ) => {
+  const prebuild = async ({ cleanAfter }: { cleanAfter: boolean }) => {
     const existsAndroidDir = toolbox.filesystem.exists('android')
     const existsIOsDir = toolbox.filesystem.exists('ios')
 
@@ -13,7 +10,7 @@ module.exports = (toolbox: CycliToolbox) => {
 
     await toolbox.interactive.spawnSubprocess(
       'Expo prebuild',
-      `npx expo prebuild --${context.packageManager}`,
+      `npx expo prebuild --${toolbox.context.packageManager()}`,
       { alwaysPrintStderr: true }
     )
 
@@ -125,10 +122,7 @@ module.exports = (toolbox: CycliToolbox) => {
 
 export interface ExpoExtension {
   expo: {
-    prebuild: (
-      context: ProjectContext,
-      { cleanAfter }: { cleanAfter: boolean }
-    ) => Promise<void>
+    prebuild: ({ cleanAfter }: { cleanAfter: boolean }) => Promise<void>
     eas: {
       login: () => Promise<void>
       whoami: () => string | undefined
