@@ -1,4 +1,4 @@
-import { CycliToolbox, ProjectContext } from '../types'
+import { CycliToolbox } from '../types'
 import { basename } from 'path'
 
 module.exports = (toolbox: CycliToolbox) => {
@@ -17,26 +17,26 @@ module.exports = (toolbox: CycliToolbox) => {
 
   const generate = async (
     template: string,
-    context: ProjectContext,
     props: Record<string, string> = {}
   ): Promise<string> => {
-    const pathRelativeToRoot = context.path.relFromRepoRoot(
-      context.path.packageRoot
+    const pathRelativeToRoot = toolbox.context.path.relFromRepoRoot(
+      toolbox.context.path.packageRoot()
     )
 
-    const isMonorepo = pathRelativeToRoot !== '.'
+    const packageManager = toolbox.context.packageManager()
+    const isMonorepo = toolbox.context.isMonorepo()
 
     const nodeVersionFile =
-      context.packageManager !== 'bun'
-        ? context.path.relFromRepoRoot(
-            toolbox.projectConfig.nodeVersionFile(context)
+      packageManager !== 'bun'
+        ? toolbox.context.path.relFromRepoRoot(
+            toolbox.projectConfig.nodeVersionFile()
           )
         : undefined
 
     const bunVersionFile =
-      context.packageManager === 'bun'
-        ? context.path.relFromRepoRoot(
-            toolbox.projectConfig.bunVersionFile(context)
+      packageManager === 'bun'
+        ? toolbox.context.path.relFromRepoRoot(
+            toolbox.projectConfig.bunVersionFile()
           )
         : undefined
 
@@ -44,7 +44,7 @@ module.exports = (toolbox: CycliToolbox) => {
       template,
       props: {
         isMonorepo,
-        packageManager: context.packageManager,
+        packageManager,
         nodeVersionFile,
         bunVersionFile,
         pathRelativeToRoot,
@@ -53,7 +53,7 @@ module.exports = (toolbox: CycliToolbox) => {
     })
 
     const workflowFileName = getWorkflowFileName(template, pathRelativeToRoot)
-    const target = context.path.absFromRepoRoot(
+    const target = toolbox.context.path.absFromRepoRoot(
       '.github',
       'workflows',
       workflowFileName
@@ -79,7 +79,6 @@ export interface WorkflowsExtension {
   workflows: {
     generate: (
       template: string,
-      context: ProjectContext,
       props?: Record<string, string>
     ) => Promise<string>
   }
