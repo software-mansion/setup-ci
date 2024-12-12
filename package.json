@@ -38,6 +38,7 @@
     "CD"
   ],
   "repository": "github:software-mansion/setup-ci",
+  "homepage": "https://docs.swmansion.com/setup-ci/",
   "dependencies": {
     "@clack/core": "^0.3.4",
     "@clack/prompts": "^0.7.0",
