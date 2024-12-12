@@ -1,3 +1,21 @@
+# [0.7.0](https://github.com/software-mansion/setup-ci/compare/v0.6.0...v0.7.0) (2024-12-12)
+
+
+### Bug Fixes
+
+* allign docs with SWM branding ([#127](https://github.com/software-mansion/setup-ci/issues/127)) ([aa23d68](https://github.com/software-mansion/setup-ci/commit/aa23d68e4725253fba336a7ecdf64622654bb1dd))
+* do not install @react-native/eslint-config if lint configured with expo ([#131](https://github.com/software-mansion/setup-ci/issues/131)) ([bd3d37e](https://github.com/software-mansion/setup-ci/commit/bd3d37e184228a17e5542038e2e997e682453910))
+
+
+### Features
+
+* add pnpm support ([#137](https://github.com/software-mansion/setup-ci/issues/137)) ([3ece6e1](https://github.com/software-mansion/setup-ci/commit/3ece6e1139f39f87b7bec86ca81ba5551da8fd05))
+* create expo specific config for lint in expo projects ([#135](https://github.com/software-mansion/setup-ci/issues/135)) ([fd78233](https://github.com/software-mansion/setup-ci/commit/fd78233f5760b78f58be3f51f24555ada0736092))
+* stop using prebuild in eas preview recipe ([#139](https://github.com/software-mansion/setup-ci/issues/139)) ([2fd1d1b](https://github.com/software-mansion/setup-ci/commit/2fd1d1b2e736a53991896a7845a79f0028bf6e0a))
+* support bun ([#133](https://github.com/software-mansion/setup-ci/issues/133)) ([98fe22d](https://github.com/software-mansion/setup-ci/commit/98fe22d86fd0030952b182a24ac1f33bb02f7cc9))
+
+
+
 # [0.6.0](https://github.com/software-mansion/setup-ci/compare/v0.5.0...v0.6.0) (2024-10-07)
 
 
@@ -51,15 +69,6 @@
 ### Bug Fixes
 
 * add contents read permissions to detox workflows ([#83](https://github.com/software-mansion/setup-ci/issues/83)) ([f6ab340](https://github.com/software-mansion/setup-ci/commit/f6ab340ef66cda33727044e700c05a19f6ba2af9))
-
-
-
-## [0.4.8](https://github.com/software-mansion/setup-ci/compare/v0.4.7...v0.4.8) (2024-08-27)
-
-
-### Bug Fixes
-
-* add check read permissions to detox workflows ([#82](https://github.com/software-mansion/setup-ci/issues/82)) ([6aa5079](https://github.com/software-mansion/setup-ci/commit/6aa5079824fd0b5612b59150346ac0c6f564d564))
 
 
 
