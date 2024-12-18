@@ -13,6 +13,7 @@ import { ExpoExtension } from './extensions/expo'
 import { PrettierExtension } from './extensions/prettier'
 import { TelemetryExtension } from './extensions/telemetry'
 import { ConfigExtension } from './extensions/config'
+import { ExecutorExtension } from './extensions/executor'
 
 export enum CycliRecipeType {
   ESLINT = 'lint',
@@ -24,16 +25,33 @@ export enum CycliRecipeType {
   EAS = 'eas',
 }
 
+export enum WorkflowEventType {
+  PULL_REQUEST = 'pull_request',
+  PUSH = 'push',
+}
+
+export type WorkflowEvent = {
+  type: WorkflowEventType
+  branch?: string
+}
+
+export type CycliConfig = Map<WorkflowEvent, Set<CycliRecipeType>>
+
 export interface RecipeMeta {
   name: string
   flag: CycliRecipeType
   description: string
   selectHint: string
+  allowedEvents: WorkflowEventType[]
 }
 
 export interface CycliRecipe {
   meta: RecipeMeta
-  execute: (toolbox: CycliToolbox) => Promise<void>
+  configureProject: (toolbox: CycliToolbox) => Promise<void>
+  generateWorkflow: (
+    toolbox: CycliToolbox,
+    events: WorkflowEvent[]
+  ) => Promise<void>
   validate?: (toolbox: CycliToolbox) => void
 }
 
@@ -104,4 +122,5 @@ export type CycliToolbox = {
   FurtherActionsExtension &
   ExpoExtension &
   PrettierExtension &
-  TelemetryExtension
+  TelemetryExtension &
+  ExecutorExtension

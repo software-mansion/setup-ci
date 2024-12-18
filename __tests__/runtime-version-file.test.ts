@@ -2,6 +2,7 @@ import { join } from 'path'
 import { readFileSync } from 'fs'
 import {
   cli,
+  PULL_REQUEST_FLAG,
   removeTestProject,
   setupTestProject,
   TEST_PROJECTS,
@@ -17,7 +18,7 @@ describe('should create runtime version files if necessary', () => {
     const { appRoot } = TEST_PROJECTS['rn-setup-ci-create-expo-stack']
     setupTestProject('rn-setup-ci-create-expo-stack')
 
-    const output = await cli(['--skip-git-check', '--preset', '--lint'], {
+    const output = await cli(['--skip-git-check', PULL_REQUEST_FLAG, 'lint'], {
       cwd: appRoot,
     })
 
@@ -43,7 +44,7 @@ describe('should create runtime version files if necessary', () => {
     const { appRoot } = TEST_PROJECTS['rn-setup-ci-create-expo-stack-bun']
     setupTestProject('rn-setup-ci-create-expo-stack-bun')
 
-    const output = await cli(['--skip-git-check', '--preset', '--lint'], {
+    const output = await cli(['--skip-git-check', PULL_REQUEST_FLAG, 'lint'], {
       cwd: appRoot,
     })
 

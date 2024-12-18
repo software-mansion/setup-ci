@@ -42,7 +42,6 @@ interface Spinner {
 
 module.exports = (toolbox: CycliToolbox) => {
   const {
-    blue,
     bgWhite,
     bold,
     cyan,
@@ -242,8 +241,17 @@ module.exports = (toolbox: CycliToolbox) => {
   const multiselect = async (
     message: string,
     hint: string,
-    options: { label: string; value: string; hint: string; disabled: boolean }[]
+    options: {
+      label: string
+      value: string
+      hint: string
+      disabled: boolean
+    }[],
+    required: boolean,
+    accentColor: MessageColor
   ): Promise<string[]> => {
+    const accent = COLORS[accentColor]
+
     const opt = (
       option: {
         label: string
@@ -261,16 +269,18 @@ module.exports = (toolbox: CycliToolbox) => {
 
       switch (state) {
         case 'active': {
-          return `${blue(S_RADIO_INACTIVE)} ${bold(label)} ${dim(`(${hint})`)}`
+          return `${accent(S_RADIO_INACTIVE)} ${bold(label)} ${dim(
+            `(${hint})`
+          )}`
         }
         case 'selected': {
-          return `${blue(S_RADIO_ACTIVE)} ${dim(label)}`
+          return `${accent(S_RADIO_ACTIVE)} ${dim(label)}`
         }
         case 'active-selected': {
-          return `${blue(S_RADIO_ACTIVE)} ${label} ${dim(`(${hint})`)}`
+          return `${accent(S_RADIO_ACTIVE)} ${label} ${dim(`(${hint})`)}`
         }
         case 'inactive': {
-          return `${dim(blue(S_RADIO_INACTIVE))} ${dim(label)}`
+          return `${dim(accent(S_RADIO_INACTIVE))} ${dim(label)}`
         }
       }
     }
@@ -288,17 +298,19 @@ module.exports = (toolbox: CycliToolbox) => {
     const multiselectPromise = new MultiSelectPrompt({
       options: enabledOptions,
       initialValues: [],
-      required: true,
+      required,
       cursorAt: options[0].value,
       validate(selected: string[]) {
         if (this.required && selected.length === 0)
           return 'Please select at least one option.'
       },
       render() {
-        const title = `${gray(S_BAR)}\n${S_MULTISELECT_MESSAGE}  ${bold(
+        const title = `${gray(S_BAR)}\n${accent(S_MULTISELECT_MESSAGE)}  ${bold(
           message
         )}\n${
-          ['submit', 'cancel'].includes(this.state) ? gray(S_BAR) : blue(S_BAR)
+          ['submit', 'cancel'].includes(this.state)
+            ? gray(S_BAR)
+            : accent(S_BAR)
         }  ${dim(hint)}\n`
 
         const styleOption = (
@@ -322,8 +334,8 @@ module.exports = (toolbox: CycliToolbox) => {
 
         const optionsList =
           title +
-          `${blue(S_BAR)}\n` +
-          blue(S_BAR) +
+          `${accent(S_BAR)}\n` +
+          accent(S_BAR) +
           '  ' +
           options
             .map((option) => {
@@ -333,14 +345,14 @@ module.exports = (toolbox: CycliToolbox) => {
               }
               return styleOption(option, this.cursor === indexInEnabled)
             })
-            .join(`\n${blue(S_BAR)}  `) +
+            .join(`\n${accent(S_BAR)}  `) +
           '\n'
 
         const selectedOptions = this.options.filter(({ value }) =>
           this.value.includes(value)
         )
 
-        const selectedInfo = `${blue(S_R_ARROW)} ${dim(
+        const selectedInfo = `${accent(S_R_ARROW)} ${dim(
           `Selected: ${selectedOptions
             .map((option) => option.label)
             .join(', ')}`
@@ -369,14 +381,14 @@ module.exports = (toolbox: CycliToolbox) => {
               )
               .join('\n')
 
-            return `${optionsList}${blue(S_BAR)} \n${blue(
+            return `${optionsList}${accent(S_BAR)} \n${accent(
               S_BAR
-            )}  ${footer} \n${blue(S_BAR_END)} \n${instruction} `
+            )}  ${footer} \n${accent(S_BAR_END)} \n${instruction} `
           }
           default: {
-            return `${optionsList}${blue(S_BAR)} \n${blue(
+            return `${optionsList}${accent(S_BAR)} \n${accent(
               S_BAR
-            )}  ${selectedInfo} \n${blue(S_BAR_END)} \n${instruction} `
+            )}  ${selectedInfo} \n${accent(S_BAR_END)} \n${instruction} `
           }
         }
       },
@@ -551,7 +563,9 @@ export interface InteractiveExtension {
         value: string
         hint: string
         disabled: boolean
-      }[]
+      }[],
+      required: boolean,
+      accentColor: MessageColor
     ) => Promise<string[]>
     confirm: (
       message: string,

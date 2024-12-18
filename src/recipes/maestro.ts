@@ -1,20 +1,18 @@
-import { CycliRecipe, CycliRecipeType, CycliToolbox } from '../types'
-import { createBuildWorkflows } from './build'
+import {
+  CycliRecipe,
+  CycliRecipeType,
+  CycliToolbox,
+  WorkflowEvent,
+  WorkflowEventType,
+} from '../types'
+import { configureProjectForBuild, generateBuildWorkflows } from './build'
 import { join } from 'path'
 
-const execute = async (toolbox: CycliToolbox) => {
+const configureProject = async (toolbox: CycliToolbox) => {
   toolbox.interactive.vspace()
-  toolbox.interactive.sectionHeader('Genereating Maestro workflow')
+  toolbox.interactive.sectionHeader('Configuring project for Maestro')
 
-  const expo = toolbox.projectConfig.isExpo()
-
-  const {
-    android: androidDebugBuildWorkflowFileName,
-    ios: iOSDebugBuildWorkflowFileName,
-  } = await createBuildWorkflows(toolbox, {
-    mode: 'debug',
-    expo,
-  })
+  await configureProjectForBuild(toolbox, { mode: 'debug' })
 
   await toolbox.scripts.add(
     'maestro:test',
@@ -41,22 +39,43 @@ const execute = async (toolbox: CycliToolbox) => {
     const exampleFlowMessage =
       'Remember to edit .maestro/example-flow.yml to match your app.'
 
+    toolbox.interactive.success('Configured project for Maestro.')
+
     toolbox.interactive.warning(exampleFlowMessage)
     toolbox.furtherActions.push(exampleFlowMessage)
   }
+}
+
+const generateWorkflow = async (
+  toolbox: CycliToolbox,
+  events: WorkflowEvent[]
+) => {
+  const {
+    android: androidDebugBuildWorkflowFileName,
+    ios: iOSDebugBuildWorkflowFileName,
+  } = await generateBuildWorkflows(toolbox, { mode: 'debug', events })
 
   await toolbox.workflows.generate(
     join('maestro', 'maestro-test-android.ejf'),
+    { events },
     {
       androidDebugBuildWorkflowFileName,
     }
   )
 
-  await toolbox.workflows.generate(join('maestro', 'maestro-test-ios.ejf'), {
-    iOSDebugBuildWorkflowFileName,
-  })
+  await toolbox.workflows.generate(
+    join('maestro', 'maestro-test-ios.ejf'),
+    { events },
+    {
+      iOSDebugBuildWorkflowFileName,
+    }
+  )
 
-  toolbox.interactive.success('Created Maestro workflow.')
+  toolbox.interactive.success(
+    `Created Maestro workflow for events: [${events
+      .map((e) => e.type)
+      .join(', ')}]`
+  )
 }
 
 export const recipe: CycliRecipe = {
@@ -65,8 +84,10 @@ export const recipe: CycliRecipe = {
     flag: CycliRecipeType.MAESTRO,
     description: 'Generate workflow to run Maestro e2e tests on every PR',
     selectHint: 'run maestro e2e tests suite',
+    allowedEvents: [WorkflowEventType.PUSH, WorkflowEventType.PULL_REQUEST],
   },
-  execute,
+  configureProject,
+  generateWorkflow,
 } as const
 
 export default recipe

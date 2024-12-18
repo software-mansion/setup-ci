@@ -1,19 +1,13 @@
 import { GluegunCommand, GluegunToolbox } from 'gluegun'
-import lint from '../recipes/lint'
-import jest from '../recipes/jest'
-import typescriptCheck from '../recipes/typescript'
-import prettierCheck from '../recipes/prettier'
-import eas from '../recipes/eas'
-import detox from '../recipes/detox'
-import maestro from '../recipes/maestro'
 import isGitDirty from 'is-git-dirty'
-import sequentialPromiseMap from '../utils/sequentialPromiseMap'
 import { CycliError, CycliRecipe, CycliToolbox } from '../types'
 import {
   COLORS,
   CYCLI_COMMAND,
   HELP_FLAG,
-  PRESET_FLAG,
+  MAIN_FLAG,
+  PULL_REQUEST_FLAG,
+  RECIPES,
   REPOSITORY_METRICS_HELP_URL,
   REPOSITORY_TROUBLESHOOTING_URL,
   REPOSITORY_URL,
@@ -25,7 +19,7 @@ const FEEDBACK_SURVEY_URL = 'https://forms.gle/NYoPyPxnVzGheHcw6'
 
 const SKIP_GIT_CHECK_FLAG = 'skip-git-check'
 
-type Option = { flag: string; description: string }
+type Option = { flag: string; description: string; params: boolean }
 
 export type CycliCommand = GluegunCommand & {
   description: string
@@ -33,29 +27,15 @@ export type CycliCommand = GluegunCommand & {
   featureOptions: Option[]
 }
 
-const RECIPES = [
-  lint,
-  jest,
-  typescriptCheck,
-  prettierCheck,
-  eas,
-  detox,
-  maestro,
-]
-
 const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
   const snapshotBefore = await toolbox.diff.gitStatus()
   toolbox.interactive.surveyStep(
     'Created snapshot of project state before execution.'
   )
 
-  await toolbox.config.prompt(RECIPES)
+  await toolbox.config.get()
 
-  const executors = RECIPES.filter((recipe: CycliRecipe) =>
-    toolbox.config.getSelectedRecipes().includes(recipe.meta.flag)
-  ).map((recipe: CycliRecipe) => recipe.execute)
-
-  if (executors.length === 0) {
+  if ((await toolbox.config.getSelectedRecipes()).size === 0) {
     toolbox.interactive.outro('Nothing to do here. Cheers! 🎉')
     return
   }
@@ -64,7 +44,8 @@ const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
     `Detected ${toolbox.context.packageManager()} as your package manager.`
   )
 
-  await sequentialPromiseMap(executors, (executor) => executor(toolbox))
+  await toolbox.executor.configureProject()
+  await toolbox.executor.generateWorkflows()
 
   const snapshotAfter = await toolbox.diff.gitStatus()
   const diff = toolbox.diff.compare(snapshotBefore, snapshotAfter)
@@ -74,18 +55,23 @@ const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
 
   toolbox.furtherActions.print()
 
-  const usedFlags = toolbox.config
-    .getSelectedRecipes()
-    .map((flag: string) => `--${flag}`)
-    .join(' ')
-
   toolbox.interactive.vspace()
   toolbox.interactive.success(`We're all set 🎉`)
 
   if (!toolbox.options.isPreset()) {
-    toolbox.interactive.success(
-      `Next time you can specify a preset to reproduce this run using npx ${CYCLI_COMMAND} --${PRESET_FLAG} ${usedFlags}.`
-    )
+    const pullRequestRecipes = toolbox.config.getPullRequestRecipes()
+    const mainRecipes = toolbox.config.getMainRecipes()
+
+    let presetMessage = `Next time you can specify a preset to reproduce this run using npx ${CYCLI_COMMAND}`
+
+    if (pullRequestRecipes.length > 0) {
+      presetMessage += ` -${PULL_REQUEST_FLAG} ${pullRequestRecipes.join(' ')}`
+    }
+    if (mainRecipes.length > 0) {
+      presetMessage += ` -${MAIN_FLAG} ${mainRecipes.join(' ')}`
+    }
+
+    toolbox.interactive.success(presetMessage)
   }
 
   toolbox.interactive.vspace()
@@ -95,7 +81,7 @@ const runReactNativeCiCli = async (toolbox: CycliToolbox) => {
       `Thank you for using ${COLORS.cyan('setup-ci')} 💙`,
       "We'd love to hear your feedback to make it even better.",
       'Please take a moment to fill out our survey:\n',
-      `\t → ${FEEDBACK_SURVEY_URL}\n`,
+      `\t → ${FEEDBACK_SURVEY_URL} \n`,
       'Your input is greatly appreciated! 🙏',
     ].join('\n'),
     'green'
@@ -115,7 +101,7 @@ const checkGit = async (toolbox: CycliToolbox) => {
     } else {
       if (toolbox.options.isPreset()) {
         throw CycliError(
-          `You have to commit your changes before running with preset or use --${SKIP_GIT_CHECK_FLAG}.`
+          `You have to commit your changes before running with preset or use--${SKIP_GIT_CHECK_FLAG}.`
         )
       }
 
@@ -151,9 +137,9 @@ const run = async (toolbox: CycliToolbox) => {
       `${COLORS.cyan(
         `npx ${CYCLI_COMMAND}`
       )} aims to help you set up CI workflows for your React Native app.`,
-      `If you find the project useful, you can give us a ⭐ on GitHub:`,
+      `If you find the project useful, you can give us a ⭐ on GitHub: `,
       '',
-      `\t\t → ${REPOSITORY_URL}`,
+      `\t\t → ${REPOSITORY_URL} `,
     ].join('\n'),
     'green'
   )
@@ -161,8 +147,8 @@ const run = async (toolbox: CycliToolbox) => {
   if (!toolbox.options.skipTelemetry()) {
     toolbox.interactive.surveyInfo(
       [
-        `This script collects anonymous usage data. You can disable it by using --skip-telemetry.`,
-        `Learn more at ${REPOSITORY_METRICS_HELP_URL}`,
+        `This script collects anonymous usage data.You can disable it by using--skip - telemetry.`,
+        `Learn more at ${REPOSITORY_METRICS_HELP_URL} `,
       ].join('\n'),
       'dim'
     )
@@ -182,7 +168,7 @@ const run = async (toolbox: CycliToolbox) => {
 
     if (!isCycliError(error)) {
       errMessage = [
-        `${CYCLI_COMMAND} failed with unexpected error:`,
+        `${CYCLI_COMMAND} failed with unexpected error: `,
         errMessage,
         `You can check ${REPOSITORY_TROUBLESHOOTING_URL} for potential solution.`,
       ].join('\n')
@@ -194,14 +180,16 @@ const run = async (toolbox: CycliToolbox) => {
   }
 
   try {
+    const selectedRecipes = await toolbox.config.getSelectedRecipes()
+
     if (!toolbox.options.skipTelemetry()) {
       await toolbox.telemetry.sendLog({
         version: toolbox.meta.version(),
         firstUse: toolbox.context.isFirstUse(),
         options: Object.fromEntries(
-          RECIPES.map((recipe) => [
+          Object.values(RECIPES).map((recipe) => [
             recipe.meta.flag,
-            toolbox.config.getSelectedRecipes().includes(recipe.meta.flag),
+            selectedRecipes.has(recipe.meta.flag),
           ])
         ),
         error: finishedWithUnexpectedError,
@@ -215,9 +203,10 @@ const run = async (toolbox: CycliToolbox) => {
 }
 
 const getFeatureOptions = (): Option[] => {
-  return RECIPES.map((recipe: CycliRecipe) => ({
+  return Object.values(RECIPES).map((recipe: CycliRecipe) => ({
     flag: recipe.meta.flag,
     description: recipe.meta.description,
+    params: false,
   }))
 }
 
@@ -225,20 +214,28 @@ const command: CycliCommand = {
   name: CYCLI_COMMAND,
   description: 'Quickly setup CI workflows for your React Native app',
   options: [
-    { flag: HELP_FLAG, description: 'Print help message' },
-    { flag: 'version', description: 'Print version' },
+    { flag: HELP_FLAG, description: 'Print help message', params: false },
+    { flag: 'version', description: 'Print version', params: false },
     {
       flag: SKIP_GIT_CHECK_FLAG,
       description: 'Skip check for dirty git repository',
-    },
-    {
-      flag: PRESET_FLAG,
-      description:
-        'Run with preset. Combine with feature flags to specify generated workflows',
+      params: false,
     },
     {
       flag: SKIP_TELEMETRY_FLAG,
       description: 'Skip telemetry data collection',
+      params: false,
+    },
+    {
+      flag: PULL_REQUEST_FLAG,
+      description: 'Specify workflows to generate to run on every pull request',
+      params: true,
+    },
+    {
+      flag: MAIN_FLAG,
+      description:
+        'Specify workflows to generate to run on every push to the main branch',
+      params: true,
     },
   ],
   featureOptions: [...getFeatureOptions()],

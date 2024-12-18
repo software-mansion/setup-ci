@@ -3,7 +3,7 @@ import { join } from 'path'
 import {
   cli,
   getPackageJsonWithoutVersions,
-  PRESET_FLAG,
+  PULL_REQUEST_FLAG,
   removeTestProject,
   setupTestProject,
   TEST_PROJECTS,
@@ -37,14 +37,14 @@ describe('lint recipe', () => {
         existingConfig,
       } = TEST_PROJECTS[projectName]
 
-      const output = await cli([PRESET_FLAG, `--${FLAG}`], {
+      const output = await cli([PULL_REQUEST_FLAG, FLAG], {
         cwd: appRoot,
       })
 
       for (const message of [
         `Detected ${packageManager} as your package manager.`,
-        'Generating ESLint workflow',
-        'Created ESLint workflow.',
+        'Configuring project for ESLint',
+        'Created ESLint workflow for events: [pull_request]',
       ]) {
         expect(output).toContain(message)
       }
@@ -75,11 +75,13 @@ describe('lint recipe', () => {
     setupTestProject('rn-setup-ci-yarn-flat')
     const { appRoot } = TEST_PROJECTS['rn-setup-ci-yarn-flat']
 
-    const output = await cli([PRESET_FLAG, `--${FLAG}`, `--${PRETTIER_FLAG}`], {
+    const output = await cli([PULL_REQUEST_FLAG, FLAG, PRETTIER_FLAG], {
       cwd: appRoot,
     })
 
-    expect(output).toContain('Created ESLint workflow.')
+    expect(output).toContain(
+      'Created ESLint workflow for events: [pull_request]'
+    )
 
     const packageJson = await getPackageJsonWithoutVersions(
       join(appRoot, 'package.json')

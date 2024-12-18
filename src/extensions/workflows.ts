@@ -1,4 +1,4 @@
-import { CycliToolbox } from '../types'
+import { CycliToolbox, WorkflowEventType, WorkflowEvent } from '../types'
 import { basename } from 'path'
 
 module.exports = (toolbox: CycliToolbox) => {
@@ -15,8 +15,28 @@ module.exports = (toolbox: CycliToolbox) => {
     return `${toolbox.projectConfig.getName()}-${workflowBasename}.yml`
   }
 
+  const eventsToWorkflowProps = (
+    events: WorkflowEvent[]
+  ): Record<string, string> => {
+    const props: Record<string, string> = {}
+
+    events.forEach((event: WorkflowEvent) => {
+      switch (event.type) {
+        case WorkflowEventType.PUSH:
+          props.push = event.branch ?? ''
+          break
+        case WorkflowEventType.PULL_REQUEST:
+          props.pull_request = 'true'
+          break
+      }
+    })
+
+    return props
+  }
+
   const generate = async (
     template: string,
+    { events }: { events: WorkflowEvent[] },
     props: Record<string, string> = {}
   ): Promise<string> => {
     const pathRelativeToRoot = toolbox.context.path.relFromRepoRoot(
@@ -48,6 +68,7 @@ module.exports = (toolbox: CycliToolbox) => {
         nodeVersionFile,
         bunVersionFile,
         pathRelativeToRoot,
+        ...eventsToWorkflowProps(events),
         ...props,
       },
     })
@@ -79,6 +100,7 @@ export interface WorkflowsExtension {
   workflows: {
     generate: (
       template: string,
+      { events }: { events: WorkflowEvent[] },
       props?: Record<string, string>
     ) => Promise<string>
   }
