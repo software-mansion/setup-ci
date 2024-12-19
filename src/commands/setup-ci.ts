@@ -3,6 +3,7 @@ import lint from '../recipes/lint'
 import jest from '../recipes/jest'
 import typescriptCheck from '../recipes/typescript'
 import prettierCheck from '../recipes/prettier'
+import biomeCheck from '../recipes/biome'
 import eas from '../recipes/eas'
 import detox from '../recipes/detox'
 import maestro from '../recipes/maestro'
@@ -38,6 +39,7 @@ const RECIPES = [
   jest,
   typescriptCheck,
   prettierCheck,
+  biomeCheck,
   eas,
   detox,
   maestro,
