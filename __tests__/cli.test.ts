@@ -19,7 +19,7 @@ test('prints help', async () => {
     '--skip-git-check',
     '-pull-request [...workflows]',
     '-main [...workflows]',
-    'Use any combination of the following with --pull-request and --main flags to specify your own set of workflows to generate',
+    'Use any combination of the following with -pull-request and -main flags to specify your own set of workflows to generate',
     'lint',
     'jest',
     'ts',
