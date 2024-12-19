@@ -9,7 +9,7 @@ import { join } from 'path'
 
 const configureProject = async (toolbox: CycliToolbox): Promise<void> => {
   toolbox.interactive.vspace()
-  toolbox.interactive.sectionHeader('Generating Typescript check workflow')
+  toolbox.interactive.sectionHeader('Configuring project for Typescript check')
 
   await toolbox.dependencies.addDev('typescript')
 
@@ -38,7 +38,7 @@ const generateWorkflow = async (
   })
 
   toolbox.interactive.success(
-    `Created Typescript Check workflow for events: [${events
+    `Created Typescript check workflow for events: [${events
       .map((e) => e.type)
       .join(', ')}]`
   )
