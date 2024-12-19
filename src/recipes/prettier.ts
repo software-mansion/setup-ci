@@ -1,4 +1,10 @@
-import { CycliRecipe, CycliRecipeType, CycliToolbox } from '../types'
+import {
+  CycliRecipe,
+  CycliRecipeType,
+  CycliToolbox,
+  WorkflowEvent,
+  WorkflowEventType,
+} from '../types'
 import { join } from 'path'
 
 const existsPrettierConfiguration = (toolbox: CycliToolbox): boolean =>
@@ -11,9 +17,9 @@ const existsPrettierConfiguration = (toolbox: CycliToolbox): boolean =>
       )
   )
 
-const execute = async (toolbox: CycliToolbox): Promise<void> => {
+const configureProject = async (toolbox: CycliToolbox): Promise<void> => {
   toolbox.interactive.vspace()
-  toolbox.interactive.sectionHeader('Generating Prettier check workflow')
+  toolbox.interactive.sectionHeader('Configuring project for Prettier check')
 
   await toolbox.dependencies.addDev('prettier')
 
@@ -26,8 +32,6 @@ const execute = async (toolbox: CycliToolbox): Promise<void> => {
     'prettier:write',
     'prettier --write "**/*.{ts,tsx,js,jsx,json,css,scss,md}"'
   )
-
-  await toolbox.workflows.generate(join('prettier', 'prettier.ejf'))
 
   if (!existsPrettierConfiguration(toolbox)) {
     await toolbox.template.generate({
@@ -45,7 +49,20 @@ const execute = async (toolbox: CycliToolbox): Promise<void> => {
     toolbox.interactive.step('Created default .prettierignore file.')
   }
 
-  toolbox.interactive.success('Created Prettier check workflow.')
+  toolbox.interactive.success('Configured project for Prettier check.')
+}
+
+const generateWorkflow = async (
+  toolbox: CycliToolbox,
+  events: WorkflowEvent[]
+): Promise<void> => {
+  await toolbox.workflows.generate(join('prettier', 'prettier.ejf'), { events })
+
+  toolbox.interactive.success(
+    `Created Prettier check workflow for events: [${events
+      .map((e) => e.type)
+      .join(', ')}]`
+  )
 }
 
 export const recipe: CycliRecipe = {
@@ -54,8 +71,10 @@ export const recipe: CycliRecipe = {
     flag: CycliRecipeType.PRETTIER,
     description: 'Generate Prettier check workflow to run on every PR',
     selectHint: 'check code format with prettier',
+    allowedEvents: [WorkflowEventType.PUSH, WorkflowEventType.PULL_REQUEST],
   },
-  execute,
+  configureProject,
+  generateWorkflow,
 }
 
 export default recipe

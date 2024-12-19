@@ -1,10 +1,7 @@
 name: Check ESLint
 
-on:
-  pull_request: <%= (props.isMonorepo) ? `
-    paths:
-      - ${props.pathRelativeToRoot}/**` : "" %>
- 
+<%- include('../common/triggerEvents', { props }); %>
+
 jobs:
   eslint:
     name: ESLint

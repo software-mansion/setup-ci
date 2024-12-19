@@ -1,6 +1,24 @@
 import { print } from 'gluegun'
+import { CycliRecipe, CycliRecipeType } from './types'
+import lint from './recipes/lint'
+import jest from './recipes/jest'
+import typescriptCheck from './recipes/typescript'
+import prettierCheck from './recipes/prettier'
+import eas from './recipes/eas'
+import detox from './recipes/detox'
+import maestro from './recipes/maestro'
 
 export const CYCLI_COMMAND = 'setup-ci'
+
+export const RECIPES: Record<CycliRecipeType, CycliRecipe> = {
+  [CycliRecipeType.ESLINT]: lint,
+  [CycliRecipeType.JEST]: jest,
+  [CycliRecipeType.TYPESCRIPT]: typescriptCheck,
+  [CycliRecipeType.PRETTIER]: prettierCheck,
+  [CycliRecipeType.EAS]: eas,
+  [CycliRecipeType.DETOX]: detox,
+  [CycliRecipeType.MAESTRO]: maestro,
+} as const
 
 export const CYCLI_ERROR_NAME = 'CycliError'
 
@@ -28,7 +46,7 @@ export const S_SUCCESS = COLORS.green('◆')
 export const S_CONFIRM = COLORS.magenta('◆')
 export const S_ACTION = COLORS.cyan('▼')
 export const S_ACTION_BULLET = COLORS.cyan('►')
-export const S_MULTISELECT_MESSAGE = COLORS.blue('◆')
+export const S_MULTISELECT_MESSAGE = '◆'
 
 export const S_BAR = '│'
 export const S_VBAR = '─'
@@ -43,7 +61,8 @@ export const S_R_ARROW = '►'
 
 export const NON_INTERACTIVE_FLAG = 'non-interactive'
 export const HELP_FLAG = 'help'
-export const PRESET_FLAG = 'preset'
+export const PULL_REQUEST_FLAG = 'pull-request'
+export const MAIN_FLAG = 'main'
 export const SKIP_TELEMETRY_FLAG = 'skip-telemetry'
 
 export const LOCK_FILE_TO_MANAGER = {

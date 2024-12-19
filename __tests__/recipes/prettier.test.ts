@@ -3,7 +3,7 @@ import { join } from 'path'
 import {
   cli,
   getPackageJsonWithoutVersions,
-  PRESET_FLAG,
+  PULL_REQUEST_FLAG,
   removeTestProject,
   setupTestProject,
   TEST_PROJECTS,
@@ -35,14 +35,14 @@ describe('prettier check recipe', () => {
         existingConfig,
       } = TEST_PROJECTS[projectName]
 
-      const output = await cli([PRESET_FLAG, `--${FLAG}`], {
+      const output = await cli([PULL_REQUEST_FLAG, FLAG], {
         cwd: appRoot,
       })
 
       for (const message of [
         `Detected ${packageManager} as your package manager.`,
-        'Generating Prettier check workflow',
-        'Created Prettier check workflow.',
+        'Configuring project for Prettier check',
+        'Created Prettier check workflow for events: [pull_request]',
       ]) {
         expect(output).toContain(message)
       }

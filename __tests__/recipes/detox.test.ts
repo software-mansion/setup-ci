@@ -5,7 +5,7 @@ import {
   getPackageJsonWithoutVersions,
   installDependencies,
   NON_INTERACTIVE_FLAG,
-  PRESET_FLAG,
+  PULL_REQUEST_FLAG,
   removeTestProject,
   setupTestProject,
   TEST_PROJECTS,
@@ -75,7 +75,7 @@ describe('detox recipe', () => {
         TEST_PROJECTS[projectName]
 
       const output = await cli(
-        [PRESET_FLAG, NON_INTERACTIVE_FLAG, `--${FLAG}`],
+        [PULL_REQUEST_FLAG, FLAG, NON_INTERACTIVE_FLAG],
         {
           cwd: appRoot,
         }
@@ -88,12 +88,12 @@ describe('detox recipe', () => {
         'https://wix.github.io/Detox/docs/next/introduction/project-setup/#step-4-additional-android-configuration.',
         'You can do it now or after the script finishes.',
         `Detected ${packageManager} as your package manager.`,
-        'Generating Detox workflow',
+        'Configuring project for Detox',
         'Created Android release build workflow.',
         'Created iOS release build workflow.',
         'Consider adding "modulePathIgnorePatterns": ["e2e"] to your jest config.',
         'Remember to edit example test in e2e/starter.test.ts to match your app.',
-        'Created Detox workflow.',
+        'Created Detox workflow for events: [pull_request]',
         'Follow Step 4 of https://wix.github.io/Detox/docs/next/introduction/project-setup/#step-4-additional-android-configuration to patch native code for Detox.',
       ]) {
         expect(output).toContain(message)
@@ -116,20 +116,20 @@ describe('detox recipe', () => {
 
       installDependencies(appRoot, packageManager)
 
-      const output = await cli([PRESET_FLAG, `--${FLAG}`], {
+      const output = await cli([PULL_REQUEST_FLAG, FLAG], {
         cwd: appRoot,
       })
 
       for (const message of [
         `Detected ${packageManager} as your package manager.`,
-        'Generating Detox workflow',
+        'Configuring project for Detox',
         'Running Expo prebuild...',
         'Finished running Expo prebuild.',
         'Created Android release build workflow.',
         'Created iOS release build workflow.',
         'Consider adding "modulePathIgnorePatterns": ["e2e"] to your jest config.',
         'Remember to edit example test in e2e/starter.test.ts to match your app.',
-        'Created Detox workflow.',
+        'Created Detox workflow for events: [pull_request]',
       ]) {
         expect(output).toContain(message)
       }

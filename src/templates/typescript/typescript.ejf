@@ -1,9 +1,6 @@
 name: Run Typescript
 
-on:
-  pull_request: <%= (props.isMonorepo) ? `
-    paths:
-      - ${props.pathRelativeToRoot}/**` : "" %>
+<%- include('../common/triggerEvents', { props }); %>
 
 jobs:
   typescript-check:

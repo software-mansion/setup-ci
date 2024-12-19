@@ -1,13 +1,19 @@
 import { join } from 'path'
-import { CycliRecipe, CycliRecipeType, CycliToolbox } from '../types'
+import {
+  CycliRecipe,
+  CycliRecipeType,
+  CycliToolbox,
+  WorkflowEvent,
+  WorkflowEventType,
+} from '../types'
 
 const existsJestConfiguration = (toolbox: CycliToolbox): boolean =>
   Boolean(toolbox.projectConfig.packageJson().jest) ||
   Boolean(toolbox.filesystem.list()?.some((f) => f.startsWith('jest.config.')))
 
-const execute = async (toolbox: CycliToolbox): Promise<void> => {
+const configureProject = async (toolbox: CycliToolbox): Promise<void> => {
   toolbox.interactive.vspace()
-  toolbox.interactive.sectionHeader('Generating Jest workflow')
+  toolbox.interactive.sectionHeader('Configuring project for Jest')
 
   await toolbox.dependencies.addDev('jest')
 
@@ -24,9 +30,20 @@ const execute = async (toolbox: CycliToolbox): Promise<void> => {
     )
   }
 
-  await toolbox.workflows.generate(join('jest', 'jest.ejf'))
+  toolbox.interactive.success('Configured project for Jest.')
+}
 
-  toolbox.interactive.success('Created Jest workflow.')
+const generateWorkflow = async (
+  toolbox: CycliToolbox,
+  events: WorkflowEvent[]
+): Promise<void> => {
+  await toolbox.workflows.generate(join('jest', 'jest.ejf'), { events })
+
+  toolbox.interactive.success(
+    `Created Jest workflow for events: [${events
+      .map((e) => e.type)
+      .join(', ')}]`
+  )
 }
 
 export const recipe: CycliRecipe = {
@@ -35,8 +52,10 @@ export const recipe: CycliRecipe = {
     flag: CycliRecipeType.JEST,
     description: 'Generate Jest workflow to run on every PR',
     selectHint: 'run tests with Jest',
+    allowedEvents: [WorkflowEventType.PUSH, WorkflowEventType.PULL_REQUEST],
   },
-  execute,
+  configureProject,
+  generateWorkflow,
 }
 
 export default recipe

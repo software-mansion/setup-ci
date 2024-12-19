@@ -1,4 +1,10 @@
-import { CycliRecipe, CycliRecipeType, CycliToolbox } from '../types'
+import {
+  CycliRecipe,
+  CycliRecipeType,
+  CycliToolbox,
+  WorkflowEvent,
+  WorkflowEventType,
+} from '../types'
 import { join } from 'path'
 
 const existsEslintConfiguration = (toolbox: CycliToolbox): boolean =>
@@ -42,9 +48,9 @@ const generateConfigForExpo = async (toolbox: CycliToolbox): Promise<void> => {
   )
 }
 
-const execute = async (toolbox: CycliToolbox): Promise<void> => {
+const configureProject = async (toolbox: CycliToolbox): Promise<void> => {
   toolbox.interactive.vspace()
-  toolbox.interactive.sectionHeader('Generating ESLint workflow')
+  toolbox.interactive.sectionHeader('Configuring project for ESLint')
 
   // eslint@9 introduces new configuration format that is not supported by widely used plugins yet,
   // so we stick to ^8 for now.
@@ -52,7 +58,7 @@ const execute = async (toolbox: CycliToolbox): Promise<void> => {
   await toolbox.dependencies.addDev('typescript')
 
   const withPrettier =
-    toolbox.config.getSelectedRecipes().includes(CycliRecipeType.PRETTIER) ||
+    (await toolbox.config.getSelectedRecipes()).has(CycliRecipeType.PRETTIER) ||
     toolbox.dependencies.existsDev('prettier') ||
     toolbox.dependencies.exists('prettier')
 
@@ -80,9 +86,20 @@ const execute = async (toolbox: CycliToolbox): Promise<void> => {
 
   await toolbox.scripts.add('lint', "eslint '**/*.{js,jsx,ts,tsx}'")
 
-  await toolbox.workflows.generate(join('lint', 'lint.ejf'))
+  toolbox.interactive.success('Configured project for ESLint.')
+}
 
-  toolbox.interactive.success('Created ESLint workflow.')
+const generateWorkflow = async (
+  toolbox: CycliToolbox,
+  events: WorkflowEvent[]
+): Promise<void> => {
+  await toolbox.workflows.generate(join('lint', 'lint.ejf'), { events })
+
+  toolbox.interactive.success(
+    `Created ESLint workflow for events: [${events
+      .map((e) => e.type)
+      .join(', ')}]`
+  )
 }
 
 export const recipe: CycliRecipe = {
@@ -91,8 +108,10 @@ export const recipe: CycliRecipe = {
     flag: CycliRecipeType.ESLINT,
     description: 'Generate ESLint workflow to run on every PR',
     selectHint: 'check code style with linter',
+    allowedEvents: [WorkflowEventType.PUSH, WorkflowEventType.PULL_REQUEST],
   },
-  execute,
+  configureProject,
+  generateWorkflow,
 }
 
 export default recipe

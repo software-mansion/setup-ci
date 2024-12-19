@@ -11,6 +11,10 @@ const DEFAULT_BUN_VERSION = '1.1.30'
 module.exports = (toolbox: CycliToolbox) => {
   const { filesystem } = toolbox
 
+  // State for caching the config
+  let expo: boolean | undefined = undefined
+  let iOSAppName: string | undefined = undefined
+
   const packageJson = (): PackageJson => {
     if (!filesystem.exists('package.json')) {
       throw CycliError(
@@ -173,19 +177,20 @@ module.exports = (toolbox: CycliToolbox) => {
   }
 
   const isExpo = (): boolean => {
+    if (expo !== undefined) {
+      return expo
+    }
+
     const appConfig = appJson()
 
     if (appConfig?.expo) {
-      return true
+      expo = true
+    } else {
+      const dynamicAppConfig = appJs()
+      expo = dynamicAppConfig?.includes('expo:') || false
     }
 
-    const dynamicAppConfig = appJs()
-
-    if (dynamicAppConfig?.includes('expo:')) {
-      return true
-    }
-
-    return false
+    return expo
   }
 
   const getName = (): string => {
@@ -273,6 +278,35 @@ module.exports = (toolbox: CycliToolbox) => {
     }
   }
 
+  const getIOSAppName = async (): Promise<string> => {
+    if (iOSAppName != undefined) {
+      return iOSAppName
+    }
+
+    const existsAndroidDir = toolbox.filesystem.exists('android')
+    const existsIOsDir = toolbox.filesystem.exists('ios')
+
+    if (isExpo()) {
+      await toolbox.expo.prebuild({ cleanAfter: false })
+    }
+
+    iOSAppName = toolbox.filesystem
+      .list('ios')
+      ?.find((file) => file.endsWith('.xcodeproj'))
+      ?.replace('.xcodeproj', '')
+
+    if (!iOSAppName) {
+      throw CycliError(
+        'Failed to obtain iOS app name. Perhaps your ios/ directory is missing *.xcodeproj file.'
+      )
+    }
+
+    if (!existsAndroidDir) toolbox.filesystem.remove('android')
+    if (!existsIOsDir) toolbox.filesystem.remove('ios')
+
+    return iOSAppName
+  }
+
   toolbox.projectConfig = {
     packageJson,
     appJsonFile,
@@ -285,6 +319,7 @@ module.exports = (toolbox: CycliToolbox) => {
     getName,
     getAppId,
     checkAppNameInConfigOrGenerate,
+    getIOSAppName,
   }
 }
 
@@ -304,5 +339,6 @@ export interface ProjectConfigExtension {
     getName: () => string
     getAppId: () => string | undefined
     checkAppNameInConfigOrGenerate: () => Promise<void>
+    getIOSAppName: () => Promise<string>
   }
 }

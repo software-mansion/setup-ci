@@ -10,7 +10,7 @@ export const PATH_TO_TEST_PROJECTS = join(__dirname, TEST_PROJECTS_FOLDER)
 const PATH_TO_TEST_PROJECT = join(__dirname, TEST_PROJECT_NAME)
 
 export const NON_INTERACTIVE_FLAG = '--non-interactive'
-export const PRESET_FLAG = '--preset'
+export const PULL_REQUEST_FLAG = '-pull-request'
 
 const INSTALL_DEPENDENCIES_COMMAND = {
   yarn: 'yarn',

@@ -1,6 +1,12 @@
-import { CycliRecipe, CycliRecipeType, CycliToolbox } from '../types'
-import { createBuildWorkflows } from './build'
+import {
+  CycliRecipe,
+  CycliRecipeType,
+  CycliToolbox,
+  WorkflowEvent,
+  WorkflowEventType,
+} from '../types'
 import { join } from 'path'
+import { configureProjectForBuild, generateBuildWorkflows } from './build'
 
 const DETOX_BARE_PROJECT_CONFIG_URL = `https://wix.github.io/Detox/docs/next/introduction/project-setup/#step-4-additional-android-configuration`
 const DETOX_EXPO_PLUGIN = '@config-plugins/detox'
@@ -24,9 +30,9 @@ const addDetoxExpoPlugin = async (toolbox: CycliToolbox) => {
   }
 }
 
-const execute = async (toolbox: CycliToolbox) => {
+const configureProject = async (toolbox: CycliToolbox) => {
   toolbox.interactive.vspace()
-  toolbox.interactive.sectionHeader('Generating Detox workflow')
+  toolbox.interactive.sectionHeader('Configuring project for Detox')
 
   const expo = toolbox.projectConfig.isExpo()
 
@@ -45,10 +51,7 @@ const execute = async (toolbox: CycliToolbox) => {
     )
   }
 
-  await createBuildWorkflows(toolbox, {
-    mode: 'release',
-    expo,
-  })
+  await configureProjectForBuild(toolbox, { mode: 'release' })
 
   await toolbox.dependencies.addDev('detox')
   // >=29 because of https://wix.github.io/Detox/docs/introduction/project-setup#step-1-bootstrap
@@ -116,11 +119,27 @@ const execute = async (toolbox: CycliToolbox) => {
     toolbox.furtherActions.push(starterTestMessage)
   }
 
-  await toolbox.workflows.generate(join('detox', 'test-detox-android.ejf'))
+  toolbox.interactive.success('Configured project for Detox.')
+}
 
-  await toolbox.workflows.generate(join('detox', 'test-detox-ios.ejf'))
+const generateWorkflow = async (
+  toolbox: CycliToolbox,
+  events: WorkflowEvent[]
+) => {
+  await generateBuildWorkflows(toolbox, { mode: 'release', events })
 
-  toolbox.interactive.success('Created Detox workflow.')
+  await toolbox.workflows.generate(join('detox', 'test-detox-android.ejf'), {
+    events,
+  })
+  await toolbox.workflows.generate(join('detox', 'test-detox-ios.ejf'), {
+    events,
+  })
+
+  toolbox.interactive.success(
+    `Created Detox workflow for events: [${events
+      .map((e) => e.type)
+      .join(', ')}]`
+  )
 }
 
 export const recipe: CycliRecipe = {
@@ -129,8 +148,10 @@ export const recipe: CycliRecipe = {
     flag: CycliRecipeType.DETOX,
     description: 'Generate workflow to run Detox e2e tests on every PR',
     selectHint: 'run detox e2e tests suite',
+    allowedEvents: [WorkflowEventType.PUSH, WorkflowEventType.PULL_REQUEST],
   },
-  execute,
+  configureProject,
+  generateWorkflow,
 } as const
 
 export default recipe

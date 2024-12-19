@@ -8,10 +8,7 @@ const startBundler = {
 
 name: Maestro Test Android
 
-on:
-  pull_request: <%= (props.isMonorepo) ? `
-    paths:
-      - ${props.pathRelativeToRoot}/**` : "" %>
+<%- include('../common/triggerEvents', { props }); %>
 
 jobs:
   build-debug-android:

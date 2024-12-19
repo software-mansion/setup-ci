@@ -4,6 +4,8 @@ import {
   CycliRecipe,
   CycliRecipeType,
   CycliToolbox,
+  WorkflowEvent,
+  WorkflowEventType,
 } from '../types'
 import { join } from 'path'
 import { recursiveAssign } from '../utils/recursiveAssign'
@@ -50,9 +52,9 @@ const patchAppJson = async (toolbox: CycliToolbox): Promise<void> => {
   await toolbox.projectConfig.patchAppConfig(patch)
 }
 
-const execute = async (toolbox: CycliToolbox): Promise<void> => {
+const configureProject = async (toolbox: CycliToolbox): Promise<void> => {
   toolbox.interactive.vspace()
-  toolbox.interactive.sectionHeader('Generating Preview with EAS workflow')
+  toolbox.interactive.sectionHeader('Configuring project for Preview with EAS')
 
   await toolbox.dependencies.add('expo')
   await toolbox.dependencies.add('expo-dev-client')
@@ -91,15 +93,26 @@ const execute = async (toolbox: CycliToolbox): Promise<void> => {
   await patchEasJson(toolbox, withIOSCredentials)
   await patchAppJson(toolbox)
 
-  await toolbox.workflows.generate(join('eas', 'eas.ejf'))
-
-  toolbox.interactive.success('Created Preview with EAS workflow.')
+  toolbox.interactive.success('Configured project for Preview with EAS')
 
   toolbox.interactive.warning(
     `Remember to create repository secret EXPO_TOKEN for Preview with EAS workflow to work properly. For more information check ${REPOSITORY_SECRETS_HELP_URL}`
   )
   toolbox.furtherActions.push(
     `Create EXPO_TOKEN repository secret. More info at ${REPOSITORY_SECRETS_HELP_URL}`
+  )
+}
+
+const generateWorkflow = async (
+  toolbox: CycliToolbox,
+  events: WorkflowEvent[]
+): Promise<void> => {
+  await toolbox.workflows.generate(join('eas', 'eas.ejf'), { events })
+
+  toolbox.interactive.success(
+    `Created Preview with EAS workflow for events: [${events
+      .map((e) => e.type)
+      .join(', ')}]`
   )
 }
 
@@ -116,8 +129,10 @@ export const recipe: CycliRecipe = {
     description:
       'Generate Preview with EAS workflow to run on every PR (Expo projects only)',
     selectHint: 'generate preview with EAS',
+    allowedEvents: [WorkflowEventType.PULL_REQUEST],
   },
-  execute,
+  configureProject,
+  generateWorkflow,
   validate,
 }
 
